@@ -105,11 +105,12 @@ export default function HomeScreen({ navigation }) {
         } else if (sitter.approvalStatus === 'PENDING') {
           setShowPendingModal(true);
         }
-      } else if (user?.stripeVerified) {
-        // Verified but no sitter profile — go to profile setup
-        navigation.navigate('ProfileSetup');
       } else {
-        // Not verified — go to intro/verification
+        // No sitter profile yet — always start at the intro, which re-checks
+        // identity verification (mode-aware) and forwards to ProfileSetup only
+        // if the user is verified in the CURRENT Identity mode. Relying on a
+        // cached stripeVerified flag here would wrongly skip verification after
+        // the admin flips test↔live.
         navigation.navigate('BecomeASitterIntro');
       }
     } catch (error) {
@@ -119,12 +120,8 @@ export default function HomeScreen({ navigation }) {
         return;
       }
 
-      // Fallback: check stripeVerified to decide where to go
-      if (user?.stripeVerified) {
-        navigation.navigate('ProfileSetup');
-      } else {
-        navigation.navigate('BecomeASitterIntro');
-      }
+      // Fallback: let the intro screen decide (it re-checks verification).
+      navigation.navigate('BecomeASitterIntro');
     } finally {
       setCheckingStatus(false);
     }

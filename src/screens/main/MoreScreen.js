@@ -76,13 +76,10 @@ export default function MoreScreen({ navigation }) {
         setRejectionReason('Your sitter application was not approved. Please contact support for details.');
         setShowRejectedModal(true);
       } else {
-        // No sitter profile yet — mirror HomeScreen: skip the intro if the
-        // user has already verified identity, otherwise start at the intro.
-        if (user?.stripeVerified) {
-          navigation.navigate('ProfileSetup');
-        } else {
-          navigation.navigate('BecomeASitterIntro');
-        }
+        // No sitter profile yet — always start at the intro, which re-checks
+        // identity verification (mode-aware) and forwards to ProfileSetup only
+        // if verified in the CURRENT Identity mode (don't trust a cached flag).
+        navigation.navigate('BecomeASitterIntro');
       }
     } else {
       setIsSitterMode(false);
