@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCredentials } from '../../../store/slices/authSlice';
@@ -66,9 +66,22 @@ export default function VerifyIdentityScreen({ navigation }) {
       if (!res?.success || !res?.data?.url) {
         throw new Error(res?.message || 'Could not start verification');
       }
-      // Opens Stripe's secure hosted verification page; resolves when the user
-      // returns to the app (closes the in-app browser).
-      await WebBrowser.openBrowserAsync(res.data.url);
+      // Opens Stripe's secure hosted verification page in an in-app browser;
+      // resolves when the user returns to the app. Styled to match the brand:
+      // iOS gets a card/sheet presentation; Android gets a branded Custom Tab
+      // (Custom Tabs can't be a true bottom sheet). Camera works here, which it
+      // wouldn't reliably in an embedded WebView.
+      await WebBrowser.openBrowserAsync(res.data.url, {
+        // iOS: slide-up card instead of full-screen
+        presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
+        dismissButtonStyle: 'close', // iOS
+        // Brand colors (iOS controls + Android toolbar)
+        toolbarColor: '#FFFFFF',
+        controlsColor: '#32A6D8',
+        // Android Custom Tab polish
+        showTitle: false,
+        enableBarCollapsing: true,
+      });
       await pollStatus();
     } catch (error) {
       setErrorMessage(error?.message || 'Failed to start verification. Please try again.');
@@ -86,19 +99,6 @@ export default function VerifyIdentityScreen({ navigation }) {
   const handleProcessingClose = () => {
     setShowProcessingModal(false);
     navigation.replace('ProfileSetup');
-  };
-
-  // Skipping is allowed, but the sitter cannot SUBMIT for approval until
-  // identity verification is complete (hard-enforced on the backend).
-  const handleSkip = () => {
-    Alert.alert(
-      'Skip identity verification?',
-      'You can fill out your sitter profile, but you won\'t be able to submit for approval or receive payouts until your identity is verified. You can come back any time.',
-      [
-        { text: 'Continue verifying', style: 'cancel' },
-        { text: 'Skip for now', style: 'destructive', onPress: () => navigation.replace('ProfileSetup') },
-      ]
-    );
   };
 
   return (
@@ -147,9 +147,9 @@ export default function VerifyIdentityScreen({ navigation }) {
               fullWidth
               disabled={isVerifying}
             />
-            <TouchableOpacity onPress={handleSkip} style={styles.skipBtn} disabled={isVerifying}>
-              <Text style={styles.skipText}>Skip for now</Text>
-            </TouchableOpacity>
+            <Text style={styles.requiredNote}>
+              Identity verification is required to become a sitter.
+            </Text>
           </View>
         </View>
 
@@ -225,6 +225,7 @@ const styles = StyleSheet.create({
   badgeIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#E8F4FD', justifyContent: 'center', alignItems: 'center' },
   badgeText: { color: '#0D0D12', fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '600' },
   bottom: { gap: 12, alignItems: 'center' },
+  requiredNote: { color: '#818898', fontSize: 12.5, fontFamily: 'Avenir LT Std', fontWeight: '500', textAlign: 'center' },
   skipBtn: { paddingVertical: 10 },
   skipText: { color: '#F38FB4', fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '750' },
 
