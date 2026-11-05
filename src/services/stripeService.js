@@ -55,6 +55,39 @@ export const getVerificationStatus = async () => {
   }
 };
 
+// --- Stripe Identity (real government-ID + selfie verification) ---
+
+// Start an Identity verification session; returns { url, sessionId, status }.
+// The app opens `url` in an in-app browser.
+export const createIdentitySession = async () => {
+  try {
+    const token = await getAuthToken();
+    const response = await axios.post(
+      `${API_URL}/api/stripe/identity/session`,
+      {},
+      { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to start identity verification' };
+  }
+};
+
+// Poll Identity status; returns { verified, status }. Call after the browser
+// closes (and the webhook is the async backstop).
+export const getIdentityStatus = async () => {
+  try {
+    const token = await getAuthToken();
+    const response = await axios.get(
+      `${API_URL}/api/stripe/identity/status`,
+      { headers: { 'Authorization': `Bearer ${token}` } }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to get verification status' };
+  }
+};
+
 // Mock verification (for testing without Stripe)
 export const mockVerification = async () => {
   try {

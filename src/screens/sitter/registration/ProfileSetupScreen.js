@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import ScreenWrapper from '../../../components/ScreenWrapper';
@@ -222,7 +222,20 @@ export default function ProfileSetupScreen({ navigation, route }) {
       }
     } catch (error) {
       console.error('Submit error:', error);
-      alert(error.response?.data?.message || 'Failed to submit application. Please try again.');
+      const data = error.response?.data;
+      // Backend hard-gates submission on identity verification. Route them to it.
+      if (data?.code === 'IDENTITY_NOT_VERIFIED') {
+        Alert.alert(
+          'Identity verification required',
+          data.message || 'Please complete identity verification before submitting.',
+          [
+            { text: 'Not now', style: 'cancel' },
+            { text: 'Verify now', onPress: () => navigation.navigate('VerifyIdentity') },
+          ]
+        );
+      } else {
+        alert(data?.message || 'Failed to submit application. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
