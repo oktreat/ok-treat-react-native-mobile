@@ -63,7 +63,7 @@ jobs:
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload verified OkTreat 1.1.17 archive to TestFlight'
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
