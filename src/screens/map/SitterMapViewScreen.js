@@ -264,7 +264,7 @@ export default function SitterMapViewScreen({ navigation, route }) {
               </View>
               <View style={styles.sitterMeta}>
                 <Text style={styles.sitterDistance}>📍 {sitter.distance}</Text>
-                <Text style={styles.sitterPrice}>{sitter.price} coins/day</Text>
+                <Text style={styles.sitterPrice}>{sitter.price} TreatCoins/day</Text>
               </View>
             </TouchableOpacity>
           ))}

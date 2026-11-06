@@ -145,7 +145,7 @@ export default function BookingsScreen({ navigation, route }) {
   const handleConfirmCompletion = (booking) => {
     Alert.alert(
       'Confirm completion?',
-      'Confirm this booking is complete. This releases the coins to your sitter and can’t be undone.',
+      'Confirm this booking is complete. This releases the TreatCoins to your sitter and can’t be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
         { text: 'Confirm', onPress: () => doConfirmCompletion(booking) },
@@ -270,7 +270,7 @@ export default function BookingsScreen({ navigation, route }) {
         {/* Awaiting-confirmation nudge (sitter marked it done) */}
         {awaitingConfirm && (
           <Text style={styles.awaitingHint}>
-            Your sitter marked this complete — confirm to release their coins.
+            Your sitter marked this complete — confirm to release their TreatCoins.
           </Text>
         )}
 
@@ -279,7 +279,7 @@ export default function BookingsScreen({ navigation, route }) {
           <Text style={styles.paymentLabel}>Total Payment</Text>
           <View style={styles.paymentAmount}>
             <CoinIcon width={19} height={19} />
-            <Text style={styles.coinsText}>{totalPayment} Coins</Text>
+            <Text style={styles.coinsText}>{totalPayment} TreatCoins</Text>
           </View>
         </View>
       </TouchableOpacity>

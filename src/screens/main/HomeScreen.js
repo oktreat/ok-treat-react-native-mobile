@@ -273,29 +273,29 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {/* Row 4 - Become a Sitter */}
-          {!isApprovedSitter && (
-            <View style={styles.row}>
-              <TouchableOpacity
-                style={[styles.actionCard, styles.halfCard]}
-                onPress={handleBecomeASitter}
-                disabled={checkingStatus}
-              >
-                <View style={styles.cardContent}>
-                  {checkingStatus ? (
-                    <ActivityIndicator size="small" color="#32A6D8" />
-                  ) : (
-                    <>
-                      <View style={styles.iconWrapper}>
-                        <Icon name="paw-outline" size={36} color="#32A6D8" />
-                      </View>
-                      <Text style={styles.actionLabel}>Become a Pet Sitter</Text>
-                    </>
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
-          )}
+          {/* Keep sitter access available after approval. */}
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[styles.actionCard, styles.halfCard]}
+              onPress={handleBecomeASitter}
+              disabled={checkingStatus}
+            >
+              <View style={styles.cardContent}>
+                {checkingStatus ? (
+                  <ActivityIndicator size="small" color="#32A6D8" />
+                ) : (
+                  <>
+                    <View style={styles.iconWrapper}>
+                      <Icon name="paw-outline" size={36} color="#32A6D8" />
+                    </View>
+                    <Text style={styles.actionLabel}>
+                      {isApprovedSitter ? 'Sitter Dashboard' : 'Become a Pet Sitter'}
+                    </Text>
+                  </>
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Approved Modal */}

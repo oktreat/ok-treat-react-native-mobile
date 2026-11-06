@@ -95,7 +95,7 @@ export default function BookingDetailScreen({ navigation, route }) {
     // the ProfileVerifiedModal renderer.
     Alert.alert(
       'Cancel this booking?',
-      'The sitter will be notified and any held coins will be returned to your wallet.',
+      'The sitter will be notified and any held TreatCoins will be returned to your wallet.',
       [
         { text: 'Keep it', style: 'cancel' },
         {
@@ -280,12 +280,12 @@ export default function BookingDetailScreen({ navigation, route }) {
               <Text style={styles.amountLabel}>Total</Text>
               <View style={styles.amountValueRow}>
                 <Icon name="logo-bitcoin" size={16} color="#32A6D8" />
-                <Text style={styles.amountValue}>{amount.toLocaleString()} coins</Text>
+                <Text style={styles.amountValue}>{amount.toLocaleString()} TreatCoins</Text>
               </View>
             </View>
             {refundable > 0 && ['PENDING', 'CONFIRMED'].includes(status) && (
               <Text style={styles.dimSm}>
-                {refundable.toLocaleString()} coins are held — they'll return to your wallet if the booking is cancelled or declined.
+                {refundable.toLocaleString()} TreatCoins are held — they'll return to your wallet if the booking is cancelled or declined.
               </Text>
             )}
           </View>

@@ -34,7 +34,8 @@ TextInput.defaultProps.allowFontScaling = false;
 // Set up notification handler at top level (outside component)
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),

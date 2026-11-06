@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ActivityIndicator } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
 import { redeemReferral, dismissReferralPrompt } from '../services/referralService';
+import { useRemoteConfig } from '../hooks/useRemoteConfig';
 
 /**
  * "Were you invited?" prompt. Shown once per session to eligible users
@@ -9,6 +10,7 @@ import { redeemReferral, dismissReferralPrompt } from '../services/referralServi
  * both stop it from showing again (server-side flag).
  */
 export default function ReferralPromptModal({ visible, onClose, onRedeemed }) {
+  const { referralProgram } = useRemoteConfig();
   const [code, setCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -21,7 +23,7 @@ export default function ReferralPromptModal({ visible, onClose, onRedeemed }) {
     setError('');
     try {
       const res = await redeemReferral(c);
-      setSuccess(res?.message || 'Success! Bonus coins added.');
+      setSuccess(res?.message || 'Referral code saved. Rewards are credited after your first completed booking.');
       onRedeemed && onRedeemed();
     } catch (e) {
       setError(e?.response?.data?.message || 'Could not redeem that code.');
@@ -57,7 +59,9 @@ export default function ReferralPromptModal({ visible, onClose, onRedeemed }) {
               </View>
               <Text style={styles.title}>Were you invited?</Text>
               <Text style={styles.subtitle}>
-                Enter a friend's referral code and get 50 bonus coins.
+                {referralProgram?.enabled
+                  ? `Enter a friend's referral code before your first completed booking. After completion, you get ${referralProgram.referredReward} bonus TreatCoins and your friend gets ${referralProgram.referrerReward}. The offer active at completion applies.`
+                  : "Enter a friend's referral code. Referral rewards are currently unavailable."}
               </Text>
               <TextInput
                 style={[styles.input, !!error && styles.inputError]}

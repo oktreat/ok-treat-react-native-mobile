@@ -49,7 +49,7 @@ export default function ShopCoinsScreen({ navigation }) {
       const data = response.data?.data || response.data || {};
       setBalance(Number(data.coinBalance || 0));
     } catch (err) {
-      console.warn('Error fetching coin balance:', err?.message);
+      console.warn('Error fetching TreatCoin balance:', err?.message);
     } finally {
       setBalanceLoading(false);
     }
@@ -160,11 +160,11 @@ export default function ShopCoinsScreen({ navigation }) {
         if (!isMountedRef.current) return;
         try {
           if (credited) {
-            alert('Success', `${expectedDelta} coins added to your account.`, 'success');
+            alert('Success', `${expectedDelta} TreatCoins added to your account.`, 'success');
           } else {
             alert(
               'Payment received',
-              'Your payment was charged. Coins will appear in your balance shortly.',
+              'Your payment was charged. TreatCoins will appear in your balance shortly.',
               'success',
             );
           }
@@ -192,7 +192,7 @@ export default function ShopCoinsScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Shop Coins</Text>
+          <Text style={styles.headerTitle}>Shop TreatCoins</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -209,7 +209,7 @@ export default function ShopCoinsScreen({ navigation }) {
             <Text style={styles.totalCoinsAmount}>
               {balanceLoading ? '...' : balance.toLocaleString()}
             </Text>
-            <Text style={styles.totalCoinsLabel}>Total Coins</Text>
+            <Text style={styles.totalCoinsLabel}>Total TreatCoins</Text>
           </View>
 
           {/* Test-mode banner */}
@@ -250,7 +250,7 @@ export default function ShopCoinsScreen({ navigation }) {
                     <View style={styles.packageCoins}>
                       <CoinIcon width={18} height={18} />
                       <Text style={styles.packageCoinsText}>
-                        {totalCoins.toLocaleString()} Coins
+                        {totalCoins.toLocaleString()} TreatCoins
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -264,7 +264,7 @@ export default function ShopCoinsScreen({ navigation }) {
           <Button
             title={
               confirming
-                ? 'Crediting coins...'
+                ? 'Crediting TreatCoins...'
                 : !stripeReady
                 ? 'Payments unavailable'
                 : selectedPackage

@@ -495,7 +495,7 @@ export default function SitterProfileScreen({ navigation, route }) {
                           <CoinBackgroundIcon width={23} height={23} style={styles.coinBackground} />
                           <CoinIcon width={23} height={23} style={styles.coinForeground} />
                         </View>
-                        <Text style={styles.coinText}>{baseRate} Coins</Text>
+                        <Text style={styles.coinText}>{baseRate} TreatCoins</Text>
                       </View>
                       <Text style={styles.priceLabel}>{getPriceLabel(serviceType)}</Text>
                     </View>
@@ -521,7 +521,7 @@ export default function SitterProfileScreen({ navigation, route }) {
                               <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                               <CoinIcon width={16} height={16} style={styles.coinForeground} />
                             </View>
-                            <Text style={styles.rateValue}>{holidayRate} Coins</Text>
+                            <Text style={styles.rateValue}>{holidayRate} TreatCoins</Text>
                           </View>
                         </View>
                       )}
@@ -533,7 +533,7 @@ export default function SitterProfileScreen({ navigation, route }) {
                               <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                               <CoinIcon width={16} height={16} style={styles.coinForeground} />
                             </View>
-                            <Text style={styles.rateValue}>{additionalDogRate} Coins</Text>
+                            <Text style={styles.rateValue}>{additionalDogRate} TreatCoins</Text>
                           </View>
                         </View>
                       )}
@@ -545,7 +545,7 @@ export default function SitterProfileScreen({ navigation, route }) {
                               <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                               <CoinIcon width={16} height={16} style={styles.coinForeground} />
                             </View>
-                            <Text style={styles.rateValue}>{puppyRate} Coins</Text>
+                            <Text style={styles.rateValue}>{puppyRate} TreatCoins</Text>
                           </View>
                         </View>
                       )}
@@ -557,7 +557,7 @@ export default function SitterProfileScreen({ navigation, route }) {
                               <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                               <CoinIcon width={16} height={16} style={styles.coinForeground} />
                             </View>
-                            <Text style={styles.rateValue}>{longStayRate} Coins</Text>
+                            <Text style={styles.rateValue}>{longStayRate} TreatCoins</Text>
                           </View>
                         </View>
                       )}

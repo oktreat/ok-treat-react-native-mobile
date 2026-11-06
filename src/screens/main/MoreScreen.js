@@ -159,7 +159,7 @@ export default function MoreScreen({ navigation }) {
       onPress: handleBuyTags,
     },
     {
-      title: 'Shop Coins',
+      title: 'Shop TreatCoins',
       screen: 'ShopCoins',
       component: CreditCardIcon
     },
@@ -184,7 +184,7 @@ export default function MoreScreen({ navigation }) {
       component: SettingsIcon
     },
     { 
-      title: 'AlohaPay', 
+      title: 'Wallet',
       screen: 'PaymentMethods',
       component: StoreIcon 
     },

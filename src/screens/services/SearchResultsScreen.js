@@ -305,7 +305,7 @@ export default function SearchResultsScreen({ navigation, route }) {
                   <CoinBackgroundIcon width={18} height={18} style={styles.coinBackground} />
                   <CoinIcon width={18} height={18} style={styles.coinForeground} />
                 </View>
-                <Text style={styles.coinAmount}>{item.coins} Coins</Text>
+                <Text style={styles.coinAmount}>{item.coins} TreatCoins</Text>
               </View>
               <Text style={styles.priceLabel}>total per {priceUnit}</Text>
             </View>

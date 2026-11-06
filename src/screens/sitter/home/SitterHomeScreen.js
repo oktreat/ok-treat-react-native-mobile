@@ -260,7 +260,7 @@ export default function SitterHomeScreen({ navigation }) {
               <Text style={styles.statLabel}>This month's earnings</Text>
               <View style={styles.statValueRow}>
                 <Icon name="server-outline" size={13} color="#FBCE04" />
-                <Text style={styles.statValue}>{Number(totalSales || 0).toLocaleString()} coins</Text>
+                <Text style={styles.statValue}>{Number(totalSales || 0).toLocaleString()} TreatCoins</Text>
               </View>
             </View>
             <View style={styles.statItem}>

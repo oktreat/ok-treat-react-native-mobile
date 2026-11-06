@@ -8,15 +8,16 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon } from '../../assets';
 import api from '../../config/api';
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
-
-const REFERRER_REWARD = 100;
-const REFERRED_REWARD = 50;
+import { useDispatch } from 'react-redux';
+import { loadRemoteConfig } from '../../store/slices/appSlice';
 
 export default function InviteFriendsScreen({ navigation }) {
   const { user } = useSelector((state) => state.auth);
   // Store links come from the admin-editable remote config so they can change
   // without an app update. Empty links are simply omitted from the message.
-  const { playStoreUrl, appStoreUrl } = useRemoteConfig();
+  const { playStoreUrl, appStoreUrl, referralProgram } = useRemoteConfig();
+  const dispatch = useDispatch();
+  const { referrerReward = 100, referredReward = 100, enabled = false } = referralProgram || {};
   const [stats, setStats] = useState(null);
   const [copied, setCopied] = useState(false);
 
@@ -31,7 +32,10 @@ export default function InviteFriendsScreen({ navigation }) {
     }
   }, []);
 
-  useFocusEffect(useCallback(() => { fetchStats(); }, [fetchStats]));
+  useFocusEffect(useCallback(() => {
+    fetchStats();
+    dispatch(loadRemoteConfig());
+  }, [fetchStats, dispatch]));
 
   const handleCopy = async () => {
     if (!code) return;
@@ -53,7 +57,8 @@ export default function InviteFriendsScreen({ navigation }) {
       await Share.share({
         message:
           `Join me on OkTreat — the app for trusted pet sitters! 🐾\n\n` +
-          `Use my code ${code} when you sign up and you'll get ${REFERRED_REWARD} bonus coins.` +
+          `Use my referral code ${code}.` +
+          (enabled ? ` After your first completed booking, you get ${referredReward} bonus TreatCoins and I get ${referrerReward}.` : '') +
           downloadBlock,
       });
     } catch (e) { /* dismissed */ }
@@ -78,9 +83,11 @@ export default function InviteFriendsScreen({ navigation }) {
           {/* Hero */}
           <View style={styles.hero}>
             <Icon name="gift" size={28} color="#32A6D8" />
-            <Text style={styles.heroTitle}>Give {REFERRED_REWARD}, get {REFERRER_REWARD}</Text>
+            <Text style={styles.heroTitle}>{enabled ? `Give ${referredReward}, get ${referrerReward}` : 'Invite your friends'}</Text>
             <Text style={styles.heroSubtitle}>
-              Share your code — your friend gets {REFERRED_REWARD} coins and you get {REFERRER_REWARD} when they join.
+              {enabled
+                ? `Share your code — after your friend's first completed booking, they get ${referredReward} TreatCoins and you get ${referrerReward}. Rewards use the offer active at completion and cannot be withdrawn as cash.`
+                : 'Share your code with friends. Referral rewards are currently unavailable.'}
             </Text>
           </View>
 
@@ -110,7 +117,7 @@ export default function InviteFriendsScreen({ navigation }) {
             <View style={styles.statDivider} />
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{earned}</Text>
-              <Text style={styles.statLabel}>Coins earned</Text>
+              <Text style={styles.statLabel}>TreatCoins earned</Text>
             </View>
           </View>
         </ScrollView>

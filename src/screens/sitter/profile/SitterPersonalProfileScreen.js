@@ -394,7 +394,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
                     <View style={styles.serviceRow}>
                       <Text style={styles.serviceLabel}>Base rate</Text>
                       <Text style={styles.serviceValue}>
-                        {cfg.baseRate ? `${Number(cfg.baseRate).toLocaleString()} coins` : '—'}
+                        {cfg.baseRate ? `${Number(cfg.baseRate).toLocaleString()} TreatCoins` : '—'}
                       </Text>
                     </View>
                     {Array.isArray(cfg.selectedDays) && cfg.selectedDays.length > 0 && (

@@ -7,7 +7,8 @@ import { getAuthToken } from '../utils/storage';
 export const initializeNotifications = async () => {
   await Notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldShowAlert: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
       shouldPlaySound: true,
       shouldSetBadge: true
     })
@@ -15,7 +16,7 @@ export const initializeNotifications = async () => {
 };
 
 /**
- * Request notification permission, fetch an Expo push token for this
+ * Request notification permission, fetch a native push token for this
  * device, and POST it to the backend so the server can target push
  * notifications to this user. Safe to call multiple times — backend
  * just overwrites with the latest token.
@@ -24,14 +25,6 @@ export const initializeNotifications = async () => {
  */
 export const registerForPushNotifications = async () => {
   try {
-    const { status: existing } = await Notifications.getPermissionsAsync();
-    let finalStatus = existing;
-    if (existing !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') return null;
-
     // Android channel for high-priority pushes. `sound` references the
     // bundled raw resource at android/app/src/main/res/raw/notification.mp3
     // (filename without extension).
@@ -49,16 +42,22 @@ export const registerForPushNotifications = async () => {
         lightColor: '#32A6D8',
         sound: 'notification',
       }).catch(() => {});
-      // Remove older channels so upgraders don't keep a silent/locked channel
-      // (a channel's sound can't be changed once created) or see duplicates in
-      // system settings. Bump the id above whenever the audio changes.
-      await Notifications.deleteNotificationChannelAsync('oktreat-default-v2').catch(() => {});
-      await Notifications.deleteNotificationChannelAsync('default').catch(() => {});
     }
 
-    // Native FCM device token (Android) / APNs (iOS). We send push directly via
-    // firebase-admin from the backend, so we use the device token rather than an
-    // Expo push token (the project isn't linked to an Expo push project).
+    // Android 13 needs a channel before requesting notification permission.
+    // Preserve existing channels and the user's system sound preferences.
+    const { status: existing } = await Notifications.getPermissionsAsync();
+    let finalStatus = existing;
+    if (existing !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync({
+        ios: { allowAlert: true, allowBadge: true, allowSound: true },
+      });
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') return null;
+
+    // Native FCM token on Android; native APNs token on iOS. The backend must
+    // route each to its matching provider — APNs tokens cannot be sent to FCM.
     const tokenResp = await Notifications.getDevicePushTokenAsync();
     const token = tokenResp?.data;
     if (!token) return null;
