@@ -1,0 +1,96 @@
+name: Native build checks
+
+on:
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android compilation
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install locked dependencies and existing patches
+        run: npm ci --no-audit --no-fund
+      - name: Test notification registration
+        run: node --test tests/notification-registration.test.cjs
+      - name: Check production JavaScript bundle
+        run: npx expo export --platform android --output-dir .ci/metro-android
+      - name: Compile Android debug app
+        working-directory: android
+        run: ./gradlew :app:assembleDebug --no-daemon -PreactNativeArchitectures=arm64-v8a
+      - name: Save debug compilation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-compilation
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 3
+
+  ios:
+    name: iOS simulator compilation
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Inspect native toolchain
+        run: |
+          xcodebuild -version
+          pod --version
+      - name: Install locked dependencies and existing patches
+        run: npm ci --no-audit --no-fund
+      - name: Install locked iOS pods
+        working-directory: ios
+        run: pod install --deployment
+      - name: Compile unsigned Release simulator app
+        env:
+          CI: '1'
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p .ci
+          xcodebuild build \
+            -workspace ios/OkTreat.xcworkspace \
+            -scheme OkTreat \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath .ci/ios-build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            PROVISIONING_PROFILE_SPECIFIER='' \
+            2>&1 | tee .ci/ios-build.log
+      - name: Save build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-compilation-diagnostics
+          path: .ci/ios-build.log
+          if-no-files-found: ignore
+          retention-days: 3
