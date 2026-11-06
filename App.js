@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { Platform, Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { AppState, Platform, Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import * as Notifications from 'expo-notifications';
 import Icon from '@expo/vector-icons/Ionicons';
@@ -13,7 +13,7 @@ import { Lexend_300Light } from '@expo-google-fonts/lexend';
 import store from './src/store';
 import RootNavigator from './src/navigation/RootNavigator';
 import { setNavigationRef, setTokenExpiredModalHandler, handleTokenExpiredAction } from './src/config/axiosInterceptor';
-import { registerForPushNotifications } from './src/services/notificationService';
+import { registerForPushNotifications, syncNotificationBadge } from './src/services/notificationService';
 import { syncUserLocation } from './src/services/locationService';
 import { initI18n } from './src/i18n';
 import { getLanguage } from './src/utils/storage';
@@ -103,7 +103,16 @@ export default function App() {
     // if the target isn't reachable (e.g. tapped while logged out),
     // NavigationContainer's onUnhandledAction surfaces a graceful message.
     let responseSub = null;
+    let receivedSub = null;
+    let appStateSub = null;
     if (Platform.OS !== 'web') {
+      receivedSub = Notifications.addNotificationReceivedListener(() => syncNotificationBadge());
+      appStateSub = AppState.addEventListener('change', (state) => {
+        if (state === 'active') {
+          syncNotificationBadge();
+          registerForPushNotifications();
+        }
+      });
       const routeFromPush = (data) => {
         const nav = navigationRef.current;
         if (!nav || !data) return;
@@ -172,6 +181,8 @@ export default function App() {
     return () => {
       setTokenExpiredModalHandler(null);
       if (responseSub) responseSub.remove();
+      if (receivedSub) receivedSub.remove();
+      if (appStateSub) appStateSub.remove();
       if (webStyle && Platform.OS === 'web') {
         document.head.removeChild(webStyle);
       }

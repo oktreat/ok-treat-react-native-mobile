@@ -4,6 +4,34 @@ import { Platform } from 'react-native';
 import { API_BASE_URL } from '../config/api';
 import { getAuthToken } from '../utils/storage';
 
+let badgeRevision = 0;
+
+// Always use the server total, not the first page of the notification list.
+// Ignore old requests after logout or a newer refresh.
+export const syncNotificationBadge = async () => {
+  if (Platform.OS === 'web') return;
+  const revision = ++badgeRevision;
+  try {
+    const authToken = await getAuthToken();
+    if (revision !== badgeRevision) return;
+    if (!authToken) {
+      await Notifications.setBadgeCountAsync(0);
+      return;
+    }
+    const response = await axios.get(
+      `${API_BASE_URL}/api/notifications/unread-count`,
+      { headers: { Authorization: `Bearer ${authToken}` } }
+    );
+    const count = response.data?.data?.unreadCount;
+    if (revision === badgeRevision && authToken === await getAuthToken() &&
+        Number.isSafeInteger(count) && count >= 0) {
+      await Notifications.setBadgeCountAsync(count);
+    }
+  } catch {
+    // A failed refresh must not clear a valid badge.
+  }
+};
+
 export const initializeNotifications = async () => {
   await Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -78,6 +106,7 @@ export const registerForPushNotifications = async () => {
       console.log('Push token sync failed:', e?.response?.status || e?.message);
     }
 
+    await syncNotificationBadge();
     return token;
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -91,6 +120,8 @@ export const registerForPushNotifications = async () => {
  * stops receiving pushes for the previous user.
  */
 export const clearPushTokenOnServer = async () => {
+  ++badgeRevision;
+  if (Platform.OS !== 'web') await Notifications.setBadgeCountAsync(0).catch(() => {});
   try {
     const authToken = await getAuthToken();
     if (!authToken) return;

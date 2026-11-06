@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Activ
 import { BackArrowIcon, MoneySendIcon, Calendar2Icon, Setting2Icon } from '../../assets';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import api from '../../config/api';
+import { syncNotificationBadge } from '../../services/notificationService';
 import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
@@ -89,6 +90,7 @@ export default function NotificationsScreen({ navigation }) {
         };
       });
       setNotifications(formatted);
+      syncNotificationBadge();
     } catch (err) {
       console.error('Error fetching notifications:', err);
       setError('Failed to load notifications');
@@ -113,6 +115,7 @@ export default function NotificationsScreen({ navigation }) {
     if (notification.isNew) {
       try {
         await api.put(`/notifications/${notification.id}/read`);
+        syncNotificationBadge();
         setNotifications(prev => prev.map(n =>
           n.id === notification.id ? { ...n, isNew: false, read: true } : n
         ));
