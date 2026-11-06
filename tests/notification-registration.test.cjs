@@ -5,6 +5,7 @@ const vm = require('node:vm');
 function load({ os = 'android', status = 'undetermined', granted = true, auth = 'session', token = 'device-token' } = {}) {
   const calls = [];
   const Notifications = {
+    setBadgeCountAsync: async count => calls.push(['badge', count]),
     AndroidImportance: { MAX: 5 },
     setNotificationHandler: value => calls.push(['handler', value]),
     setNotificationChannelAsync: async (...args) => calls.push(['channel', ...args]),
@@ -16,14 +17,14 @@ function load({ os = 'android', status = 'undetermined', granted = true, auth = 
   const module = { exports: {} };
   vm.runInNewContext(source, {
     module, Notifications, Platform: { OS: os }, API_BASE_URL: 'https://test.invalid', getAuthToken: async () => auth,
-    axios: { put: async (...args) => calls.push(['sync', ...args]) }, console,
+    axios: { get: async () => ({ data: { data: { unreadCount: 3 } } }), put: async (...args) => calls.push(['sync', ...args]) }, console,
   });
   return { ...module.exports, calls };
 }
 test('Android creates the sound channel before permission and token requests', async () => {
   const service = load();
   await service.registerForPushNotifications();
-  assert.deepEqual(service.calls.map(c => c[0]), ['channel', 'permission', 'token', 'sync']);
+  assert.deepEqual(service.calls.map(c => c[0]), ['channel', 'permission', 'token', 'sync', 'badge']);
   assert.equal(service.calls[0][1], 'oktreat-default-v3');
   assert.equal(service.calls[0][2].sound, 'notification');
   assert.equal(service.calls[3][2].pushToken, 'device-token');
@@ -48,9 +49,10 @@ test('logged-out registration never writes a device token to another account', a
 test('logout clears push registration, and modern handler allows visible, audible foreground alerts', async () => {
   const service = load();
   await service.clearPushTokenOnServer();
-  assert.equal(service.calls[0][2].pushToken, null);
+  assert.equal(service.calls.find(c => c[0] === 'sync')[2].pushToken, null);
+  assert.equal(service.calls.find(c => c[0] === 'badge')[1], 0);
   await service.initializeNotifications();
-  const result = await service.calls[1][1].handleNotification();
+  const result = await service.calls.find(c => c[0] === 'handler')[1].handleNotification();
   assert.equal(result.shouldPlaySound, true);
   assert.equal(result.shouldShowBanner, true);
   assert.equal(result.shouldShowList, true);
