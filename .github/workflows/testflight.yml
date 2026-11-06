@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - name: Verify notification badge regressions
+        run: node --test tests/notification-badge.cjs
       - run: npm ci --no-audit --no-fund
       - run: pod install --deployment
         working-directory: ios
