@@ -17,7 +17,9 @@ export default function InviteFriendsScreen({ navigation }) {
   // without an app update. Empty links are simply omitted from the message.
   const { playStoreUrl, appStoreUrl, referralProgram } = useRemoteConfig();
   const dispatch = useDispatch();
-  const { referrerReward = 100, referredReward = 100, enabled = false } = referralProgram || {};
+  const { referrerReward = 100, referredReward = 100 } = referralProgram || {};
+  const enabled = referralProgram?.enabled === true &&
+    referralProgram?.qualification === 'NEW_USER_VERIFIED_REFERRER_FIRST_BOOKING';
   const [stats, setStats] = useState(null);
   const [copied, setCopied] = useState(false);
 
@@ -58,7 +60,7 @@ export default function InviteFriendsScreen({ navigation }) {
         message:
           `Join me on OkTreat — the app for trusted pet sitters! 🐾\n\n` +
           `Use my referral code ${code}.` +
-          (enabled ? ` After your first completed booking, you get ${referredReward} bonus TreatCoins and I get ${referrerReward}.` : '') +
+          (enabled ? ` Verify your account and apply my code to get ${referredReward} bonus TreatCoins toward your first booking. I get ${referrerReward} TreatCoins after you complete your first booking. Promotional TreatCoins cannot be withdrawn as cash.` : '') +
           downloadBlock,
       });
     } catch (e) { /* dismissed */ }
@@ -86,7 +88,7 @@ export default function InviteFriendsScreen({ navigation }) {
             <Text style={styles.heroTitle}>{enabled ? `Give ${referredReward}, get ${referrerReward}` : 'Invite your friends'}</Text>
             <Text style={styles.heroSubtitle}>
               {enabled
-                ? `Share your code — after your friend's first completed booking, they get ${referredReward} TreatCoins and you get ${referrerReward}. Rewards use the offer active at completion and cannot be withdrawn as cash.`
+                ? `Your friend gets ${referredReward} bonus TreatCoins after verifying their account and applying your code, ready to use toward their first booking. You get ${referrerReward} TreatCoins after they complete their first booking. Apply the code before the first completed booking. The offer active when each reward qualifies applies. Promotional TreatCoins cannot be withdrawn as cash.`
                 : 'Share your code with friends. Referral rewards are currently unavailable.'}
             </Text>
           </View>

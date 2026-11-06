@@ -20,7 +20,7 @@ export const DEFAULT_REMOTE_CONFIG = {
   supportPhone: '+1 (778) 772-3666',
   supportWhatsapp: '+1 (778) 772-3666',
   // Never advertise the new offer against an older backend without the policy.
-  referralProgram: { enabled: false, referrerReward: 100, referredReward: 100, qualification: 'FIRST_COMPLETED_BOOKING' },
+  referralProgram: { enabled: false, referrerReward: 100, referredReward: 100, qualification: 'NEW_USER_VERIFIED_REFERRER_FIRST_BOOKING' },
   maintenance: { ...DEFAULT_MAINTENANCE },
 };
 

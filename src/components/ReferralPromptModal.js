@@ -11,6 +11,8 @@ import { useRemoteConfig } from '../hooks/useRemoteConfig';
  */
 export default function ReferralPromptModal({ visible, onClose, onRedeemed }) {
   const { referralProgram } = useRemoteConfig();
+  const rewardsEnabled = referralProgram?.enabled === true &&
+    referralProgram?.qualification === 'NEW_USER_VERIFIED_REFERRER_FIRST_BOOKING';
   const [code, setCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +25,7 @@ export default function ReferralPromptModal({ visible, onClose, onRedeemed }) {
     setError('');
     try {
       const res = await redeemReferral(c);
-      setSuccess(res?.message || 'Referral code saved. Rewards are credited after your first completed booking.');
+      setSuccess(res?.message || 'Referral code saved. Check your wallet for any welcome bonus credited. Your friend qualifies after your first completed booking.');
       onRedeemed && onRedeemed();
     } catch (e) {
       setError(e?.response?.data?.message || 'Could not redeem that code.');
@@ -59,8 +61,8 @@ export default function ReferralPromptModal({ visible, onClose, onRedeemed }) {
               </View>
               <Text style={styles.title}>Were you invited?</Text>
               <Text style={styles.subtitle}>
-                {referralProgram?.enabled
-                  ? `Enter a friend's referral code before your first completed booking. After completion, you get ${referralProgram.referredReward} bonus TreatCoins and your friend gets ${referralProgram.referrerReward}. The offer active at completion applies.`
+                {rewardsEnabled
+                  ? `Verify your account and enter a friend's code to get ${referralProgram.referredReward} bonus TreatCoins toward your first booking. Your friend gets ${referralProgram.referrerReward} TreatCoins after you complete your first booking. Enter the code before that booking is completed. The offer active when each reward qualifies applies. Promotional TreatCoins cannot be withdrawn as cash.`
                   : "Enter a friend's referral code. Referral rewards are currently unavailable."}
               </Text>
               <TextInput
