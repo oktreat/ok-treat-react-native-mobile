@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   infoCard: {
-    height: 56,
+    minHeight: 56,
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderRadius: 16,
@@ -379,9 +379,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 10,
   },
   infoLeft: {
-    gap: 7,
+    flexGrow: 1,
+    flexBasis: 160,
+    maxWidth: '100%',
+    gap: 4,
   },
   infoTitle: {
     color: '#090E12',
@@ -398,11 +403,13 @@ const styles = StyleSheet.create({
     lineHeight: 18.6,
   },
   coinsDisplay: {
+    maxWidth: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6.88,
   },
   coinsText: {
+    flexShrink: 1,
     color: '#32A6D8',
     fontSize: 13.76,
     fontFamily: 'Avenir LT Std',
