@@ -1,7 +1,8 @@
 # iPhone notification sound diagnostic
 
-This is an experiment, not a confirmed fix. The TestFlight workflow enables
-`EXPO_PUBLIC_PUSH_DIAGNOSTICS=true`; ordinary builds leave it unset.
+Build 1.1.17 (4.1) enabled this experiment with
+`EXPO_PUBLIC_PUSH_DIAGNOSTICS=true`. The later chime/navigation build disables
+that flag, restoring the foreground chime and hiding this diagnostic screen.
 
 In Profile → Notification Preferences, open **Notification sound test**.
 The separate `expo-av` socket chime is disabled on iPhone in this build, so

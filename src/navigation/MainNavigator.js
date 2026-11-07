@@ -1,21 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from '@expo/vector-icons/Ionicons';
-import {
-  SearchTextIcon,
-  GridWeb7Icon,
-  HomeSitterActiveIcon,
-  HomeSitterInactiveIcon,
-  BookingsSitterActiveIcon,
-  BookingsSitterInactiveIcon,
-  CalendarSitterActiveIcon,
-  CalendarSitterInactiveIcon,
-  InboxSitterActiveIcon,
-  InboxSitterInactiveIcon,
-  ProfileSitterActiveIcon,
-  ProfileSitterInactiveIcon
-} from '../assets';
+import ClearTabBar from '../components/ClearTabBar';
 
 import HomeScreen from '../screens/main/HomeScreen';
 import BookingsScreen from '../screens/main/BookingsScreen';
@@ -152,44 +138,15 @@ function MoreStack() { // cleaned
 }
 
 function TabNavigator() {
-  const insets = useSafeAreaInsets();
-
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          height: 70 + insets.bottom,
-          backgroundColor: '#FFFFFF',
-          shadowColor: '#99AAC5',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.38,
-          paddingBottom: insets.bottom + 15,
-          paddingTop: 15,
-        },
-        tabBarLabelStyle: {
-          fontSize: 10,
-          fontFamily: 'Avenir LT Std',
-          marginTop: 4,
-        },
-        tabBarActiveTintColor: '#32A6D8',
-        tabBarInactiveTintColor: '#FFC2EB',
-        tabBarIconStyle: {
-          marginTop: 0,
-        },
-      }}
-    >
+    <Tab.Navigator tabBar={(props) => <ClearTabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tab.Screen
         name="Home"
         component={HomeStack}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({ focused, color }) => (
-            <Icon
-              name={focused ? 'home' : 'home-outline'}
-              size={24}
-              color={color}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'home' : 'home-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -198,12 +155,8 @@ function TabNavigator() {
         component={BookingsStack}
         options={{
           tabBarLabel: 'Rebook',
-          tabBarIcon: ({ focused, color }) => (
-            <Icon
-              name={focused ? 'repeat' : 'repeat'}
-              size={24}
-              color={color}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'repeat' : 'repeat-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -212,12 +165,8 @@ function TabNavigator() {
         component={ServicesStack}
         options={{
           tabBarLabel: 'Services',
-          tabBarIcon: ({ focused, color }) => (
-            <SearchTextIcon
-              width={24}
-              height={24}
-              color={color}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'search' : 'search-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -226,12 +175,8 @@ function TabNavigator() {
         component={PetsStack}
         options={{
           tabBarLabel: 'Your Pets',
-          tabBarIcon: ({ focused, color }) => (
-            <Icon
-              name={focused ? 'paw' : 'paw-outline'}
-              size={24}
-              color={color}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'paw' : 'paw-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -240,12 +185,8 @@ function TabNavigator() {
         component={MoreStack}
         options={{
           tabBarLabel: 'More',
-          tabBarIcon: ({ focused, color }) => (
-            <GridWeb7Icon
-              width={24}
-              height={24}
-              color={color}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'grid' : 'grid-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -253,53 +194,17 @@ function TabNavigator() {
   );
 }
 
-// Sitter Tab Navigator
 function SitterTabNavigator() {
-  const insets = useSafeAreaInsets();
-
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          height: 70 + insets.bottom,
-          paddingBottom: insets.bottom + 15,
-          paddingTop: 15,
-          paddingHorizontal: 10,
-          backgroundColor: '#FFFFFF',
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          elevation: 10,
-          borderTopWidth: 0,
-        },
-        tabBarLabelStyle: {
-          fontSize: 10,
-          fontFamily: 'Avenir LT Std',
-          fontWeight: '350',
-          marginTop: 4,
-        },
-        tabBarActiveTintColor: '#32A6D8',
-        tabBarInactiveTintColor: '#FFC2EB',
-        tabBarIconStyle: {
-          marginTop: 0,
-        },
-      }}
-    >
+    <Tab.Navigator tabBar={(props) => <ClearTabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tab.Screen
         name="SitterHome"
         component={SitterHomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <HomeSitterActiveIcon width={24} height={24} />
-            ) : (
-              <HomeSitterInactiveIcon width={24} height={24} />
-            ),
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -307,12 +212,9 @@ function SitterTabNavigator() {
         component={SitterBookingsScreen}
         options={{
           tabBarLabel: 'Booking',
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <BookingsSitterActiveIcon width={24} height={24} />
-            ) : (
-              <BookingsSitterInactiveIcon width={24} height={24} />
-            ),
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'clipboard' : 'clipboard-outline'} size={size} color={color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -320,19 +222,9 @@ function SitterTabNavigator() {
         component={SitterCalendarScreen}
         options={{
           tabBarLabel: 'Calendar',
-          tabBarLabelStyle: {
-            fontSize: 8.77,
-            fontFamily: 'Avenir LT Std',
-            fontWeight: '350',
-            letterSpacing: 0.18,
-            marginTop: 4,
-          },
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <CalendarSitterActiveIcon width={21.05} height={21.05} />
-            ) : (
-              <CalendarSitterInactiveIcon width={21.05} height={21.05} />
-            ),
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'calendar' : 'calendar-outline'} size={size} color={color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -340,19 +232,9 @@ function SitterTabNavigator() {
         component={SitterRequestsScreen}
         options={{
           tabBarLabel: 'Inbox',
-          tabBarLabelStyle: {
-            fontSize: 8.77,
-            fontFamily: 'Avenir LT Std',
-            fontWeight: '350',
-            letterSpacing: 0.18,
-            marginTop: 4,
-          },
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <InboxSitterActiveIcon width={21.05} height={21.05} />
-            ) : (
-              <InboxSitterInactiveIcon width={21.05} height={21.05} />
-            ),
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'mail' : 'mail-outline'} size={size} color={color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -360,19 +242,9 @@ function SitterTabNavigator() {
         component={SitterMyProfileScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarLabelStyle: {
-            fontSize: 8.77,
-            fontFamily: 'Avenir LT Std',
-            fontWeight: '350',
-            letterSpacing: 0.18,
-            marginTop: 4,
-          },
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <ProfileSitterActiveIcon width={21.05} height={21.05} />
-            ) : (
-              <ProfileSitterInactiveIcon width={21.05} height={21.05} />
-            ),
+          tabBarIcon: ({ focused, color, size }) => (
+            <Icon name={focused ? 'person-circle' : 'person-circle-outline'} size={size} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>

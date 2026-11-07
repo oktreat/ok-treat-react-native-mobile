@@ -47,9 +47,9 @@ test('concurrent events are retained in a bounded log and clear removes them', a
   assert.equal((await s.getPushDiagnostics()).captured.length, 20);
   await s.clearPushDiagnostics(); assert.equal((await s.getPushDiagnostics()).captured.length, 0);
 });
-test('timed comparison uses native default sound and does not modify badges', async () => {
+test('timed comparison uses bundled chime and does not modify badges', async () => {
   const s = load(); await s.scheduleSoundDiagnostic(); const req = s.scheduled();
-  assert.equal(req.content.sound, 'default'); assert.equal(req.trigger.seconds, 10);
+  assert.equal(req.content.sound, 'notification.wav'); assert.equal(req.trigger.seconds, 10);
   assert.equal(req.trigger.repeats, false); assert.equal(req.content.badge, undefined);
 });
 test('diagnostic iPhone chime never touches the custom audio session', async () => {

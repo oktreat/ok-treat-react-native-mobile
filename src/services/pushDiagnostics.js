@@ -73,7 +73,7 @@ export async function scheduleSoundDiagnostic() {
     content: {
       title: 'OkTreat sound test',
       body: 'Local notification test. Note whether you heard a sound.',
-      sound: 'default',
+      sound: 'notification.wav',
     },
     trigger: { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: 10, repeats: false },
   });

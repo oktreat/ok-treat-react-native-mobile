@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 60
     env:
-      EXPO_PUBLIC_PUSH_DIAGNOSTICS: 'true'
+      EXPO_PUBLIC_PUSH_DIAGNOSTICS: 'false'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,9 +20,9 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Verify notification regressions
-        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs
       - run: npm ci --no-audit --no-fund
+      - name: Verify notification regressions
+        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs
       - run: pod install --deployment
         working-directory: ios
       - name: Install signing identity and profile
@@ -64,10 +64,12 @@ jobs:
           xcodebuild archive -workspace ios/OkTreat.xcworkspace -scheme OkTreat -configuration Release -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/OkTreat.xcarchive"
           app="$RUNNER_TEMP/OkTreat.xcarchive/Products/Applications/OkTreat.app"
           codesign --verify --deep --strict "$app"
+          test -s "$app/notification.wav"
+          cmp assets/sounds/notification.wav "$app/notification.wav"
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat notification sound diagnostic to TestFlight'
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat chime and clear navigation to TestFlight'
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
