@@ -5,6 +5,7 @@ import { logout, setCredentials } from '../../store/slices/authSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from '@expo/vector-icons/Ionicons';
 import ScreenWrapper from '../../components/ScreenWrapper';
+import ProfileBanner from '../../components/ProfileBanner';
 import api from '../../config/api';
 import { useAppAlert } from '../../context/AlertContext';
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
@@ -144,6 +145,7 @@ export default function ProfileScreen({ navigation }) {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <ProfileBanner />
           {/* Profile Section */}
           <View style={styles.profileSection}>
             <View style={styles.profileImageWrapper}>

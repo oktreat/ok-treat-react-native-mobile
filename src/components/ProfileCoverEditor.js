@@ -8,7 +8,7 @@ import { uploadToCloudinary } from '../services/cloudinaryService';
 import { CLOUDINARY_FOLDERS } from '../config/cloudinary';
 import { coverCrop, coverUrl } from '../utils/coverCrop';
 
-export default function ProfileCoverEditor({ onSaved }) {
+export default function ProfileCoverEditor({ onSaved, endpoint = '/sitter/profile/cover' }) {
   const [photo, setPhoto] = useState(null);
   const [zoom, setZoom] = useState(1);
   const [x, setX] = useState(0.5);
@@ -37,7 +37,7 @@ export default function ProfileCoverEditor({ onSaved }) {
       const crop = coverCrop(result.width, result.height, zoom, x, y);
       const url = coverUrl(result.url, crop);
       if (!await Image.prefetch(url)) throw new Error('The cropped image could not be loaded. Please try again.');
-      const response = await api.put('/sitter/profile/cover', { coverPhoto: url }, { timeout: 20000 });
+      const response = await api.put(endpoint, { coverPhoto: url }, { timeout: 20000 });
       if (!response.data?.success) throw new Error('Could not save your cover photo.');
       onSaved(response.data.data.coverImage); setOpen(false); setPhoto(null);
     } catch (e) { setError(e.response?.data?.message || e.message || 'Could not save. Your current banner is unchanged.'); }
