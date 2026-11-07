@@ -130,6 +130,9 @@ export default function NotificationsScreen({ navigation }) {
     const data = notification.data || {};
 
     switch (notifType) {
+      case 'SUPPORT_REPLY':
+        navigation.navigate('HelpSupport', { supportCaseId: data.supportCaseId });
+        return;
       // ── Bookings — pre-select the right tab so the user lands at the relevant list ──
       case 'BOOKING_REQUEST':
         // Sitter side: jump to the requests inbox. SitterRequests lives

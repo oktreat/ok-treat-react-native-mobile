@@ -122,6 +122,9 @@ export default function App() {
         if (!nav || !data) return;
         const num = (v) => (v == null || v === '' ? undefined : Number(v));
         switch (data.type) {
+          case 'SUPPORT_REPLY':
+            nav.navigate('HelpSupport', { supportCaseId: data.supportCaseId });
+            break;
           case 'NEARBY_MISSING_PET':
             if (data.petId) nav.navigate('NearbyMissingPet', { petId: data.petId, distanceKm: num(data.distanceKm) });
             else nav.navigate('Notifications');
