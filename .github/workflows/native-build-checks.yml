@@ -32,7 +32,7 @@ jobs:
       - name: Install locked dependencies and existing patches
         run: npm ci --no-audit --no-fund
       - name: Test app regressions
-        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs tests/translations.cjs
+        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs tests/translations.cjs tests/payment-country.cjs
       - name: Check production JavaScript bundle
         run: npx expo export --platform android --output-dir .ci/metro-android
       - name: Compile Android debug app

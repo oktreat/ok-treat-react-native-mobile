@@ -19,9 +19,9 @@ test('unsupported and malformed saved preferences fall back safely', () => {
   assert.equal(resolveLanguage('unsupported', [{ languageCode: 'fr' }, { languageCode: 'ja' }]), 'fr');
   assert.equal(resolveLanguage(null, []), 'en-us');
   assert.equal(resolveLanguage('system', [{ languageTag: 'en-GB' }]), 'en-uk');
-  assert.equal(resolveCurrency('GBP', []), 'USD');
+  assert.equal(resolveCurrency('BAD', []), 'USD');
 });
-test('USD-only pricing is explicit and does not use zero-decimal JPY formatting', () => {
+test('USD formatting is explicit and does not use zero-decimal JPY formatting', () => {
   assert.equal(formatUSD(2499), 'US$24.99');
   assert.equal(formatUSD(4499), 'US$44.99');
 });

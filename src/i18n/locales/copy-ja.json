@@ -200,5 +200,20 @@
   "{{count}} month": "{{count}}か月",
   "{{count}} months": "{{count}}か月",
   "{{count}} year": "{{count}}歳",
-  "{{count}} years": "{{count}}歳"
+  "{{count}} years": "{{count}}歳",
+  "Payment country": "支払い国",
+  "Confirm payment country": "支払い国を確認",
+  "Confirm the country you pay from. It determines your checkout currency, independently of language.": "お支払いに使用する国を確認してください。表示言語とは別に、お支払い通貨が決まります。",
+  "Could not load payment countries. Please try again.": "支払い国を読み込めませんでした。もう一度お試しください。",
+  "Could not save payment country. Please try again.": "支払い国を保存できませんでした。もう一度お試しください。",
+  "Saving…": "保存中…",
+  "Could not load local prices. Please try again.": "現地通貨の価格を読み込めませんでした。もう一度お試しください。",
+  "Payment country: {{country}} · {{currency}}": "支払い国：{{country}} · {{currency}}",
+  "Refresh prices": "価格を更新",
+  "This price has expired. Refresh prices before paying.": "価格の有効期限が切れました。お支払い前に更新してください。",
+  "This price has expired. Close payment and refresh prices before paying.": "価格の有効期限が切れました。支払い画面を閉じ、価格を更新してください。",
+  "The payment total changed. Please close payment and refresh prices.": "支払い合計が変更されました。支払い画面を閉じ、価格を更新してください。",
+  "Prices changed. Please refresh and review the new total before paying.": "価格が変更されました。更新して新しい合計を確認してからお支払いください。",
+  "Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.": "日次の参考為替レートで米ドルから換算しています。表示価格は10分間有効です。",
+  "Exchange-rate source": "為替レートの情報源"
 }

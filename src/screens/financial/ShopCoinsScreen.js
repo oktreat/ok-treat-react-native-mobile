@@ -7,10 +7,13 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Linking,
 } from 'react-native';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatUSD } from '../../i18n/preferences';
+import { formatUSD, formatCharge } from '../../i18n/preferences';
+import { useFocusEffect } from '@react-navigation/native';
+import { getPaymentMarket, countryName } from '../../services/paymentCountryService';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon } from '../../assets';
 import { Button } from '../../components';
@@ -26,7 +29,12 @@ const formatPrice = formatUSD;
 
 export default function ShopCoinsScreen({ navigation }) {
   useCopyUpdates();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [market, setMarket] = useState(null);
+  const [priceError, setPriceError] = useState('');
+  const [clock, setClock] = useState(Date.now());
+  const priceEpoch = useRef(0);
+  const displayPrice = pkg => formatCharge(pkg.amount, pkg.currency, i18n.language);
   const alert = useAppAlert();
   const { mode, publishableKey } = usePaymentConfig();
   const wallet = useWallet();
@@ -63,29 +71,30 @@ export default function ShopCoinsScreen({ navigation }) {
   }, []);
 
   const fetchPackages = useCallback(async () => {
+    const epoch = ++priceEpoch.current;
+    setPackagesLoading(true); setPriceError(''); setPackages([]); setSelectedPackageId(null); setMarket(null);
     try {
-      setPackagesLoading(true);
-      const response = await api.get('/coins/packages');
-      const data = response.data?.data || response.data || {};
-      const list = data.packages || [];
-      setPackages(list);
-      // Default-select the second package (a common "good middle option")
-      // unless there are fewer.
-      if (list.length > 0) {
-        setSelectedPackageId(list[Math.min(1, list.length - 1)].id);
-      }
-    } catch (err) {
-      console.warn('Error fetching packages:', err?.message);
-      setPackages([]);
-    } finally {
-      setPackagesLoading(false);
-    }
+      const currentMarket = await getPaymentMarket();
+      if (epoch !== priceEpoch.current) return;
+      setMarket(currentMarket);
+      if (!currentMarket.isConfirmed) return;
+      const response = await api.get('/coins/packages', { params: { localized: '1' }, timeout: 25000 });
+      if (epoch !== priceEpoch.current) return;
+      const data = response.data?.data;
+      const list = data?.packages || [];
+      if (!list.every(pkg => pkg.currency === data.market?.currency && Number.isSafeInteger(pkg.amount) && pkg.amount > 0 && pkg.quoteToken && Number.isFinite(pkg.expiresAt))) throw new Error('Invalid price response');
+      setMarket(data.market); setPackages(list); setClock(Date.now());
+      if (list.length) setSelectedPackageId(list[Math.min(1, list.length - 1)].id);
+    } catch {
+      if (epoch === priceEpoch.current) setPriceError(copy('Could not load local prices. Please try again.'));
+    } finally { if (epoch === priceEpoch.current) setPackagesLoading(false); }
   }, []);
 
-  useEffect(() => {
-    fetchBalance();
-    fetchPackages();
-  }, [fetchBalance, fetchPackages]);
+  useFocusEffect(useCallback(() => {
+    fetchBalance(); fetchPackages();
+    const timer = setInterval(() => setClock(Date.now()), 15000);
+    return () => { priceEpoch.current++; clearInterval(timer); };
+  }, [fetchBalance, fetchPackages]));
 
   const selectedPackage = packages.find((p) => p.id === selectedPackageId);
 
@@ -98,14 +107,17 @@ export default function ShopCoinsScreen({ navigation }) {
       return { message: copy('Please select a package.') };
     }
     try {
-      const response = await api.post('/coins/purchase', { packageId: selectedPackage.id });
+      if (selectedPackage.expiresAt <= Date.now()) return { message: copy('This price has expired. Close payment and refresh prices before paying.') };
+      const response = await api.post('/coins/purchase', { packageId: selectedPackage.id, localized: true, quoteToken: selectedPackage.quoteToken });
       const data = response.data?.data || {};
       if (!data.clientSecret) {
         return { message: response.data?.message || 'Server did not return a clientSecret.' };
       }
+      if (data.amount !== selectedPackage.amount || data.currency !== selectedPackage.currency) return { message: copy('The payment total changed. Please close payment and refresh prices.') };
       return { clientSecret: data.clientSecret, paymentIntentId: data.paymentIntentId };
     } catch (err) {
-      console.error('Purchase error:', err);
+      if (err.response?.status === 409) { setShowCardSheet(false); setPriceError(copy('Prices changed. Please refresh and review the new total before paying.')); }
+      console.error('Purchase error:', err?.message);
       return { message: err.response?.data?.message || copy('Failed to start purchase.') };
     }
   };
@@ -190,7 +202,8 @@ export default function ShopCoinsScreen({ navigation }) {
   };
 
   const stripeReady = !!publishableKey;
-  const canPay = !!selectedPackage && stripeReady && !confirming;
+  const quoteExpired = !!selectedPackage && selectedPackage.expiresAt <= clock;
+  const canPay = !!selectedPackage && market?.isConfirmed && !packagesLoading && !quoteExpired && stripeReady && !confirming;
 
   return (
     <ScreenWrapper noBottomTabs>
@@ -221,7 +234,13 @@ export default function ShopCoinsScreen({ navigation }) {
             <Text style={styles.totalCoinsLabel}>{t('shop.balance')}</Text>
           </View>
 
-          <Text style={styles.currencyNote}>{t('shop.usdOnly')}</Text>
+          {!!market && <Text style={styles.currencyNote}>{copy('Payment country: {{country}} · {{currency}}', { country: countryName(market.country, i18n.language), currency: market.currency })}</Text>}
+          {market && !market.isConfirmed && <Button title={copy('Confirm payment country')} onPress={() => navigation.navigate('PaymentCountry')} fullWidth/>}
+          {!!priceError && <Text accessibilityRole="alert" style={styles.currencyNote}>{priceError}</Text>}
+          {(priceError || quoteExpired) && <Button title={copy('Refresh prices')} onPress={fetchPackages} fullWidth/>}
+          {quoteExpired && <Text style={styles.currencyNote}>{copy('This price has expired. Refresh prices before paying.')}</Text>}
+          {selectedPackage && !quoteExpired && <Text style={styles.currencyNote}>{copy('Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.')}</Text>}
+          {selectedPackage && ['https://frankfurter.dev', 'https://www.exchangerate-api.com'].includes(selectedPackage.rateSource) && <TouchableOpacity accessibilityRole="link" onPress={() => Linking.openURL(selectedPackage.rateSource).catch(() => {})}><Text style={[styles.currencyNote, { color: '#087EA4', textDecorationLine: 'underline' }]}>{selectedPackage.rateSource === 'https://www.exchangerate-api.com' ? 'Rates By Exchange Rate API' : copy('Exchange-rate source')}</Text></TouchableOpacity>}
 
           {/* Test-mode banner */}
           {mode === 'test' && (
@@ -238,7 +257,7 @@ export default function ShopCoinsScreen({ navigation }) {
               <View style={styles.packagesLoading}>
                 <ActivityIndicator color="#32A6D8" />
               </View>
-            ) : packages.length === 0 ? (
+            ) : packages.length === 0 && market?.isConfirmed && !priceError ? (
               <View style={styles.packagesLoading}>
                 <Text style={styles.emptyText}>{t('shop.noPackages')}</Text>
               </View>
@@ -253,7 +272,7 @@ export default function ShopCoinsScreen({ navigation }) {
                     onPress={() => setSelectedPackageId(pkg.id)}
                   >
                     <View style={styles.packageLeft}>
-                      <Text style={styles.packagePrice}>{formatPrice(pkg.priceInCents)}</Text>
+                      <Text style={styles.packagePrice}>{displayPrice(pkg)}</Text>
                       {pkg.bonusCoins > 0 && (
                         <Text style={styles.bonusText}>{t('shop.bonus', { amount: pkg.bonusCoins })}</Text>
                       )}
@@ -279,7 +298,7 @@ export default function ShopCoinsScreen({ navigation }) {
                 : !stripeReady
                 ? t('shop.unavailable')
                 : selectedPackage
-                ? t('shop.pay', { amount: formatPrice(selectedPackage.priceInCents) })
+                ? t('shop.pay', { amount: displayPrice(selectedPackage) })
                 : t('shop.select')
             }
             onPress={() => setShowCardSheet(true)}
@@ -295,7 +314,7 @@ export default function ShopCoinsScreen({ navigation }) {
         <StripeCardSheet
           visible={showCardSheet}
           onClose={() => setShowCardSheet(false)}
-          amountLabel={selectedPackage ? formatPrice(selectedPackage.priceInCents) : 'US$0.00'}
+          amountLabel={selectedPackage ? displayPrice(selectedPackage) : '—'}
           fetchClientSecret={requestPaymentIntent}
           onSuccess={handlePaymentConfirmed}
         />

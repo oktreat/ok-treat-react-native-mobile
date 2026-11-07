@@ -45,6 +45,7 @@ import ChatListScreen from '../screens/messages/ChatListScreen';
 import ChatConversationScreen from '../screens/messages/ChatConversationScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
 import NotificationPreferencesScreen from '../screens/notifications/NotificationPreferencesScreen';
+import PaymentCountryScreen from '../screens/settings/PaymentCountryScreen';
 import LanguageScreen from '../screens/auth/LanguageScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import BlockedUsersScreen from '../screens/settings/BlockedUsersScreen';
@@ -304,6 +305,7 @@ export default function MainNavigator() {
       <RootStack.Screen name="ScanMapDetail" component={ScanMapDetailScreen} />
       <RootStack.Screen name="Settings" component={SettingsScreen} />
       <RootStack.Screen name="Language" component={LanguageScreen} />
+      <RootStack.Screen name="PaymentCountry" component={PaymentCountryScreen} />
       <RootStack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
       <RootStack.Screen name="BecomeASitterIntro" component={BecomeASitterIntroScreen} />
       <RootStack.Screen name="VerifyIdentity" component={VerifyIdentityScreen} />

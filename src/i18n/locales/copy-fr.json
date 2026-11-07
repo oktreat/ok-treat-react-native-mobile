@@ -200,5 +200,20 @@
   "{{count}} month": "{{count}} mois",
   "{{count}} months": "{{count}} mois",
   "{{count}} year": "{{count}} an",
-  "{{count}} years": "{{count}} ans"
+  "{{count}} years": "{{count}} ans",
+  "Payment country": "Pays de paiement",
+  "Confirm payment country": "Confirmer le pays de paiement",
+  "Confirm the country you pay from. It determines your checkout currency, independently of language.": "Confirmez le pays depuis lequel vous payez. Il détermine la devise de paiement, indépendamment de la langue.",
+  "Could not load payment countries. Please try again.": "Impossible de charger les pays de paiement. Veuillez réessayer.",
+  "Could not save payment country. Please try again.": "Impossible d’enregistrer le pays de paiement. Veuillez réessayer.",
+  "Saving…": "Enregistrement…",
+  "Could not load local prices. Please try again.": "Impossible de charger les prix locaux. Veuillez réessayer.",
+  "Payment country: {{country}} · {{currency}}": "Pays de paiement : {{country}} · {{currency}}",
+  "Refresh prices": "Actualiser les prix",
+  "This price has expired. Refresh prices before paying.": "Ce prix a expiré. Actualisez les prix avant de payer.",
+  "This price has expired. Close payment and refresh prices before paying.": "Ce prix a expiré. Fermez le paiement et actualisez les prix avant de payer.",
+  "The payment total changed. Please close payment and refresh prices.": "Le montant du paiement a changé. Fermez le paiement et actualisez les prix.",
+  "Prices changed. Please refresh and review the new total before paying.": "Les prix ont changé. Actualisez et vérifiez le nouveau total avant de payer.",
+  "Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.": "Conversion depuis l’USD au taux de référence quotidien. Le prix affiché est garanti pendant 10 minutes.",
+  "Exchange-rate source": "Source du taux de change"
 }
