@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ClearTabBar({ state, descriptors, navigation }) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.base, { paddingBottom: insets.bottom + 8 }]}>
@@ -10,7 +12,8 @@ export default function ClearTabBar({ state, descriptors, navigation }) {
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const selected = state.index === index;
-          const label = options.tabBarLabel || options.title || route.name;
+          const rawLabel = options.tabBarLabel || options.title || route.name;
+          const label = t(`tabs.${route.name}`, { defaultValue: rawLabel });
           const color = selected ? '#08779D' : '#263744';
           const onPress = () => {
             const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });

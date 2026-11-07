@@ -1,11 +1,89 @@
 {
-  "common": {},
-  "home": {},
+  "common": {
+    "cancel": "キャンセル",
+    "ok": "OK",
+    "save": "保存",
+    "continue": "続ける",
+    "proceed": "進む",
+    "back": "戻る",
+    "next": "次へ",
+    "skip": "スキップ",
+    "loading": "読み込み中…",
+    "retry": "再試行",
+    "error": "エラー",
+    "success": "完了"
+  },
+  "home": {
+    "welcome": "おかえりなさい",
+    "noEmail": "メールなし",
+    "addPet": "ペットを追加",
+    "scanQr": "QRをスキャン",
+    "bookings": "予約",
+    "myRequests": "リクエスト",
+    "notifications": "通知",
+    "inbox": "チャット",
+    "becomeASitter": "シッターになる",
+    "chat": "チャット",
+    "refer": "友達を招待",
+    "tags": "スマートタグ",
+    "petDetail": "ペットを登録",
+    "qrDetail": "スマートタグを接続",
+    "bookingDetail": "お世話とリクエスト",
+    "chatDetail": "メッセージを確認",
+    "referDetail": "お世話の輪を広げよう",
+    "tagDetail": "AmazonでOkTreatを見る",
+    "barter": "時間を交換しよう",
+    "findCare": "お世話を探す",
+    "offerCare": "お世話を提供",
+    "checking": "確認中…",
+    "aiMatching": "AIシッターマッチング",
+    "sitterMode": "シッターモード"
+  },
   "language": {
     "title": "言語を選択",
+    "subtitle": "設定からいつでも変更できます。",
     "proceed": "次へ"
   },
   "settings": {
-    "language": "言語"
+    "title": "設定",
+    "general": "一般",
+    "about": "アプリについて",
+    "accountSetting": "アカウント設定",
+    "notification": "通知",
+    "language": "言語",
+    "privacyChoices": "プライバシー設定",
+    "logout": "ログアウト",
+    "privacyPolicy": "プライバシーポリシー",
+    "logoutConfirmTitle": "ログアウト",
+    "logoutConfirmBody": "ログアウトしますか？"
+  },
+  "preferences": {
+    "phoneLanguage": "端末の言語を使用",
+    "phoneRegion": "端末の地域",
+    "currency": "希望する通貨",
+    "saveError": "保存できませんでした。再試行してください。"
+  },
+  "shop": {
+    "balance": "TreatCoins残高",
+    "usdOnly": "現在、お支払いはすべて米ドル（USD）です。",
+    "localPending": "希望通貨：{{currency}}。現地通貨の価格は準備中です。お支払いは米ドル（USD）です。",
+    "noPackages": "現在、購入できるパッケージはありません。",
+    "bonus": "+{{amount}} ボーナス",
+    "crediting": "TreatCoinsを追加中…",
+    "unavailable": "お支払いを利用できません",
+    "pay": "{{amount}}の支払いへ",
+    "select": "パッケージを選択"
+  },
+  "tabs": {
+    "Home": "ホーム",
+    "ReBookMain": "再予約",
+    "Services": "サービス",
+    "Pets": "ペット",
+    "More": "その他",
+    "SitterHome": "ホーム",
+    "SitterBookings": "予約",
+    "SitterCalendar": "カレンダー",
+    "SitterRequests": "チャット",
+    "SitterMore": "プロフィール"
   }
 }

@@ -7,7 +7,7 @@ function setup(prevent = false) {
   const createElement = (type, props, ...children) => ({ type, props: props || {}, children: children.flat() });
   const source = fs.readFileSync('src/components/ClearTabBar.js', 'utf8').replace(/^import .*;\n/gm, '').replace('export default function', 'function');
   const transformed = babel.transformSync(source, { configFile: false, babelrc: false, plugins: ['@babel/plugin-transform-react-jsx'] }).code;
-  const context = { React: { createElement }, View: 'View', Text: 'Text', TouchableOpacity: 'TouchableOpacity', StyleSheet: { create: x => x }, useSafeAreaInsets: () => ({ bottom: 34 }) };
+  const context = { useTranslation: () => ({ t: (key, options) => options.defaultValue }), React: { createElement }, View: 'View', Text: 'Text', TouchableOpacity: 'TouchableOpacity', StyleSheet: { create: x => x }, useSafeAreaInsets: () => ({ bottom: 34 }) };
   vm.runInNewContext(transformed + '\nthis.Bar=ClearTabBar;', context);
   const routes = [{ key: 'home', name: 'Home' }, { key: 'pets', name: 'Pets', params: { screen: 'PetList' } }];
   const events = [], navigated = [];

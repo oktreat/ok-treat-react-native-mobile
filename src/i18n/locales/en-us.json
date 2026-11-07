@@ -22,7 +22,22 @@
     "myRequests": "My Requests",
     "notifications": "Notifications",
     "inbox": "Inbox",
-    "becomeASitter": "Become a Sitter"
+    "becomeASitter": "Become a Sitter",
+    "chat": "Chat",
+    "refer": "Refer a Friend",
+    "tags": "Smart Tags",
+    "petDetail": "Meet your companion",
+    "qrDetail": "Connect a smart tag",
+    "bookingDetail": "Care & my requests",
+    "chatDetail": "Keep in touch",
+    "referDetail": "Grow your care circle",
+    "tagDetail": "Shop OkTreat on Amazon",
+    "barter": "Barter your time",
+    "findCare": "Find pet care",
+    "offerCare": "Offer pet care",
+    "checking": "Checking…",
+    "aiMatching": "AI sitter matching",
+    "sitterMode": "Sitter mode"
   },
   "language": {
     "title": "Select Your Language",
@@ -41,5 +56,34 @@
     "privacyPolicy": "Privacy Policy",
     "logoutConfirmTitle": "Logout",
     "logoutConfirmBody": "Are you sure you want to logout?"
+  },
+  "preferences": {
+    "phoneLanguage": "Use phone language",
+    "phoneRegion": "Phone region",
+    "currency": "Preferred currency",
+    "saveError": "Could not save. Please try again."
+  },
+  "shop": {
+    "balance": "Total TreatCoins",
+    "usdOnly": "All payments are currently charged in USD.",
+    "localPending": "{{currency}} preference saved. Local prices are not available yet. All payments are charged in USD.",
+    "noPackages": "No packages available right now.",
+    "bonus": "+{{amount}} bonus",
+    "crediting": "Crediting TreatCoins…",
+    "unavailable": "Payments unavailable",
+    "pay": "Continue to Pay {{amount}}",
+    "select": "Select a package"
+  },
+  "tabs": {
+    "Home": "Home",
+    "ReBookMain": "Rebook",
+    "Services": "Services",
+    "Pets": "Your Pets",
+    "More": "More",
+    "SitterHome": "Home",
+    "SitterBookings": "Bookings",
+    "SitterCalendar": "Calendar",
+    "SitterRequests": "Chat",
+    "SitterMore": "Profile"
   }
 }

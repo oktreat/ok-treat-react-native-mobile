@@ -22,7 +22,7 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Verify notification regressions
-        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs
+        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs
       - run: pod install --deployment
         working-directory: ios
       - name: Install signing identity and profile
@@ -59,7 +59,7 @@ jobs:
           set -eu
           project=ios/OkTreat.xcodeproj/project.pbxproj
           sed -i '' -e 's/FF5DD8442347060E69CE65056CA9D43289BA32B5/"Apple Distribution"/g' -e 's/AliUsmanProvisioningProfile/"OkTreat App Store 2026-11-06"/g' "$project"
-          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 1.1.17' ios/OkTreat/Info.plist
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.0.0' ios/OkTreat/Info.plist
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}" ios/OkTreat/Info.plist
           xcodebuild archive -workspace ios/OkTreat.xcworkspace -scheme OkTreat -configuration Release -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/OkTreat.xcarchive"
           app="$RUNNER_TEMP/OkTreat.xcarchive/Products/Applications/OkTreat.app"
@@ -69,7 +69,7 @@ jobs:
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat final six tiles and mode switch to TestFlight'
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat 2.0.0 language and currency preferences to TestFlight'
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}

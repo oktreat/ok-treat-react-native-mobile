@@ -138,12 +138,12 @@ export default function HomeScreen({ navigation }) {
   };
 
   const shortcuts = [
-    { title: 'Add a Pet', detail: 'Meet your companion', icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
-    { title: 'Scan a QR', detail: 'Connect a smart tag', icon: 'scan-outline', bg: '#EAF7F0', color: '#267554', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
-    { title: 'Bookings', detail: 'Care & my requests', icon: 'calendar-outline', bg: '#FFF0E7', color: '#985321', press: () => navigation.navigate('Bookings') },
-    { title: 'Chat', detail: 'Keep in touch', icon: 'chatbubbles-outline', bg: '#F1EDFA', color: '#715299', press: () => navigation.navigate('ChatList') },
-    { title: 'Refer a Friend', detail: 'Grow your care circle', icon: 'gift-outline', bg: '#FFF7DF', color: '#896614', press: () => navigation.navigate('InviteFriends') },
-    { title: 'Smart Tags', detail: 'Shop OkTreat on Amazon', icon: 'pricetag-outline', bg: '#EEF2FB', color: '#41618F', press: () => openSmartTags() },
+    { title: t('home.addPet'), detail: t('home.petDetail'), icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
+    { title: t('home.scanQr'), detail: t('home.qrDetail'), icon: 'scan-outline', bg: '#EAF7F0', color: '#267554', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
+    { title: t('home.bookings'), detail: t('home.bookingDetail'), icon: 'calendar-outline', bg: '#FFF0E7', color: '#985321', press: () => navigation.navigate('Bookings') },
+    { title: t('home.chat'), detail: t('home.chatDetail'), icon: 'chatbubbles-outline', bg: '#F1EDFA', color: '#715299', press: () => navigation.navigate('ChatList') },
+    { title: t('home.refer'), detail: t('home.referDetail'), icon: 'gift-outline', bg: '#FFF7DF', color: '#896614', press: () => navigation.navigate('InviteFriends') },
+    { title: t('home.tags'), detail: t('home.tagDetail'), icon: 'pricetag-outline', bg: '#EEF2FB', color: '#41618F', press: () => openSmartTags() },
   ];
   const openSmartTags = () => Linking.openURL('https://www.amazon.com/stores/OKTreat/page/39C7FC72-20EB-4F6A-AE27-53D4958D9361').catch(() => {});
 
@@ -193,16 +193,16 @@ export default function HomeScreen({ navigation }) {
           <SitterModeSwitch sitterMode={false} onChange={handleBecomeASitter} disabled={checkingStatus} />
           <View style={styles.barterCard}>
             <View style={styles.barterTitleRow}>
-              <Text style={styles.barterTitle}>Barter your time</Text>
+              <Text style={styles.barterTitle}>{t('home.barter')}</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open Wallet, TreatCoins balance" style={styles.balance} onPress={() => navigation.navigate('PaymentMethods')}>
                 <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.careActions}>
-              <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Text style={styles.findCareText}>Find pet care</Text></TouchableOpacity>
-              <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}><Text style={styles.offerCareText}>{checkingStatus ? 'Checking…' : 'Offer pet care'}</Text></TouchableOpacity>
+              <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Text style={styles.findCareText}>{t('home.findCare')}</Text></TouchableOpacity>
+              <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}><Text style={styles.offerCareText}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text></TouchableOpacity>
             </View>
-            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Find care with AI sitter matching" style={styles.aiLine} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Icon name="sparkles" size={14} color="#285D6D" /><Text style={styles.aiText}>AI sitter matching</Text></TouchableOpacity>
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Find care with AI sitter matching" style={styles.aiLine} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Icon name="sparkles" size={14} color="#285D6D" /><Text style={styles.aiText}>{t('home.aiMatching')}</Text></TouchableOpacity>
           </View>
           <View style={styles.shortcutGrid}>
             {shortcuts.map(item => <TouchableOpacity key={item.title} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>

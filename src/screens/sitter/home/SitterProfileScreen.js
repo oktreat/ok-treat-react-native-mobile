@@ -5,7 +5,6 @@ import { logout } from '../../../store/slices/authSlice';
 import { getSitterProfile } from '../../../services/sitterService';
 import Icon from '@expo/vector-icons/Ionicons';
 import ScreenWrapper from '../../../components/ScreenWrapper';
-import ProfileBanner from '../../../components/ProfileBanner';
 import {
   BackArrowIcon,
   UserProfileIcon,
@@ -112,7 +111,6 @@ export default function SitterProfileScreen({ navigation }) {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          <ProfileBanner />
           {/* Profile Section */}
           <View style={styles.profileSection}>
             <View style={styles.profileImageWrapper}>
