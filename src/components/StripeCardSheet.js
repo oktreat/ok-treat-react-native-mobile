@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../i18n/copy';
 // PCI-safe replacement for AddCardBottomSheet, used by the Shop Coins flow.
 // Card data is collected by Stripe's native CardField — the raw PAN never
 // touches our JS or backend. Confirmation calls Stripe directly with the
@@ -31,6 +32,7 @@ export default function StripeCardSheet({
   fetchClientSecret,
   onSuccess,
 }) {
+  useCopyUpdates();
   const { mode, publishableKey, error: configError } = usePaymentConfig();
   const { confirmPayment } = useConfirmPayment();
 
@@ -66,11 +68,11 @@ export default function StripeCardSheet({
     setErrorMessage('');
 
     if (!publishableKey) {
-      setErrorMessage('Payments are not available right now. Please try again later.');
+      setErrorMessage(copy("Payments are not available right now. Please try again later."));
       return;
     }
     if (!cardComplete) {
-      setErrorMessage('Please fill in all card details.');
+      setErrorMessage(copy("Please fill in all card details."));
       return;
     }
 
@@ -78,7 +80,7 @@ export default function StripeCardSheet({
     try {
       const purchase = await fetchClientSecret();
       if (!purchase?.clientSecret) {
-        setErrorMessage(purchase?.message || 'Could not start the payment. Please try again.');
+        setErrorMessage(purchase?.message || copy("Could not start the payment. Please try again."));
         return;
       }
 
@@ -87,7 +89,7 @@ export default function StripeCardSheet({
       });
 
       if (error) {
-        setErrorMessage(error.message || 'Payment failed. Please try a different card.');
+        setErrorMessage(error.message || copy("Payment failed. Please try a different card."));
         return;
       }
       if (paymentIntent?.status === 'Succeeded' || paymentIntent?.status === 'RequiresCapture') {
@@ -98,7 +100,7 @@ export default function StripeCardSheet({
       setErrorMessage(`Payment status: ${paymentIntent?.status || 'unknown'}. Please retry.`);
     } catch (e) {
       console.error('StripeCardSheet pay error:', e);
-      setErrorMessage(e?.message || 'Payment failed.');
+      setErrorMessage(e?.message || copy("Payment failed."));
     } finally {
       setSubmitting(false);
     }
@@ -117,7 +119,7 @@ export default function StripeCardSheet({
       <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
         <View style={styles.sheet}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Pay with Card</Text>
+            <Text style={styles.headerTitle}>{copy("Pay with Card")}</Text>
             <TouchableOpacity onPress={onClose} disabled={submitting} hitSlop={10}>
               <Icon name="close" size={24} color="#0D0D12" />
             </TouchableOpacity>
@@ -130,16 +132,14 @@ export default function StripeCardSheet({
           >
             {mode === 'test' && (
               <View style={styles.testBanner}>
-                <Text style={styles.testBannerText}>
-                  TEST MODE — use 4242 4242 4242 4242 with any future expiry and any CVC.
-                </Text>
+                <Text style={styles.testBannerText}>{copy("TEST MODE — use 4242 4242 4242 4242 with any future expiry and any CVC.")}</Text>
               </View>
             )}
 
-            <Text style={styles.amountLabel}>Total</Text>
+            <Text style={styles.amountLabel}>{copy("Total")}</Text>
             <Text style={styles.amount}>{amountLabel}</Text>
 
-            <Text style={styles.fieldLabel}>Card Details</Text>
+            <Text style={styles.fieldLabel}>{copy("Card Details")}</Text>
             <View style={styles.cardFieldWrap}>
               <CardField
                 postalCodeEnabled
@@ -169,13 +169,11 @@ export default function StripeCardSheet({
               {submitting ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.payButtonText}>Pay {amountLabel}</Text>
+                <Text style={styles.payButtonText}>{copy('Pay {{amount}}', { amount: amountLabel })}</Text>
               )}
             </TouchableOpacity>
 
-            <Text style={styles.footer}>
-              Card data is sent directly to Stripe and never stored on our servers.
-            </Text>
+            <Text style={styles.footer}>{copy("Card data is sent directly to Stripe and never stored on our servers.")}</Text>
           </ScrollView>
         </View>
       </View>

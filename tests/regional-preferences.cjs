@@ -16,7 +16,7 @@ test('phone language and region remain independent; manual preferences override 
   assert.equal(resolveCurrency('system', [{ regionCode: 'US' }]), 'USD');
 });
 test('unsupported and malformed saved preferences fall back safely', () => {
-  assert.equal(resolveLanguage('unsupported', [{ languageCode: 'fr' }, { languageCode: 'ja' }]), 'ja');
+  assert.equal(resolveLanguage('unsupported', [{ languageCode: 'fr' }, { languageCode: 'ja' }]), 'fr');
   assert.equal(resolveLanguage(null, []), 'en-us');
   assert.equal(resolveLanguage('system', [{ languageTag: 'en-GB' }]), 'en-uk');
   assert.equal(resolveCurrency('GBP', []), 'USD');

@@ -9,6 +9,7 @@ function harness(params = {}, request = async () => ({ data: { data: [] } })) {
   const source = fs.readFileSync('src/screens/profile/SupportScreen.js', 'utf8').replace(/^import .*;\n/gm, '').replace('export default function', 'function');
   const transformed = babel.transformSync(source, { configFile: false, babelrc: false, plugins: ['@babel/plugin-transform-react-jsx'] }).code;
   const context = {
+    copy: text => text, useCopyUpdates() {},
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat(Infinity).filter(Boolean) }), Fragment: 'Fragment' },
     useState: initial => { const i = si++; if (!(i in states)) states[i] = initial; return [states[i], value => states[i] = typeof value === 'function' ? value(states[i]) : value]; },
     useRef: initial => { const i = ri++; return refs[i] ||= { current: initial }; },

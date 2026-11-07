@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import {
   View,
   Text,
@@ -24,6 +25,7 @@ import { useWallet } from '../../context/WalletContext';
 const formatPrice = formatUSD;
 
 export default function ShopCoinsScreen({ navigation }) {
+  useCopyUpdates();
   const { t } = useTranslation();
   const alert = useAppAlert();
   const { mode, publishableKey } = usePaymentConfig();
@@ -93,7 +95,7 @@ export default function ShopCoinsScreen({ navigation }) {
   // for the SDK's confirmPayment call.
   const requestPaymentIntent = async () => {
     if (!selectedPackage) {
-      return { message: 'Please select a package.' };
+      return { message: copy('Please select a package.') };
     }
     try {
       const response = await api.post('/coins/purchase', { packageId: selectedPackage.id });
@@ -104,7 +106,7 @@ export default function ShopCoinsScreen({ navigation }) {
       return { clientSecret: data.clientSecret, paymentIntentId: data.paymentIntentId };
     } catch (err) {
       console.error('Purchase error:', err);
-      return { message: err.response?.data?.message || 'Failed to start purchase.' };
+      return { message: err.response?.data?.message || copy('Failed to start purchase.') };
     }
   };
 
@@ -165,11 +167,11 @@ export default function ShopCoinsScreen({ navigation }) {
         if (!isMountedRef.current) return;
         try {
           if (credited) {
-            alert('Success', `${expectedDelta} TreatCoins added to your account.`, 'success');
+            alert(copy('Success'), copy('{{amount}} TreatCoins added to your account.', { amount: expectedDelta }), 'success');
           } else {
             alert(
-              'Payment received',
-              'Your payment was charged. TreatCoins will appear in your balance shortly.',
+              copy('Payment received'),
+              copy('Your payment was charged. TreatCoins will appear in your balance shortly.'),
               'success',
             );
           }

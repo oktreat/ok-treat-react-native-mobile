@@ -28,19 +28,26 @@ import enUs from './locales/en-us.json';
 import enUk from './locales/en-uk.json';
 import ja from './locales/ja.json';
 import zh from './locales/zh.json';
+import fr from './locales/fr.json';
+import copyEn from './locales/copy-en-us.json';
+import copyEnUk from './locales/copy-en-uk.json';
+import copyJa from './locales/copy-ja.json';
+import copyFr from './locales/copy-fr.json';
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'en-us', name: 'English (US)' },
   { code: 'en-uk', name: 'English (UK)' },
   { code: 'ja', name: '日本語' },
   { code: 'zh', name: '中文' },
+  { code: 'fr', name: 'Français' },
 ];
 
 const resources = {
-  'en-us': { translation: enUs },
-  'en-uk': { translation: enUk },
-  ja: { translation: ja },
+  'en-us': { translation: enUs, copy: copyEn },
+  'en-uk': { translation: enUk, copy: copyEnUk },
+  ja: { translation: ja, copy: copyJa },
   zh: { translation: zh },
+  fr: { translation: fr, copy: copyFr },
 };
 
 // Map a device locale ("en-US", "ja-JP", "zh-Hans-CN") to our supported codes.
@@ -50,7 +57,7 @@ export function deviceLanguageGuess() {
   catch { return 'en-us'; }
 }
 export function effectiveLanguage(saved) {
-  return ['en-us', 'en-uk', 'ja', 'zh'].includes(saved) ? saved : deviceLanguageGuess();
+  return ['en-us', 'en-uk', 'ja', 'zh', 'fr'].includes(saved) ? saved : deviceLanguageGuess();
 }
 
 // Initialize i18next synchronously at module load. Doing this here (rather
@@ -61,7 +68,7 @@ i18n.use(initReactI18next).init({
   resources,
   lng: deviceLanguageGuess() || 'en-us',
   fallbackLng: 'en-us',
-  ns: ['translation'],
+  ns: ['translation', 'copy'],
   defaultNS: 'translation',
   keySeparator: '.',
   nsSeparator: ':',
@@ -71,7 +78,7 @@ i18n.use(initReactI18next).init({
   // key works but t() returns the raw key.
   lowerCaseLng: true,
   load: 'currentOnly',
-  supportedLngs: ['en-us', 'en-uk', 'ja', 'zh'],
+  supportedLngs: ['en-us', 'en-uk', 'ja', 'zh', 'fr'],
   nonExplicitSupportedLngs: false,
   interpolation: {
     escapeValue: false, // React already escapes

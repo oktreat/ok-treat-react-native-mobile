@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
@@ -11,6 +12,7 @@ import { LEGAL_URLS, openInAppBrowser } from '../../config/links';
 import api from '../../config/api';
 
 export default function SettingsScreen({ navigation }) {
+  useCopyUpdates();
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -34,10 +36,10 @@ export default function SettingsScreen({ navigation }) {
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      'Delete Account',
-      'This permanently deletes your account and all associated data — profile, pets, bookings, messages, and reviews. This cannot be undone.',
+      copy("Delete Account"),
+      copy("This permanently deletes your account and all associated data — profile, pets, bookings, messages, and reviews. This cannot be undone."),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: copy("Cancel"), style: 'cancel' },
         {
           text: 'Delete',
           style: 'destructive',
@@ -47,7 +49,7 @@ export default function SettingsScreen({ navigation }) {
               await clearPushTokenOnServer().catch(() => {});
               dispatch(logout());
             } catch (e) {
-              Alert.alert('Error', e?.response?.data?.message || 'Failed to delete account. Please try again.');
+              Alert.alert(copy("Error"), e?.response?.data?.message || 'Failed to delete account. Please try again.');
             }
           },
         },
@@ -87,8 +89,8 @@ export default function SettingsScreen({ navigation }) {
       onPress={() => handleMenuPress(item)}
       activeOpacity={0.7}
     >
-      <Text style={[styles.menuText, item.danger && { color: '#F56754' }]}>{item.title}</Text>
-      <Icon name="chevron-down" size={20} color={item.danger ? '#F56754' : '#32A6D8'} style={styles.chevron} />
+      <Text style={[styles.menuText, item.danger && { color: '#F56754' }]}>{copy(item.title)}</Text>
+      <Icon name="chevron-down" size={20} color={item.danger ? "#F56754" : "#32A6D8"} style={styles.chevron} />
     </TouchableOpacity>
   );
 

@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -72,6 +73,7 @@ const ServiceIcon = ({ iconName }) => {
 };
 
 export default function ServicesScreen({ navigation }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   const handleServicePress = (service) => {
     navigation.navigate('ServiceSearch', {
@@ -87,8 +89,8 @@ export default function ServicesScreen({ navigation }) {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.welcomeText}>Services</Text>
-            <Text style={styles.emailText}>You can choose services</Text>
+            <Text style={styles.welcomeText}>{copy("Services")}</Text>
+            <Text style={styles.emailText}>{copy("You can choose services")}</Text>
           </View>
         </View>
 
@@ -105,8 +107,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[0].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[0].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[0].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[0].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[0].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -120,8 +122,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[1].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[1].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[1].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[1].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[1].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -138,8 +140,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[2].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[2].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[2].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[2].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[2].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -153,8 +155,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[3].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[3].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[3].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[3].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[3].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -171,8 +173,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[4].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[4].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[4].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[4].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[4].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>

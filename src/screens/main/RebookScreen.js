@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, ActivityIndicator } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -45,10 +46,10 @@ const ServiceItem = ({ service, onRebook }) => (
             <View style={styles.serviceIconContainer}>
                 <ServiceIcon iconType={service.icon} />
             </View>
-            <Text style={styles.serviceName}>{service.name}</Text>
+            <Text style={styles.serviceName}>{copy(service.name)}</Text>
         </View>
         <TouchableOpacity style={styles.rebookButton} onPress={() => onRebook(service)}>
-            <Text style={styles.rebookButtonText}>Rebook</Text>
+            <Text style={styles.rebookButtonText}>{copy("Rebook")}</Text>
         </TouchableOpacity>
     </View>
 );
@@ -65,8 +66,8 @@ const SitterCard = ({ sitter, onRebook }) => (
                 </View>
             </View>
             <View style={styles.sitterRight}>
-                <Text style={styles.recentBookingLabel}>Most Recent Booking</Text>
-                <Text style={styles.recentBookingService}>{sitter.mostRecentService}</Text>
+                <Text style={styles.recentBookingLabel}>{copy("Most Recent Booking")}</Text>
+                <Text style={styles.recentBookingService}>{copy(sitter.mostRecentService)}</Text>
             </View>
         </View>
 
@@ -78,6 +79,7 @@ const SitterCard = ({ sitter, onRebook }) => (
 );
 
 export default function RebookScreen({ navigation }) {
+  useCopyUpdates();
     const insets = useSafeAreaInsets();
     const [sitters, setSitters] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -166,8 +168,8 @@ export default function RebookScreen({ navigation }) {
                 {/* Header */}
                 <View style={[styles.header, { top: insets.top }]}>
                     <View style={styles.headerTextContainer}>
-                        <Text style={styles.headerTitle}>Rebook a Sitter</Text>
-                        <Text style={styles.headerSubtitle}>You can manage your bookings</Text>
+                        <Text style={styles.headerTitle}>{copy("Rebook a Sitter")}</Text>
+                        <Text style={styles.headerSubtitle}>{copy("You can manage your bookings")}</Text>
                     </View>
                 </View>
 
@@ -176,18 +178,18 @@ export default function RebookScreen({ navigation }) {
                     {loading ? (
                         <View style={styles.centerContainer}>
                             <ActivityIndicator size="large" color="#32A6D8" />
-                            <Text style={styles.loadingText}>Loading past sitters...</Text>
+                            <Text style={styles.loadingText}>{copy("Loading past sitters...")}</Text>
                         </View>
                     ) : error ? (
                         <View style={styles.centerContainer}>
                             <Text style={styles.errorText}>{error}</Text>
                             <TouchableOpacity style={styles.retryButton} onPress={fetchCompletedBookings}>
-                                <Text style={styles.retryButtonText}>Retry</Text>
+                                <Text style={styles.retryButtonText}>{copy("Retry")}</Text>
                             </TouchableOpacity>
                         </View>
                     ) : sitters.length === 0 ? (
                         <View style={styles.centerContainer}>
-                            <Text style={styles.emptyText}>No past sitters to rebook</Text>
+                            <Text style={styles.emptyText}>{copy("No past sitters to rebook")}</Text>
                         </View>
                     ) : (
                         <ScrollView

@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, AppState, Linking, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
@@ -10,10 +11,11 @@ import { useRemoteConfig } from '../../hooks/useRemoteConfig';
 import api from '../../config/api';
 
 const categories = [['booking', 'Booking'], ['payment', 'TreatCoins / payment'], ['account', 'Account'], ['app', 'App problem'], ['safety', 'Safety concern']];
-const errorText = e => e?.response?.data?.message || 'Could not connect. Please try again or use email support.';
+const errorText = e => e?.response?.data?.message || copy('Could not connect. Please try again or use email support.');
 const Action = ({ title, onPress, disabled = false, secondary = false }) => <TouchableOpacity accessibilityRole="button" disabled={disabled} onPress={onPress} style={[styles.button, secondary && styles.secondary, disabled && { opacity: 0.5 }]}><Text style={[styles.buttonText, secondary && styles.secondaryText]}>{title}</Text></TouchableOpacity>;
 
 export default function SupportScreen({ route, navigation }) {
+  useCopyUpdates();
   const { supportEmail } = useRemoteConfig();
   const insets = useSafeAreaInsets();
   const [mode, setMode] = useState(route.params?.supportCaseId ? 'thread' : 'list');
@@ -86,37 +88,37 @@ export default function SupportScreen({ route, navigation }) {
   const email = async () => { try { await Linking.openURL('mailto:' + (supportEmail || 'careteam@oktreat.com') + '?subject=OkTreat%20Support'); } catch { setError('Email ' + (supportEmail || 'careteam@oktreat.com') + ' for help.'); } };
 
   return <ScreenWrapper noBottomTabs><View style={styles.container}>
-    <View style={styles.header}><TouchableOpacity accessibilityRole="button" accessibilityLabel="Back" onPress={back} style={styles.back}><BackArrowIcon width={20} height={20} /></TouchableOpacity><Text style={styles.title}>OkTreat Support</Text><View style={styles.back} /></View>
+    <View style={styles.header}><TouchableOpacity accessibilityRole="button" accessibilityLabel={copy("Back")} onPress={back} style={styles.back}><BackArrowIcon width={20} height={20} /></TouchableOpacity><Text style={styles.title}>{copy("OkTreat Support")}</Text><View style={styles.back} /></View>
     <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" bottomOffset={20} contentContainerStyle={styles.content}>
-      {!!error && <View accessibilityRole="alert" style={styles.error}><Text style={styles.text}>{error}</Text><Action title="Try again" secondary onPress={() => load()} /><Action title="Email support" secondary onPress={email} /></View>}
+      {!!error && <View accessibilityRole="alert" style={styles.error}><Text style={styles.text}>{error}</Text><Action title={copy("Try again")} secondary onPress={() => load()} /><Action title={copy("Email support")} secondary onPress={email} /></View>}
       {mode === 'list' && <>
-        <View style={styles.card}><Text style={styles.heading}>How can we help?</Text><Text style={styles.text}>Send a request and return here to read our reply. Support is not monitored continuously.</Text><Action title="Get help" onPress={() => start('booking')} /><Action title="Report a safety concern" secondary onPress={() => start('safety')} /></View>
-        <View style={styles.card}><Text style={styles.heading}>Missing pet or emergency?</Text><Text style={styles.text}>For a missing pet, open your pet’s profile and choose Report missing to send nearby alerts. For immediate danger to a person, contact local emergency services. For urgent pet injury or illness, contact a veterinarian.</Text></View>
-        <Text style={styles.heading}>My support requests</Text>
-        <View style={styles.choices}>{[['open', 'Open'], ['resolved', 'Resolved']].map(([key, label]) => <TouchableOpacity key={key} accessibilityRole="button" accessibilityState={{ selected: caseFilter === key }} style={[styles.choice, caseFilter === key && styles.selected]} onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(0); setCaseFilter(key); }}><Text style={styles.text}>{label}</Text></TouchableOpacity>)}</View>
-        {cases.length === 0 && <Text style={styles.text}>Your requests will appear here.</Text>}
+        <View style={styles.card}><Text style={styles.heading}>{copy("How can we help?")}</Text><Text style={styles.text}>{copy("Send a request and return here to read our reply. Support is not monitored continuously.")}</Text><Action title={copy("Get help")} onPress={() => start('booking')} /><Action title={copy("Report a safety concern")} secondary onPress={() => start('safety')} /></View>
+        <View style={styles.card}><Text style={styles.heading}>{copy("Missing pet or emergency?")}</Text><Text style={styles.text}>{copy("For a missing pet, open your pet’s profile and choose Report missing to send nearby alerts. For immediate danger to a person, contact local emergency services. For urgent pet injury or illness, contact a veterinarian.")}</Text></View>
+        <Text style={styles.heading}>{copy("My support requests")}</Text>
+        <View style={styles.choices}>{[['open', 'Open'], ['resolved', 'Resolved']].map(([key, label]) => <TouchableOpacity key={key} accessibilityRole="button" accessibilityState={{ selected: caseFilter === key }} style={[styles.choice, caseFilter === key && styles.selected]} onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(0); setCaseFilter(key); }}><Text style={styles.text}>{copy(label)}</Text></TouchableOpacity>)}</View>
+        {cases.length === 0 && <Text style={styles.text}>{copy("Your requests will appear here.")}</Text>}
         {cases.map(c => <TouchableOpacity key={c.id} accessibilityRole="button" onPress={() => open(c.id)} style={[styles.card, { padding: 14, gap: 6 }]}><Text style={styles.heading}>{c.subject}</Text><Text style={styles.text}>#{c.conversationId || c.id.slice(0, 8)} · {c.category} · {c.status}</Text></TouchableOpacity>)}
-        <View style={styles.choices}>{casePage > 0 && <Action title="Previous 5" secondary onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(p => p - 1); }} />}{hasMoreCases && <Action title="Next 5" secondary onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(p => p + 1); }} />}</View>
-        <Action title="Email support instead" secondary onPress={email} />
+        <View style={styles.choices}>{casePage > 0 && <Action title={copy("Previous 5")} secondary onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(p => p - 1); }} />}{hasMoreCases && <Action title={copy("Next 5")} secondary onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(p => p + 1); }} />}</View>
+        <Action title={copy("Email support instead")} secondary onPress={email} />
       </>}
       {mode === 'form' && <View style={styles.card}>
-        <Text style={styles.heading}>New support request</Text><Text style={styles.text}>Category</Text>
-        <View style={styles.choices}>{categories.map(([key, label]) => <TouchableOpacity key={key} accessibilityRole="button" accessibilityState={{ selected: category === key }} onPress={() => setCategory(key)} style={[styles.choice, category === key && styles.selected]}><Text style={styles.text}>{label}</Text></TouchableOpacity>)}</View>
-        {category === 'safety' && <Text style={styles.warning}>Safety reports are prioritised for review. This is not an emergency service. Seek local emergency help or veterinary care immediately when needed.</Text>}
-        <Text style={styles.text}>Subject</Text><TextInput accessibilityLabel="Support subject" value={subject} onChangeText={setSubject} maxLength={120} placeholder="What do you need help with?" placeholderTextColor="#697888" style={styles.input} />
-        <Text style={styles.text}>Details</Text><TextInput accessibilityLabel="Support details" value={message} onChangeText={setMessage} maxLength={5000} multiline textAlignVertical="top" placeholder="Describe the issue and include a booking reference if relevant." placeholderTextColor="#697888" style={[styles.input, { minHeight: 150 }]} />
-        <Text style={styles.small}>Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.</Text>
-        <Action title={busy ? 'Sending…' : 'Send request'} disabled={busy || !subject.trim() || !message.trim()} onPress={submit} />
+        <Text style={styles.heading}>{copy("New support request")}</Text><Text style={styles.text}>{copy("Category")}</Text>
+        <View style={styles.choices}>{categories.map(([key, label]) => <TouchableOpacity key={key} accessibilityRole="button" accessibilityState={{ selected: category === key }} onPress={() => setCategory(key)} style={[styles.choice, category === key && styles.selected]}><Text style={styles.text}>{copy(label)}</Text></TouchableOpacity>)}</View>
+        {category === 'safety' && <Text style={styles.warning}>{copy("Safety reports are prioritised for review. This is not an emergency service. Seek local emergency help or veterinary care immediately when needed.")}</Text>}
+        <Text style={styles.text}>{copy("Subject")}</Text><TextInput accessibilityLabel={copy("Support subject")} value={subject} onChangeText={setSubject} maxLength={120} placeholder={copy("What do you need help with?")} placeholderTextColor="#697888" style={styles.input} />
+        <Text style={styles.text}>{copy("Details")}</Text><TextInput accessibilityLabel={copy("Support details")} value={message} onChangeText={setMessage} maxLength={5000} multiline textAlignVertical="top" placeholder={copy("Describe the issue and include a booking reference if relevant.")} placeholderTextColor="#697888" style={[styles.input, { minHeight: 150 }]} />
+        <Text style={styles.small}>{copy("Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.")}</Text>
+        <Action title={busy ? copy("Sending…") : copy("Send request")} disabled={busy || !subject.trim() || !message.trim()} onPress={submit} />
       </View>}
       {mode === 'thread' && <>
-        {!thread ? <ActivityIndicator accessibilityLabel="Loading support conversation" color="#08779D" /> : <>
-          <Text style={styles.heading}>{thread.subject}</Text><Text style={styles.small}>Case #{thread.conversationId} · {thread.status}</Text>
-          {!!cursor.current && <Action title="Load older messages" secondary onPress={() => load(true)} />}
-          {thread.messages.map(m => <View key={m.id} style={[styles.bubble, !m.fromSupport && styles.mine]}><Text style={styles.small}>{m.fromSupport ? 'OkTreat Support' : 'You'}</Text><Text selectable style={styles.text}>{m.content}</Text>{m.attachments?.map(a => <TouchableOpacity key={a.id} accessibilityRole="link" onPress={() => Linking.openURL(a.url).catch(() => setError('Could not open attachment.'))}><Text style={styles.link}>Open attachment</Text></TouchableOpacity>)}</View>)}
+        {!thread ? <ActivityIndicator accessibilityLabel={copy("Loading support conversation")} color="#08779D" /> : <>
+          <Text style={styles.heading}>{thread.subject}</Text><Text style={styles.small}>{copy('Case #{{id}} · {{status}}', { id: thread.conversationId, status: copy(thread.status === 'resolved' ? 'Resolved' : 'Open') })}</Text>
+          {!!cursor.current && <Action title={copy("Load older messages")} secondary onPress={() => load(true)} />}
+          {thread.messages.map(m => <View key={m.id} style={[styles.bubble, !m.fromSupport && styles.mine]}><Text style={styles.small}>{m.fromSupport ? copy("OkTreat Support") : copy("You")}</Text><Text selectable style={styles.text}>{m.content}</Text>{m.attachments?.map(a => <TouchableOpacity key={a.id} accessibilityRole="link" onPress={() => Linking.openURL(a.url).catch(() => setError(copy("Could not open attachment.")))}><Text style={styles.link}>{copy("Open attachment")}</Text></TouchableOpacity>)}</View>)}
         </>}
       </>}
     </KeyboardAwareScrollView>
-    {mode === 'thread' && thread && <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}><View style={[styles.composer, { paddingBottom: Math.max(12, insets.bottom) }]}><TextInput accessibilityLabel="Reply to support" multiline maxLength={5000} value={reply} onChangeText={setReply} placeholder="Write a reply…" placeholderTextColor="#697888" style={[styles.input, { maxHeight: 120 }]} /><Action title={busy ? 'Sending…' : 'Send reply'} disabled={busy || !reply.trim()} onPress={submit} /></View></KeyboardStickyView>}
+    {mode === 'thread' && thread && <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}><View style={[styles.composer, { paddingBottom: Math.max(12, insets.bottom) }]}><TextInput accessibilityLabel={copy("Reply to support")} multiline maxLength={5000} value={reply} onChangeText={setReply} placeholder={copy("Write a reply…")} placeholderTextColor="#697888" style={[styles.input, { maxHeight: 120 }]} /><Action title={busy ? copy("Sending…") : copy("Send reply")} disabled={busy || !reply.trim()} onPress={submit} /></View></KeyboardStickyView>}
   </View></ScreenWrapper>;
 }
 const styles = StyleSheet.create({

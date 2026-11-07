@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useCallback } from 'react';
 import {
   View,
@@ -58,6 +59,7 @@ const formatRange = (start, end) => {
 };
 
 export default function BookingDetailScreen({ navigation, route }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   // Caller can pass either the full booking object OR just the id. Loader
   // refreshes from the API on focus so any in-flight status changes show up.
@@ -94,21 +96,21 @@ export default function BookingDetailScreen({ navigation, route }) {
     // only supports a single button, and passing a buttons array there crashes
     // the ProfileVerifiedModal renderer.
     Alert.alert(
-      'Cancel this booking?',
-      'The sitter will be notified and any held TreatCoins will be returned to your wallet.',
+      copy("Cancel this booking?"),
+      copy("The sitter will be notified and any held TreatCoins will be returned to your wallet."),
       [
-        { text: 'Keep it', style: 'cancel' },
+        { text: copy("Keep it"), style: 'cancel' },
         {
-          text: 'Cancel booking',
+          text: copy("Cancel booking"),
           style: 'destructive',
           onPress: async () => {
             try {
               setActionInFlight(true);
               await cancelBooking(booking.id);
-              alert('Cancelled', 'Your booking has been cancelled.', 'success');
+              alert(copy("Cancelled"), copy("Your booking has been cancelled."), 'success');
               navigation.goBack();
             } catch (e) {
-              alert('Could not cancel', e?.message || 'Try again in a moment.', 'error');
+              alert(copy("Could not cancel"), e?.message || 'Try again in a moment.', 'error');
             } finally {
               setActionInFlight(false);
             }
@@ -121,7 +123,7 @@ export default function BookingDetailScreen({ navigation, route }) {
   const handleMessage = () => {
     const otherUserId = booking?.sitter?.user?.id || booking?.sitter?.userId;
     if (!otherUserId) {
-      alert('Unavailable', 'Sitter contact not available for this booking yet.', 'error');
+      alert(copy("Unavailable"), copy("Sitter contact not available for this booking yet."), 'error');
       return;
     }
     navigation.navigate('ChatConversation', {
@@ -133,11 +135,11 @@ export default function BookingDetailScreen({ navigation, route }) {
   const handleCall = () => {
     const phone = booking?.sitter?.user?.phone || booking?.sitter?.phone;
     if (!phone) {
-      alert('No phone on file', 'This sitter hasn\'t shared a phone number.', 'info');
+      alert(copy("No phone on file"), copy("This sitter hasn't shared a phone number."), 'info');
       return;
     }
     Linking.openURL(`tel:${phone}`).catch(() => {
-      alert('Could not place call', 'Tap and hold the number to copy it.', 'error');
+      alert(copy("Could not place call"), copy("Tap and hold the number to copy it."), 'error');
     });
   };
 
@@ -164,10 +166,10 @@ export default function BookingDetailScreen({ navigation, route }) {
     return (
       <ScreenWrapper noBottomTabs>
         <View style={styles.container}>
-          <Header onBack={() => navigation.goBack()} title="Booking" />
+          <Header onBack={() => navigation.goBack()} title={copy("Booking")} />
           <View style={[styles.centered, { flex: 1 }]}>
             <Icon name="alert-circle-outline" size={48} color="#818898" />
-            <Text style={styles.dimText}>Booking not found.</Text>
+            <Text style={styles.dimText}>{copy("Booking not found.")}</Text>
           </View>
         </View>
       </ScreenWrapper>
@@ -194,7 +196,7 @@ export default function BookingDetailScreen({ navigation, route }) {
   return (
     <ScreenWrapper noBottomTabs>
       <View style={styles.container}>
-        <Header onBack={() => navigation.goBack()} title="Booking Details" />
+        <Header onBack={() => navigation.goBack()} title={copy("Booking Details")} />
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           {/* Status + service strip */}
@@ -204,18 +206,18 @@ export default function BookingDetailScreen({ navigation, route }) {
                 <Icon name={serviceMeta.icon} size={20} color="#32A6D8" />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.serviceLabel}>{serviceMeta.label}</Text>
+                <Text style={styles.serviceLabel}>{copy(serviceMeta.label)}</Text>
                 <Text style={styles.bookingIdText}>#{booking.id.slice(0, 8)}***{booking.id.slice(-4)}</Text>
               </View>
               <View style={[styles.statusPill, { backgroundColor: statusMeta.bg }]}>
-                <Text style={[styles.statusPillText, { color: statusMeta.fg }]}>{statusMeta.label}</Text>
+                <Text style={[styles.statusPillText, { color: statusMeta.fg }]}>{copy(statusMeta.label)}</Text>
               </View>
             </View>
           </View>
 
           {/* Sitter card */}
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Sitter</Text>
+            <Text style={styles.cardTitle}>{copy("Sitter")}</Text>
             <View style={styles.sitterRow}>
               {sitterAvatar ? (
                 <Image source={{ uri: sitterAvatar }} style={styles.avatarLg} />
@@ -233,11 +235,11 @@ export default function BookingDetailScreen({ navigation, route }) {
               <View style={styles.contactRow}>
                 <TouchableOpacity style={[styles.iconBtn, styles.iconBtnPrimary]} onPress={handleMessage}>
                   <Icon name="chatbubble-ellipses" size={18} color="#FFFFFF" />
-                  <Text style={styles.iconBtnText}>Message</Text>
+                  <Text style={styles.iconBtnText}>{copy("Message")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.iconBtn, styles.iconBtnSecondary]} onPress={handleCall}>
                   <Icon name="call" size={18} color="#32A6D8" />
-                  <Text style={[styles.iconBtnText, { color: '#32A6D8' }]}>Call</Text>
+                  <Text style={[styles.iconBtnText, { color: '#32A6D8' }]}>{copy("Call")}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -246,7 +248,7 @@ export default function BookingDetailScreen({ navigation, route }) {
           {/* Pet card */}
           {petName && (
             <View style={styles.card}>
-              <Text style={styles.cardTitle}>Pet</Text>
+              <Text style={styles.cardTitle}>{copy("Pet")}</Text>
               <View style={styles.petRow}>
                 <Image
                   source={petPhoto ? { uri: petPhoto } : DogImage}
@@ -266,7 +268,7 @@ export default function BookingDetailScreen({ navigation, route }) {
 
           {/* Schedule */}
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Schedule</Text>
+            <Text style={styles.cardTitle}>{copy("Schedule")}</Text>
             <DetailRow icon="calendar-outline" label="Dates" value={formatRange(booking.startDate, booking.endDate)} />
             {booking.createdAt && (
               <DetailRow icon="time-outline" label="Booked" value={formatDate(booking.createdAt, true)} />
@@ -275,25 +277,24 @@ export default function BookingDetailScreen({ navigation, route }) {
 
           {/* Payment */}
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Payment</Text>
+            <Text style={styles.cardTitle}>{copy("Payment")}</Text>
             <View style={styles.amountRow}>
-              <Text style={styles.amountLabel}>Total</Text>
+              <Text style={styles.amountLabel}>{copy("Total")}</Text>
               <View style={styles.amountValueRow}>
                 <Icon name="logo-bitcoin" size={16} color="#32A6D8" />
-                <Text style={styles.amountValue}>{amount.toLocaleString()} TreatCoins</Text>
+                <Text style={styles.amountValue}>{amount.toLocaleString()}{' '}{copy("TreatCoins")}</Text>
               </View>
             </View>
             {refundable > 0 && ['PENDING', 'CONFIRMED'].includes(status) && (
               <Text style={styles.dimSm}>
-                {refundable.toLocaleString()} TreatCoins are held — they'll return to your wallet if the booking is cancelled or declined.
-              </Text>
+                {refundable.toLocaleString()}{' '}{copy("TreatCoins are held — they'll return to your wallet if the booking is cancelled or declined.")}</Text>
             )}
           </View>
 
           {/* Notes */}
           {!!booking.notes && (
             <View style={styles.card}>
-              <Text style={styles.cardTitle}>Notes</Text>
+              <Text style={styles.cardTitle}>{copy("Notes")}</Text>
               <Text style={styles.notesText}>{booking.notes}</Text>
             </View>
           )}
@@ -306,7 +307,7 @@ export default function BookingDetailScreen({ navigation, route }) {
                 onPress={handleLeaveReview}
               >
                 <Icon name="star" size={18} color="#FFFFFF" />
-                <Text style={styles.actionPrimaryText}>Leave a review</Text>
+                <Text style={styles.actionPrimaryText}>{copy("Leave a review")}</Text>
               </TouchableOpacity>
             )}
             {canCancel && (
@@ -320,7 +321,7 @@ export default function BookingDetailScreen({ navigation, route }) {
                 ) : (
                   <>
                     <Icon name="close-circle" size={18} color="#D93025" />
-                    <Text style={styles.actionDangerText}>Cancel booking</Text>
+                    <Text style={styles.actionDangerText}>{copy("Cancel booking")}</Text>
                   </>
                 )}
               </TouchableOpacity>
