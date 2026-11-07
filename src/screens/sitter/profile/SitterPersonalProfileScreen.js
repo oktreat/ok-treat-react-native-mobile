@@ -13,6 +13,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import Icon from '@expo/vector-icons/Ionicons';
 import ScreenWrapper from '../../../components/ScreenWrapper';
+import ProfileCoverEditor from '../../../components/ProfileCoverEditor';
 import { BackArrowIcon, DogImage, ProfileImagePersonIcon } from '../../../assets';
 import { getSitterProfile } from '../../../services/sitterService';
 import { getUserPets } from '../../../services/petService';
@@ -175,6 +176,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
             source={coverImage ? { uri: coverImage } : DogImage}
             style={styles.coverImage}
           />
+          <ProfileCoverEditor onSaved={url => setSitter(current => ({ ...current, coverImage: url }))} />
           <View style={styles.profileImageWrapper}>
             <View style={styles.profileImageContainer}>
               {profileImage ? (
@@ -476,8 +478,8 @@ const styles = StyleSheet.create({
   headerTitle: { color: 'black', fontSize: 16, fontFamily: 'Poppins', fontWeight: '500', lineHeight: 24.8 },
   placeholder: { width: 40 },
 
-  profileSection: { height: 233, marginHorizontal: 24, marginTop: 8, position: 'relative' },
-  coverImage: { width: '100%', height: 182, borderRadius: 20 },
+  profileSection: { paddingBottom: 51, marginHorizontal: 24, marginTop: 8, position: 'relative' },
+  coverImage: { width: '100%', aspectRatio: 2, borderRadius: 20 },
   profileImageWrapper: { position: 'absolute', bottom: 0, left: '50%', marginLeft: -51.5 },
   profileImageContainer: {
     width: 103,
