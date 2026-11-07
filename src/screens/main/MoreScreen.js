@@ -34,6 +34,7 @@ export default function MoreScreen({ navigation }) {
   // Check sitter status on every screen focus
   useFocusEffect(
     useCallback(() => {
+      setIsSitterMode(false); // This screen belongs to owner navigation.
       const checkSitterStatus = async () => {
         try {
           const response = await api.get('/sitter/status');
@@ -264,7 +265,7 @@ export default function MoreScreen({ navigation }) {
           {/* Sitter Mode Toggle */}
           <View style={styles.toggleRow}>
             <View style={styles.toggleLeft}>
-              <Text style={styles.toggleLabel}>Switch to Sitter Mode</Text>
+              <Text style={styles.toggleLabel}>Sitter mode</Text>
               {sitterStatus === 'PENDING' && (
                 <Text style={styles.toggleStatus}>Application pending review</Text>
               )}
@@ -278,7 +279,7 @@ export default function MoreScreen({ navigation }) {
             <Switch
               value={isSitterMode}
               onValueChange={handleSitterModeToggle}
-              trackColor={{ false: '#E5E5E5', true: '#FFC2EB' }}
+              trackColor={{ false: '#E5E5E5', true: '#126F82' }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#E5E5E5"
             />

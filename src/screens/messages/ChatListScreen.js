@@ -259,7 +259,7 @@ export default function ChatListScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Inbox</Text>
+          <Text style={styles.headerTitle}>Chat</Text>
           <TouchableOpacity
             style={styles.settingsButton}
             onPress={() => alert('Chat Settings', 'Coming after release', 'pending')}

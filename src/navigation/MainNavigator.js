@@ -231,7 +231,7 @@ function SitterTabNavigator() {
         name="SitterRequests"
         component={SitterRequestsScreen}
         options={{
-          tabBarLabel: 'Inbox',
+          tabBarLabel: 'Chat',
           tabBarIcon: ({ focused, color, size }) => (
             <Icon name={focused ? 'mail' : 'mail-outline'} size={size} color={color} />
           ),

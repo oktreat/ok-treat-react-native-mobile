@@ -13,6 +13,8 @@ import ReferralPromptModal from '../../components/ReferralPromptModal';
 import { getReferralPromptStatus } from '../../services/referralService';
 import { useWallet } from '../../context/WalletContext';
 import api from '../../config/api';
+import SitterModeSwitch from '../../components/SitterModeSwitch';
+import TreatCoinMark from '../../components/TreatCoinMark';
 
 // Show the referral prompt at most once per app session.
 let referralPromptCheckedThisSession = false;
@@ -139,9 +141,9 @@ export default function HomeScreen({ navigation }) {
     { title: 'Add a Pet', detail: 'Meet your companion', icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
     { title: 'Scan a QR', detail: 'Connect a smart tag', icon: 'scan-outline', bg: '#EAF7F0', color: '#267554', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
     { title: 'Bookings', detail: 'Care & my requests', icon: 'calendar-outline', bg: '#FFF0E7', color: '#985321', press: () => navigation.navigate('Bookings') },
-    { title: 'Inbox', detail: 'Keep in touch', icon: 'chatbubbles-outline', bg: '#F1EDFA', color: '#715299', press: () => navigation.navigate('ChatList') },
-    { title: isApprovedSitter ? 'Sitter Dashboard' : 'Become a Pet Sitter', detail: 'Give care. Earn TreatCoins.', icon: 'heart-outline', bg: '#E7F4F3', color: '#236E70', press: handleBecomeASitter },
+    { title: 'Chat', detail: 'Keep in touch', icon: 'chatbubbles-outline', bg: '#F1EDFA', color: '#715299', press: () => navigation.navigate('ChatList') },
     { title: 'Refer a Friend', detail: 'Grow your care circle', icon: 'gift-outline', bg: '#FFF7DF', color: '#896614', press: () => navigation.navigate('InviteFriends') },
+    { title: 'Smart Tags', detail: 'Shop OkTreat on Amazon', icon: 'pricetag-outline', bg: '#EEF2FB', color: '#41618F', press: () => openSmartTags() },
   ];
   const openSmartTags = () => Linking.openURL('https://www.amazon.com/stores/OKTreat/page/39C7FC72-20EB-4F6A-AE27-53D4958D9361').catch(() => {});
 
@@ -188,11 +190,12 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <ScrollView contentContainerStyle={styles.homeContent} showsVerticalScrollIndicator={false}>
+          <SitterModeSwitch sitterMode={false} onChange={handleBecomeASitter} disabled={checkingStatus} />
           <View style={styles.barterCard}>
             <View style={styles.barterTitleRow}>
               <Text style={styles.barterTitle}>Barter your time</Text>
               <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open Wallet, TreatCoins balance" style={styles.balance} onPress={() => navigation.navigate('PaymentMethods')}>
-                <Icon name="ellipse-outline" size={18} color="#896614" /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()}</Text>
+                <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.careActions}>
@@ -201,13 +204,12 @@ export default function HomeScreen({ navigation }) {
             </View>
             <TouchableOpacity accessibilityRole="button" accessibilityLabel="Find care with AI sitter matching" style={styles.aiLine} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Icon name="sparkles" size={14} color="#285D6D" /><Text style={styles.aiText}>AI sitter matching</Text></TouchableOpacity>
           </View>
-          <Text style={styles.shortcutsTitle}>Your shortcuts</Text>
           <View style={styles.shortcutGrid}>
             {shortcuts.map(item => <TouchableOpacity key={item.title} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>
               <Icon name={item.icon} size={26} color={item.color} /><View><Text style={styles.shortcutTitle}>{item.title}</Text><Text style={styles.shortcutDetail}>{item.detail}</Text></View>
             </TouchableOpacity>)}
           </View>
-          <TouchableOpacity accessibilityRole="link" style={styles.smartTags} onPress={openSmartTags}><Icon name="pricetag-outline" size={28} color="#41618F" /><View style={{ flex: 1 }}><Text style={styles.shortcutTitle}>Smart Tags</Text><Text style={styles.shortcutDetail}>Shop OkTreat on Amazon</Text></View><Icon name="arrow-up-outline" style={{ transform: [{ rotate: '45deg' }] }} size={20} color="#41618F" /></TouchableOpacity>
+
         </ScrollView>
 
         {/* Approved Modal */}
@@ -341,11 +343,11 @@ const styles = StyleSheet.create({
     lineHeight: 24.8,
   },
   emailText: {
-    color: '#172E38',
-    fontSize: 20,
+    color: '#142D38',
+    fontSize: 24,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
-    lineHeight: 22,
+    lineHeight: 32,
     letterSpacing: 0.65,
   },
   exploreHeader: {

@@ -17,7 +17,7 @@ export default function ProfileBanner() {
   }, []));
   return <View style={styles.section}>
     <View style={styles.banner}>
-      {cover ? <Image key={cover} source={{ uri: cover }} style={StyleSheet.absoluteFillObject} resizeMode="cover" accessibilityLabel="Your profile banner" /> : <View style={styles.empty}><Icon name="image-outline" size={32} color="#517584" /><Text style={styles.hint}>Your profile banner</Text></View>}
+      {cover ? <Image key={cover} source={{ uri: cover }} style={StyleSheet.absoluteFillObject} resizeMode="cover" accessibilityLabel="Your profile banner" /> : <View style={styles.empty}><Icon name="image-outline" size={32} color="#517584" /></View>}
       <ProfileCoverEditor endpoint="/users/cover" onSaved={url => { setCover(url); setError(''); }} />
     </View>
     {!!error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
