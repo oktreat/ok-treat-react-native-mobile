@@ -26,6 +26,9 @@ export default function SupportScreen({ route, navigation }) {
   const [reply, setReply] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [casePage, setCasePage] = useState(0);
+  const [caseFilter, setCaseFilter] = useState('open');
+  const [hasMoreCases, setHasMoreCases] = useState(false);
   const requestId = useRef(Crypto.randomUUID());
   const lock = useRef(false);
   const cursor = useRef(null);
@@ -40,8 +43,9 @@ export default function SupportScreen({ route, navigation }) {
     if (mode === 'form') return;
     const epoch = userEpoch.current;
     try {
-      const path = mode === 'thread' && caseId ? '/support/cases/' + caseId + '/messages' + (older && cursor.current ? '?before=' + cursor.current : '') : '/support/cases';
-      const result = (await api.get(path, { timeout: 20000 })).data.data;
+      const path = mode === 'thread' && caseId ? '/support/cases/' + caseId + '/messages' + (older && cursor.current ? '?before=' + cursor.current : '') : '/support/cases?page=' + casePage + '&status=' + caseFilter;
+      const response = (await api.get(path, { timeout: 20000 })).data;
+      const result = response.data;
       if (epoch !== userEpoch.current) return;
       if (mode === 'thread') {
         setThread(prev => {
@@ -50,10 +54,10 @@ export default function SupportScreen({ route, navigation }) {
           return { ...result, messages };
         });
         if (older || !cursor.current) cursor.current = result.before;
-      } else setCases(result);
+      } else { setCases(result); setHasMoreCases(!!response.pagination?.hasMore); }
       setError('');
     } catch (e) { if (epoch === userEpoch.current) setError(errorText(e)); }
-  }, [mode, caseId]);
+  }, [mode, caseId, casePage, caseFilter]);
 
   useFocusEffect(useCallback(() => {
     load();
@@ -89,8 +93,10 @@ export default function SupportScreen({ route, navigation }) {
         <View style={styles.card}><Text style={styles.heading}>How can we help?</Text><Text style={styles.text}>Send a request and return here to read our reply. Support is not monitored continuously.</Text><Action title="Get help" onPress={() => start('booking')} /><Action title="Report a safety concern" secondary onPress={() => start('safety')} /></View>
         <View style={styles.card}><Text style={styles.heading}>Missing pet or emergency?</Text><Text style={styles.text}>For a missing pet, open your pet’s profile and choose Report missing to send nearby alerts. For immediate danger to a person, contact local emergency services. For urgent pet injury or illness, contact a veterinarian.</Text></View>
         <Text style={styles.heading}>My support requests</Text>
+        <View style={styles.choices}>{[['open', 'Open'], ['resolved', 'Resolved']].map(([key, label]) => <TouchableOpacity key={key} accessibilityRole="button" accessibilityState={{ selected: caseFilter === key }} style={[styles.choice, caseFilter === key && styles.selected]} onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(0); setCaseFilter(key); }}><Text style={styles.text}>{label}</Text></TouchableOpacity>)}</View>
         {cases.length === 0 && <Text style={styles.text}>Your requests will appear here.</Text>}
-        {cases.map(c => <TouchableOpacity key={c.id} accessibilityRole="button" onPress={() => open(c.id)} style={styles.card}><Text style={styles.heading}>{c.subject}</Text><Text style={styles.text}>#{c.conversationId || c.id.slice(0, 8)} · {c.category} · {c.status}</Text></TouchableOpacity>)}
+        {cases.map(c => <TouchableOpacity key={c.id} accessibilityRole="button" onPress={() => open(c.id)} style={[styles.card, { padding: 14, gap: 6 }]}><Text style={styles.heading}>{c.subject}</Text><Text style={styles.text}>#{c.conversationId || c.id.slice(0, 8)} · {c.category} · {c.status}</Text></TouchableOpacity>)}
+        <View style={styles.choices}>{casePage > 0 && <Action title="Previous 5" secondary onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(p => p - 1); }} />}{hasMoreCases && <Action title="Next 5" secondary onPress={() => { userEpoch.current++; setCases([]); setHasMoreCases(false); setCasePage(p => p + 1); }} />}</View>
         <Action title="Email support instead" secondary onPress={email} />
       </>}
       {mode === 'form' && <View style={styles.card}>

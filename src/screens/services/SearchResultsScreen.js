@@ -31,6 +31,7 @@ export default function SearchResultsScreen({ navigation, route }) {
   const [statusModalConfig, setStatusModalConfig] = useState({});
   const [pets, setPets] = useState([]);
   const [activePetIndex, setActivePetIndex] = useState(0);
+  const rotationKey = useRef(Math.random().toString(36).slice(2));
   // Search radius — starts nearby; "Search all" widens it. isExpanded drives
   // the banner + the "still nothing" empty state.
   const [radiusKm, setRadiusKm] = useState(NEARBY_RADIUS_KM);
@@ -121,6 +122,7 @@ export default function SearchResultsScreen({ navigation, route }) {
       user: { firstTimeUser: false },
       serviceType: enumServiceType,
       maxDistance: radiusKm,
+      rotationKey: rotationKey.current,
     });
   }, [sitters, filteredSitters, activePet, serviceType, radiusKm]);
 
@@ -247,10 +249,8 @@ export default function SearchResultsScreen({ navigation, route }) {
                       : null;
 
     const matchScore = item.matchScore;
-    const matchTier =
-      matchScore >= 90 ? { label: 'Top match', color: '#1F9E5C' }
-      : matchScore >= 80 ? { label: 'Great match', color: '#32A6D8' }
-      : matchScore >= 70 ? { label: 'Good match', color: '#FBBC04' }
+    const matchTier = item.matchEligible && matchScore >= 60
+      ? { label: 'Suggested for your pet', color: '#16724D' }
       : null;
 
     return (
@@ -265,7 +265,7 @@ export default function SearchResultsScreen({ navigation, route }) {
             <View style={styles.matchHeader}>
               <View style={[styles.matchBadge, { backgroundColor: matchTier.color }]}>
                 <Icon name="sparkles" size={12} color="#FFFFFF" />
-                <Text style={styles.matchBadgeText}>{matchScore}% {matchTier.label}</Text>
+                <Text style={styles.matchBadgeText}>{matchTier.label}</Text>
               </View>
               {item.matchReasons?.length > 0 && (
                 <Text style={styles.matchReasonsInline} numberOfLines={1}>

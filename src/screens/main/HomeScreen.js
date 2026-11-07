@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -7,15 +7,7 @@ import { fetchSitters } from '../../store/slices/sitterSlice';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import ProfileVerifiedModal from '../../components/ProfileVerifiedModal';
 import Icon from '@expo/vector-icons/Ionicons';
-import { 
-  HomeIconSvg, 
-  ScanAltIcon, 
-  OrderApproveIcon, 
-  NotificationSolidIcon, 
-  InboxLightIcon,
-  ExploreOutlineIcon,
-  SplashIcon
-} from '../../assets';
+import { SplashIcon } from '../../assets';
 import { getSitterStatus, markSitterApprovalSeen } from '../../services/sitterService';
 import ReferralPromptModal from '../../components/ReferralPromptModal';
 import { getReferralPromptStatus } from '../../services/referralService';
@@ -25,7 +17,7 @@ import api from '../../config/api';
 // Show the referral prompt at most once per app session.
 let referralPromptCheckedThisSession = false;
 
-const { width, height } = Dimensions.get('window');
+
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -79,6 +71,7 @@ export default function HomeScreen({ navigation }) {
       };
       checkSitter();
       fetchUnread();
+      wallet.refresh();
     }, [])
   );
 
@@ -142,12 +135,22 @@ export default function HomeScreen({ navigation }) {
     setShowPendingModal(false);
   };
 
+  const shortcuts = [
+    { title: 'Add a Pet', detail: 'Meet your companion', icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
+    { title: 'Scan a QR', detail: 'Connect a smart tag', icon: 'scan-outline', bg: '#EAF7F0', color: '#267554', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
+    { title: 'Bookings', detail: 'Care & my requests', icon: 'calendar-outline', bg: '#FFF0E7', color: '#985321', press: () => navigation.navigate('Bookings') },
+    { title: 'Inbox', detail: 'Keep in touch', icon: 'chatbubbles-outline', bg: '#F1EDFA', color: '#715299', press: () => navigation.navigate('ChatList') },
+    { title: isApprovedSitter ? 'Sitter Dashboard' : 'Become a Pet Sitter', detail: 'Give care. Earn TreatCoins.', icon: 'heart-outline', bg: '#E7F4F3', color: '#236E70', press: handleBecomeASitter },
+    { title: 'Refer a Friend', detail: 'Grow your care circle', icon: 'gift-outline', bg: '#FFF7DF', color: '#896614', press: () => navigation.navigate('InviteFriends') },
+  ];
+  const openSmartTags = () => Linking.openURL('https://www.amazon.com/stores/OKTreat/page/39C7FC72-20EB-4F6A-AE27-53D4958D9361').catch(() => {});
+
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.avatarContainer}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Your profile" onPress={() => navigation.navigate('ProfileView')} style={styles.avatarContainer}>
             {user?.avatarUrl ? (
               // key={url} forces remount when the avatar changes — RN <Image>
               // caches by URI and would otherwise keep showing the old photo.
@@ -159,11 +162,11 @@ export default function HomeScreen({ navigation }) {
             ) : (
               <Image source={SplashIcon} style={{ width: 30, height: 30 }} resizeMode="contain" />
             )}
-          </View>
+          </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text style={styles.welcomeText} numberOfLines={1}>{t('home.welcome')}</Text>
             <Text style={styles.emailText} numberOfLines={1} ellipsizeMode="tail">
-              {user?.email || t('home.noEmail')}
+              {(user?.fullName || user?.name || 'Friend').split(' ')[0]}
             </Text>
           </View>
           {/* Notification bell — top-right header button. Standard
@@ -184,119 +187,28 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Explore Section */}
-        {/* <View style={styles.exploreHeader}>
-          <ExploreOutlineIcon width={21.81} height={21.81} />
-          <Text style={styles.exploreText}>Explore</Text>
-        </View> */}
-
-        {/* Quick Actions Grid */}
-        <View style={styles.gridContainer}>
-          {/* Row 1 */}
-          <View style={styles.row}>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('AddPet')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <Icon name="paw-outline" size={36} color="#32A6D8" />
-                </View>
-                <Text style={styles.actionLabel}>Add a Pet</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('PetQRScan', { fromScreen: 'Home' })}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <ScanAltIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Scan a QR</Text>
-              </View>
-            </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.homeContent} showsVerticalScrollIndicator={false}>
+          <View style={styles.barterCard}>
+            <View style={styles.barterTitleRow}>
+              <Text style={styles.barterTitle}>Barter your time</Text>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open Wallet, TreatCoins balance" style={styles.balance} onPress={() => navigation.navigate('PaymentMethods')}>
+                <Icon name="ellipse-outline" size={18} color="#896614" /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.careActions}>
+              <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Text style={styles.findCareText}>Find pet care</Text></TouchableOpacity>
+              <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}><Text style={styles.offerCareText}>{checkingStatus ? 'Checking…' : 'Offer pet care'}</Text></TouchableOpacity>
+            </View>
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Find care with AI sitter matching" style={styles.aiLine} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Icon name="sparkles" size={14} color="#285D6D" /><Text style={styles.aiText}>AI sitter matching</Text></TouchableOpacity>
           </View>
-
-          {/* Row 2 */}
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('Bookings')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <OrderApproveIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Bookings</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('OpenRequests')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <Icon name="send-outline" size={36} color="#32A6D8" />
-                </View>
-                <Text style={styles.actionLabel}>My Requests</Text>
-              </View>
-            </TouchableOpacity>
+          <Text style={styles.shortcutsTitle}>Your shortcuts</Text>
+          <View style={styles.shortcutGrid}>
+            {shortcuts.map(item => <TouchableOpacity key={item.title} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>
+              <Icon name={item.icon} size={26} color={item.color} /><View><Text style={styles.shortcutTitle}>{item.title}</Text><Text style={styles.shortcutDetail}>{item.detail}</Text></View>
+            </TouchableOpacity>)}
           </View>
-
-          {/* Row 3 */}
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('Notifications')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <NotificationSolidIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Notifications</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('ChatList')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <InboxLightIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Inbox</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Keep sitter access available after approval. */}
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.actionCard, styles.halfCard]}
-              onPress={handleBecomeASitter}
-              disabled={checkingStatus}
-            >
-              <View style={styles.cardContent}>
-                {checkingStatus ? (
-                  <ActivityIndicator size="small" color="#32A6D8" />
-                ) : (
-                  <>
-                    <View style={styles.iconWrapper}>
-                      <Icon name="paw-outline" size={36} color="#32A6D8" />
-                    </View>
-                    <Text style={styles.actionLabel}>
-                      {isApprovedSitter ? 'Sitter Dashboard' : 'Become a Pet Sitter'}
-                    </Text>
-                  </>
-                )}
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
+          <TouchableOpacity accessibilityRole="link" style={styles.smartTags} onPress={openSmartTags}><Icon name="pricetag-outline" size={28} color="#41618F" /><View style={{ flex: 1 }}><Text style={styles.shortcutTitle}>Smart Tags</Text><Text style={styles.shortcutDetail}>Shop OkTreat on Amazon</Text></View><Icon name="arrow-up-outline" style={{ transform: [{ rotate: '45deg' }] }} size={20} color="#41618F" /></TouchableOpacity>
+        </ScrollView>
 
         {/* Approved Modal */}
         <ProfileVerifiedModal
@@ -339,6 +251,22 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  homeContent: { paddingHorizontal: 24, paddingBottom: 24 },
+  barterCard: { borderRadius: 22, padding: 16, backgroundColor: '#E9F5F5', borderWidth: 1, borderColor: '#D8EAEB', marginBottom: 20 },
+  barterTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 },
+  barterTitle: { fontSize: 22, fontWeight: '700', color: '#132F39' },
+  balance: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: '#FFF7DC', borderRadius: 22, padding: 10, minHeight: 44 },
+  balanceText: { color: '#624A10', fontSize: 14, fontWeight: '700' },
+  careActions: { flexDirection: 'row', gap: 10 },
+  findCare: { flex: 1, backgroundColor: '#126F82', padding: 13, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
+  offerCare: { flex: 1, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#9BBFC6', padding: 12, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
+  findCareText: { fontSize: 13, color: '#FFF', fontWeight: '600' }, offerCareText: { fontSize: 13, color: '#14576A', fontWeight: '600' },
+  aiLine: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingTop: 10, minHeight: 40 }, aiText: { fontSize: 12, color: '#285D6D', fontWeight: '600' },
+  shortcutsTitle: { color: '#172E38', fontSize: 16, fontWeight: '700', marginBottom: 12 },
+  shortcutGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 },
+  shortcut: { width: '48%', minHeight: 116, borderRadius: 18, padding: 14, justifyContent: 'space-between', gap: 12 },
+  shortcutTitle: { fontSize: 14, fontWeight: '700', color: '#172E38' }, shortcutDetail: { fontSize: 11, color: '#3D5661', marginTop: 4, lineHeight: 16 },
+  smartTags: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 12, backgroundColor: '#EEF2FB', borderRadius: 18, padding: 18, minHeight: 80 },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -348,6 +276,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingTop: 20,
+    paddingBottom: 14,
     gap: 10,
   },
   avatarContainer: {
@@ -405,15 +334,15 @@ const styles = StyleSheet.create({
     lineHeight: 12,
   },
   welcomeText: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#344D58',
+    fontSize: 14,
     fontFamily: 'Poppins',
     fontWeight: '500',
     lineHeight: 24.8,
   },
   emailText: {
-    color: '#5D6165',
-    fontSize: 13,
+    color: '#172E38',
+    fontSize: 20,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
     lineHeight: 22,
@@ -457,7 +386,7 @@ const styles = StyleSheet.create({
   },
   halfCard: {
     flex: 0,
-    width: (width - 48 - 12) / 2,
+    width: '48%',
   },
   cardContent: {
     flex: 1,

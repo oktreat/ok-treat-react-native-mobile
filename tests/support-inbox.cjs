@@ -31,6 +31,17 @@ test('support starts with in-app requests and safety reporting, without a person
   assert.ok(h.find(n => n.props.title === 'Report a safety concern'));
   assert.equal(h.find(n => /Call OkTreat/.test(n.props.title || '')), undefined);
 });
+test('support history keeps five visible and navigates to the next page', async () => {
+  const paths = [];
+  const h = harness({}, async path => { paths.push(path); return { data: { data: Array.from({ length: 5 }, (_, i) => ({ id: 'case-' + i, subject: 'Request ' + i, category: 'app', status: 'open' })), pagination: { hasMore: true } } }; });
+  h.render(); h.focus(); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(paths[0], '/support/cases?page=0&status=open');
+  assert.equal(h.states[2].length, 5);
+  h.find(n => n.props.title === 'Next 5').props.onPress();
+  h.render(); h.focus(); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(paths[1], '/support/cases?page=1&status=open');
+  assert.equal(h.states[2].length, 5);
+});
 test('safety selection opens the report form and cannot submit empty details', () => {
   const h = harness(); h.find(n => n.props.title === 'Report a safety concern').props.onPress();
   assert.equal(h.states[4], 'safety');

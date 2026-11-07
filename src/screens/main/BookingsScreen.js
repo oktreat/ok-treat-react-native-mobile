@@ -66,7 +66,7 @@ export default function BookingsScreen({ navigation, route }) {
   const highlightedBookingId = route?.params?.bookingId || null;
 
   const [selectedTab, setSelectedTab] = useState(
-    ['All', 'Upcoming', 'Past'].includes(initialTab) ? initialTab : 'All'
+    ['Upcoming', 'My Requests', 'Past'].includes(initialTab) ? initialTab : 'Upcoming'
   );
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ export default function BookingsScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
   const [confirmingId, setConfirmingId] = useState(null);
 
-  const tabs = ['All', 'Upcoming', 'Past'];
+  const tabs = ['Upcoming', 'My Requests', 'Past'];
 
   const fetchBookings = useCallback(async () => {
     try {
@@ -164,10 +164,8 @@ export default function BookingsScreen({ navigation, route }) {
 
   // Filter bookings based on selected tab
   const getFilteredBookings = () => {
-    if (selectedTab === 'All') {
-      return bookings;
-    }
-    return bookings.filter(booking => getCategory(booking.status) === selectedTab);
+    if (selectedTab === 'My Requests') return bookings.filter(booking => booking.status?.toUpperCase() === 'PENDING');
+    return bookings.filter(booking => getCategory(booking.status) === selectedTab && booking.status?.toUpperCase() !== 'PENDING');
   };
 
   const filteredBookings = getFilteredBookings();
@@ -314,7 +312,7 @@ export default function BookingsScreen({ navigation, route }) {
                   styles.tabText,
                   selectedTab === tab && styles.tabTextActive
                 ]}>
-                  {tab}
+                  {tab === 'Past' ? 'History' : tab}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -426,7 +424,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabActive: {
-    backgroundColor: 'white',
+    backgroundColor: '#126F82',
     shadowColor: '#858585',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -435,14 +433,14 @@ const styles = StyleSheet.create({
   },
   tabText: {
     textAlign: 'center',
-    color: '#858585',
-    fontSize: 14,
+    color: '#344D58',
+    fontSize: 13,
     fontFamily: 'Manrope',
     fontWeight: '600',
     lineHeight: 18.2,
   },
   tabTextActive: {
-    color: '#45594B',
+    color: '#FFFFFF',
   },
   contentContainer: {
     position: 'absolute',
@@ -468,8 +466,8 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    color: '#858585',
-    fontSize: 14,
+    color: '#344D58',
+    fontSize: 13,
     fontFamily: 'Poppins',
     fontWeight: '400',
   },
@@ -494,8 +492,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   emptyText: {
-    color: '#858585',
-    fontSize: 14,
+    color: '#344D58',
+    fontSize: 13,
     fontFamily: 'Poppins',
     fontWeight: '400',
     textAlign: 'center',
