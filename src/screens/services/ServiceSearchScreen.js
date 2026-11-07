@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
@@ -19,6 +20,7 @@ import moment from 'moment';
 const isHourBased = (t) => isHourBasedService(t);
 
 export default function ServiceSearchScreen({ navigation, route }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   const { serviceType = 'Boarding', serviceTitle = 'Boarding', serviceSubtitle = 'When do you need a sitter?' } = route.params || {};
   const insets = useSafeAreaInsets();
@@ -51,7 +53,7 @@ export default function ServiceSearchScreen({ navigation, route }) {
   const handleSearchNow = () => {
     if (hourBased) {
       if (!singleDate || !startTime || !endTime) {
-        alert('Missing Time', 'Please pick a date and a time window.', 'pending');
+        alert(copy("Missing Time"), copy("Please pick a date and a time window."), 'pending');
         return;
       }
       // Combine the picked date with the HH:mm strings into full ISO
@@ -82,7 +84,7 @@ export default function ServiceSearchScreen({ navigation, route }) {
     }
 
     if (!startDate) {
-      alert('Missing Dates', 'Please select dates for your search', 'pending');
+      alert(copy("Missing Dates"), copy("Please select dates for your search"), 'pending');
       return;
     }
 
@@ -156,8 +158,8 @@ export default function ServiceSearchScreen({ navigation, route }) {
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>{serviceTitle}</Text>
-            <Text style={styles.headerSubtitle}>{serviceSubtitle}</Text>
+            <Text style={styles.headerTitle}>{copy(serviceTitle)}</Text>
+            <Text style={styles.headerSubtitle}>{copy(serviceSubtitle)}</Text>
           </View>
         </View>
 
@@ -166,7 +168,7 @@ export default function ServiceSearchScreen({ navigation, route }) {
           {/* Date / date-time picker — day-based services use a range
               calendar, hour-based services use single-day + time window. */}
           <View style={styles.fieldContainer}>
-            <Text style={styles.label}>{hourBased ? 'When?' : 'Select Date Range'}</Text>
+            <Text style={styles.label}>{hourBased ? copy("When?") : copy("Select Date Range")}</Text>
             {hourBased ? (
               <DateTimeWindowPicker
                 date={singleDate}
@@ -205,7 +207,7 @@ export default function ServiceSearchScreen({ navigation, route }) {
 
           {/* Select Location */}
           <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Select Your Location</Text>
+            <Text style={styles.label}>{copy("Select Your Location")}</Text>
             <TouchableOpacity 
               style={styles.locationButton}
               onPress={handleLocationPress}
@@ -222,7 +224,7 @@ export default function ServiceSearchScreen({ navigation, route }) {
         {/* Search Button */}
         <View style={[styles.buttonContainer, { bottom: 24 + insets.bottom }]}>
           <Button
-            title="Search Now"
+            title={copy("Search Now")}
             onPress={handleSearchNow}
             size='medium'
             fullWidth

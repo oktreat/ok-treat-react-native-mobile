@@ -38,12 +38,12 @@ export default function TransactionHistoryScreen({ navigation }) {
       const list = Array.isArray(txList) ? txList : [];
 
       const TYPE_LABELS = {
-        PURCHASE: 'Coin purchase',
+        PURCHASE: 'TreatCoin purchase',
         REFERRAL_BONUS: 'Referral bonus',
         EARN: 'Booking earnings',
         HOLD: 'Booking hold',
         REFUND: 'Refund',
-        SPEND: 'Coins spent',
+        SPEND: 'TreatCoins spent',
       };
       const humanize = (t) => TYPE_LABELS[t] || (t ? String(t).replace(/_/g, ' ') : 'Transaction');
 
@@ -145,7 +145,7 @@ export default function TransactionHistoryScreen({ navigation }) {
             <View style={styles.totalCoinsSection}>
               <View style={styles.totalCoinsHeader}>
                 <CoinIcon width={18} height={18} />
-                <Text style={styles.totalCoinsLabel}>Total Coins</Text>
+                <Text style={styles.totalCoinsLabel}>Total TreatCoins</Text>
               </View>
               <Text style={styles.totalCoinsAmount}>{totalCoins}</Text>
             </View>

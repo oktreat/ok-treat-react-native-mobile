@@ -124,7 +124,7 @@ export default function SitterEarningsScreen({ navigation }) {
             <View style={styles.summaryRow}>
               <CoinIcon width={28} height={28} />
               <View style={styles.summaryText}>
-                <Text style={styles.summaryLabel}>Earned coins</Text>
+                <Text style={styles.summaryLabel}>Earned TreatCoins</Text>
                 <Text style={styles.summaryAmount}>
                   {wallet.earnedCoinBalance.toLocaleString()}
                 </Text>
@@ -176,7 +176,7 @@ export default function SitterEarningsScreen({ navigation }) {
             <Text style={styles.errorText}>{error}</Text>
           ) : filtered.length === 0 ? (
             <Text style={styles.emptyText}>
-              No earnings yet. Complete a booking to start earning coins.
+              No earnings yet. Complete a booking to start earning TreatCoins.
             </Text>
           ) : (
             <View style={styles.txList}>
@@ -192,7 +192,7 @@ export default function SitterEarningsScreen({ navigation }) {
                         { color: tx.amount.startsWith('-') ? '#E53E3E' : '#3FA477' },
                       ]}
                     >
-                      {tx.amount} coins
+                      {tx.amount} TreatCoins
                     </Text>
                   </View>
                   <View style={styles.txFooter}>

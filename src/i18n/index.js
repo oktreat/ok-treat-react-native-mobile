@@ -23,42 +23,41 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import * as Localization from 'expo-localization';
 
+import { resolveLanguage } from './preferences';
 import enUs from './locales/en-us.json';
 import enUk from './locales/en-uk.json';
 import ja from './locales/ja.json';
 import zh from './locales/zh.json';
+import fr from './locales/fr.json';
+import copyEn from './locales/copy-en-us.json';
+import copyEnUk from './locales/copy-en-uk.json';
+import copyJa from './locales/copy-ja.json';
+import copyFr from './locales/copy-fr.json';
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'en-us', name: 'English (US)' },
   { code: 'en-uk', name: 'English (UK)' },
   { code: 'ja', name: '日本語' },
   { code: 'zh', name: '中文' },
+  { code: 'fr', name: 'Français' },
 ];
 
 const resources = {
-  'en-us': { translation: enUs },
-  'en-uk': { translation: enUk },
-  ja: { translation: ja },
+  'en-us': { translation: enUs, copy: copyEn },
+  'en-uk': { translation: enUk, copy: copyEnUk },
+  ja: { translation: ja, copy: copyJa },
   zh: { translation: zh },
+  fr: { translation: fr, copy: copyFr },
 };
 
 // Map a device locale ("en-US", "ja-JP", "zh-Hans-CN") to our supported codes.
 // Returns null if no match — caller falls back to en-us.
-function deviceLanguageGuess() {
-  try {
-    const locales = Localization.getLocales?.() || [];
-    const first = locales[0];
-    if (!first) return null;
-    const tag = (first.languageTag || '').toLowerCase();
-    const lang = (first.languageCode || '').toLowerCase();
-    if (tag.startsWith('en-gb') || tag.startsWith('en-uk')) return 'en-uk';
-    if (lang === 'en') return 'en-us';
-    if (lang === 'ja') return 'ja';
-    if (lang === 'zh') return 'zh';
-    return null;
-  } catch {
-    return null;
-  }
+export function deviceLanguageGuess() {
+  try { return resolveLanguage(null, Localization.getLocales?.() || []); }
+  catch { return 'en-us'; }
+}
+export function effectiveLanguage(saved) {
+  return ['en-us', 'en-uk', 'ja', 'zh', 'fr'].includes(saved) ? saved : deviceLanguageGuess();
 }
 
 // Initialize i18next synchronously at module load. Doing this here (rather
@@ -69,7 +68,7 @@ i18n.use(initReactI18next).init({
   resources,
   lng: deviceLanguageGuess() || 'en-us',
   fallbackLng: 'en-us',
-  ns: ['translation'],
+  ns: ['translation', 'copy'],
   defaultNS: 'translation',
   keySeparator: '.',
   nsSeparator: ':',
@@ -79,7 +78,7 @@ i18n.use(initReactI18next).init({
   // key works but t() returns the raw key.
   lowerCaseLng: true,
   load: 'currentOnly',
-  supportedLngs: ['en-us', 'en-uk', 'ja', 'zh'],
+  supportedLngs: ['en-us', 'en-uk', 'ja', 'zh', 'fr'],
   nonExplicitSupportedLngs: false,
   interpolation: {
     escapeValue: false, // React already escapes
@@ -117,7 +116,7 @@ if (__DEV__) {
  * default from the device locale.
  */
 export async function initI18n(savedLanguage) {
-  const lng = savedLanguage || deviceLanguageGuess() || 'en-us';
+  const lng = effectiveLanguage(savedLanguage);
   if (i18n.language !== lng) {
     try {
       await i18n.changeLanguage(lng);

@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import {
   View,
   Text,
@@ -5,11 +6,15 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { formatUSD } from '../../i18n/preferences';
 import ScreenWrapper from '../../components/ScreenWrapper';
-import { BackArrowIcon, CoinIcon } from '../../assets';
+import { BackArrowIcon } from '../../assets';
 import { Button } from '../../components';
+import TreatCoinMark from '../../components/TreatCoinMark';
 import StripeCardSheet from '../../components/StripeCardSheet';
 import api from '../../config/api';
 import { useAppAlert } from '../../context/AlertContext';
@@ -17,9 +22,11 @@ import { usePaymentConfig } from '../../context/PaymentConfigContext';
 import { useWallet } from '../../context/WalletContext';
 
 // Format priceInCents → "$24.99"
-const formatPrice = (cents) => `$${(Number(cents || 0) / 100).toFixed(2)}`;
+const formatPrice = formatUSD;
 
 export default function ShopCoinsScreen({ navigation }) {
+  useCopyUpdates();
+  const { t } = useTranslation();
   const alert = useAppAlert();
   const { mode, publishableKey } = usePaymentConfig();
   const wallet = useWallet();
@@ -49,7 +56,7 @@ export default function ShopCoinsScreen({ navigation }) {
       const data = response.data?.data || response.data || {};
       setBalance(Number(data.coinBalance || 0));
     } catch (err) {
-      console.warn('Error fetching coin balance:', err?.message);
+      console.warn('Error fetching TreatCoin balance:', err?.message);
     } finally {
       setBalanceLoading(false);
     }
@@ -88,7 +95,7 @@ export default function ShopCoinsScreen({ navigation }) {
   // for the SDK's confirmPayment call.
   const requestPaymentIntent = async () => {
     if (!selectedPackage) {
-      return { message: 'Please select a package.' };
+      return { message: copy('Please select a package.') };
     }
     try {
       const response = await api.post('/coins/purchase', { packageId: selectedPackage.id });
@@ -99,7 +106,7 @@ export default function ShopCoinsScreen({ navigation }) {
       return { clientSecret: data.clientSecret, paymentIntentId: data.paymentIntentId };
     } catch (err) {
       console.error('Purchase error:', err);
-      return { message: err.response?.data?.message || 'Failed to start purchase.' };
+      return { message: err.response?.data?.message || copy('Failed to start purchase.') };
     }
   };
 
@@ -160,11 +167,11 @@ export default function ShopCoinsScreen({ navigation }) {
         if (!isMountedRef.current) return;
         try {
           if (credited) {
-            alert('Success', `${expectedDelta} coins added to your account.`, 'success');
+            alert(copy('Success'), copy('{{amount}} TreatCoins added to your account.', { amount: expectedDelta }), 'success');
           } else {
             alert(
-              'Payment received',
-              'Your payment was charged. Coins will appear in your balance shortly.',
+              copy('Payment received'),
+              copy('Your payment was charged. TreatCoins will appear in your balance shortly.'),
               'success',
             );
           }
@@ -189,11 +196,10 @@ export default function ShopCoinsScreen({ navigation }) {
     <ScreenWrapper noBottomTabs>
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <TouchableOpacity onPress={handleBack} style={styles.backButton} accessibilityLabel="Go back">
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Shop Coins</Text>
-          <View style={styles.placeholder} />
+
         </View>
 
         <ScrollView
@@ -203,14 +209,19 @@ export default function ShopCoinsScreen({ navigation }) {
         >
           {/* Balance */}
           <View style={styles.totalCoinsSection}>
-            <View style={styles.coinIconWrapper}>
-              <CoinIcon width={70} height={70} />
-            </View>
+            <Image
+              source={require('../../assets/images/treatcoins-logo.png')}
+              style={styles.treatCoinsLogo}
+              resizeMode="contain"
+              accessibilityLabel="TreatCoins"
+            />
             <Text style={styles.totalCoinsAmount}>
               {balanceLoading ? '...' : balance.toLocaleString()}
             </Text>
-            <Text style={styles.totalCoinsLabel}>Total Coins</Text>
+            <Text style={styles.totalCoinsLabel}>{t('shop.balance')}</Text>
           </View>
+
+          <Text style={styles.currencyNote}>{t('shop.usdOnly')}</Text>
 
           {/* Test-mode banner */}
           {mode === 'test' && (
@@ -229,7 +240,7 @@ export default function ShopCoinsScreen({ navigation }) {
               </View>
             ) : packages.length === 0 ? (
               <View style={styles.packagesLoading}>
-                <Text style={styles.emptyText}>No packages available right now.</Text>
+                <Text style={styles.emptyText}>{t('shop.noPackages')}</Text>
               </View>
             ) : (
               packages.map((pkg) => {
@@ -244,13 +255,13 @@ export default function ShopCoinsScreen({ navigation }) {
                     <View style={styles.packageLeft}>
                       <Text style={styles.packagePrice}>{formatPrice(pkg.priceInCents)}</Text>
                       {pkg.bonusCoins > 0 && (
-                        <Text style={styles.bonusText}>+{pkg.bonusCoins} bonus</Text>
+                        <Text style={styles.bonusText}>{t('shop.bonus', { amount: pkg.bonusCoins })}</Text>
                       )}
                     </View>
                     <View style={styles.packageCoins}>
-                      <CoinIcon width={18} height={18} />
+                      <TreatCoinMark size={20} />
                       <Text style={styles.packageCoinsText}>
-                        {totalCoins.toLocaleString()} Coins
+                        {totalCoins.toLocaleString()} TreatCoins
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -264,16 +275,19 @@ export default function ShopCoinsScreen({ navigation }) {
           <Button
             title={
               confirming
-                ? 'Crediting coins...'
+                ? t('shop.crediting')
                 : !stripeReady
-                ? 'Payments unavailable'
+                ? t('shop.unavailable')
                 : selectedPackage
-                ? `Continue to Pay ${formatPrice(selectedPackage.priceInCents)}`
-                : 'Select a package'
+                ? t('shop.pay', { amount: formatPrice(selectedPackage.priceInCents) })
+                : t('shop.select')
             }
             onPress={() => setShowCardSheet(true)}
             fullWidth
             size="medium"
+            type="secondary"
+            style={styles.payButton}
+            textStyle={styles.payButtonText}
             disabled={!canPay}
           />
         </View>
@@ -281,7 +295,7 @@ export default function ShopCoinsScreen({ navigation }) {
         <StripeCardSheet
           visible={showCardSheet}
           onClose={() => setShowCardSheet(false)}
-          amountLabel={selectedPackage ? formatPrice(selectedPackage.priceInCents) : '$0'}
+          amountLabel={selectedPackage ? formatPrice(selectedPackage.priceInCents) : 'US$0.00'}
           fetchClientSecret={requestPaymentIntent}
           onSuccess={handlePaymentConfirmed}
         />
@@ -312,31 +326,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle: {
-    color: 'black',
-    fontSize: 16,
-    fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
-  },
-  placeholder: { width: 40 },
   scrollContent: {
     paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingTop: 0,
     paddingBottom: 100,
   },
   totalCoinsSection: { alignItems: 'center', marginBottom: 32 },
-  coinIconWrapper: {
-    width: 80,
-    height: 80,
-    paddingLeft: 5,
-    paddingTop: 5,
-    borderRadius: 39,
-    backgroundColor: '#FBCE04',
-    justifyContent: 'center',
-    alignItems: 'center',
+  treatCoinsLogo: {
+    width: 180,
+    height: 164,
     marginBottom: 8,
   },
+  payButton: { backgroundColor: '#087EA4', borderColor: '#087EA4' },
+  payButtonText: { color: '#FFFFFF', fontWeight: '700' },
   totalCoinsAmount: {
     color: 'black',
     fontSize: 24,
@@ -367,6 +369,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir LT Std',
     fontWeight: '500',
   },
+  currencyNote: { color: '#526571', fontSize: 12, lineHeight: 18, marginBottom: 16 },
   packagesSection: { gap: 10 },
   packagesLoading: {
     paddingVertical: 32,
@@ -391,7 +394,7 @@ const styles = StyleSheet.create({
   },
   packageCardSelected: {
     borderWidth: 2,
-    borderColor: '#32A6D8',
+    borderColor: '#087EA4',
   },
   packageLeft: { gap: 4 },
   packagePrice: {

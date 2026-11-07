@@ -25,7 +25,7 @@ export default function CashOutComingSoonDialog({ visible, onClose }) {
           </View>
           <Text style={styles.title}>Cash-out coming soon</Text>
           <Text style={styles.message}>
-            Soon you'll be able to withdraw your earned coins as real cash. This feature is in development — for now, your earnings stay in your wallet and can be spent on services.
+            Soon you'll be able to withdraw your earned TreatCoins as real cash. This feature is in development — for now, your earnings stay in your wallet and can be spent on services.
           </Text>
           <TouchableOpacity style={styles.button} onPress={onClose} activeOpacity={0.85}>
             <Text style={styles.buttonText}>OK</Text>

@@ -1,4 +1,7 @@
 import React, { useEffect } from 'react';
+import { AppState } from 'react-native';
+import { getLanguage } from '../utils/storage';
+import { initI18n } from '../i18n';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from '../store/slices/authSlice';
@@ -40,6 +43,13 @@ export default function RootNavigator() {
       setIsReady(true);
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', state => {
+      if (state === 'active') getLanguage().then(initI18n).catch(() => {});
+    });
+    return () => sub.remove();
+  }, []);
 
   // Connect / disconnect socket based on auth state
   useEffect(() => {

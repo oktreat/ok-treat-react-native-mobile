@@ -131,7 +131,7 @@ export default function SitterBookingsScreen({ navigation }) {
       await fetchBookings();
       Alert.alert(
         'Marked complete',
-        'We’ve asked the owner to confirm. Once they do (or after 3 days), your coins are released.'
+        'We’ve asked the owner to confirm. Once they do (or after 3 days), your TreatCoins are released.'
       );
     } catch (err) {
       Alert.alert('Could not mark complete', err?.message || 'Please try again in a moment.');
@@ -143,7 +143,7 @@ export default function SitterBookingsScreen({ navigation }) {
   const handleMarkComplete = (booking) => {
     Alert.alert(
       'Mark as completed?',
-      'Confirm you’ve finished this booking. The owner will be asked to confirm before your coins are released.',
+      'Confirm you’ve finished this booking. The owner will be asked to confirm before your TreatCoins are released.',
       [
         { text: 'Cancel', style: 'cancel' },
         { text: 'Mark completed', onPress: () => doMarkComplete(booking) },
@@ -230,7 +230,7 @@ export default function SitterBookingsScreen({ navigation }) {
               {isCompleted && !!booking.coins && (
                 <View style={styles.metaRow}>
                   <CoinIcon width={16} height={16} fill="#FBCE04" />
-                  <Text style={styles.coinsText}>{booking.coins} Coins</Text>
+                  <Text style={styles.coinsText}>{booking.coins} TreatCoins</Text>
                 </View>
               )}
               {isCompleted && !!booking.rating && (

@@ -373,7 +373,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                                                         <CoinIcon width={16} height={16} style={styles.coinForeground} />
                                                     </View>
-                                                    <Text style={styles.rateValue}>{holidayRate} Coins</Text>
+                                                    <Text style={styles.rateValue}>{holidayRate} TreatCoins</Text>
                                                 </View>
                                             ) : (
                                                 <View style={styles.inputBox}>
@@ -403,7 +403,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                                                         <CoinIcon width={16} height={16} style={styles.coinForeground} />
                                                     </View>
-                                                    <Text style={styles.rateValue}>{additionalDogRate} Coins</Text>
+                                                    <Text style={styles.rateValue}>{additionalDogRate} TreatCoins</Text>
                                                 </View>
                                             ) : (
                                                 <View style={styles.inputBox}>
@@ -433,7 +433,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                                                         <CoinIcon width={16} height={16} style={styles.coinForeground} />
                                                     </View>
-                                                    <Text style={styles.rateValue}>{puppyRate} Coins</Text>
+                                                    <Text style={styles.rateValue}>{puppyRate} TreatCoins</Text>
                                                 </View>
                                             ) : (
                                                 <View style={styles.inputBox}>
@@ -463,7 +463,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         <CoinBackgroundIcon width={16} height={16} style={styles.coinBackground} />
                                                         <CoinIcon width={16} height={16} style={styles.coinForeground} />
                                                     </View>
-                                                    <Text style={styles.rateValue}>{longStayRate} Coins</Text>
+                                                    <Text style={styles.rateValue}>{longStayRate} TreatCoins</Text>
                                                 </View>
                                             ) : (
                                                 <View style={styles.inputBox}>

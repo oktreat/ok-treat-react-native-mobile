@@ -1,7 +1,8 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
 import ScreenWrapper from '../../components/ScreenWrapper';
-import { Calendar2Icon, CalendarIconBlue, SplashIcon } from '../../assets';
+import { Calendar2Icon, CalendarIconBlue } from '../../assets';
 import { 
   SliderIcon,
   BriefcaseIcon,
@@ -72,6 +73,7 @@ const ServiceIcon = ({ iconName }) => {
 };
 
 export default function ServicesScreen({ navigation }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   const handleServicePress = (service) => {
     navigation.navigate('ServiceSearch', {
@@ -86,12 +88,9 @@ export default function ServicesScreen({ navigation }) {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.avatarContainer}>
-            <Text style={{fontSize: 24, color: '#F38FB4'}}>🐾</Text>
-          </View>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.welcomeText}>Services</Text>
-            <Text style={styles.emailText}>You can choose services</Text>
+            <Text style={styles.welcomeText}>{copy("Services")}</Text>
+            <Text style={styles.emailText}>{copy("You can choose services")}</Text>
           </View>
         </View>
 
@@ -108,8 +107,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[0].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[0].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[0].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[0].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[0].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -123,8 +122,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[1].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[1].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[1].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[1].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[1].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -141,8 +140,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[2].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[2].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[2].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[2].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[2].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -156,8 +155,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[3].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[3].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[3].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[3].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[3].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -174,8 +173,8 @@ export default function ServicesScreen({ navigation }) {
                   <ServiceIcon iconName={SERVICES[4].icon} />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.serviceTitle}>{SERVICES[4].title}</Text>
-                  <Text style={styles.serviceSubtitle}>{SERVICES[4].subtitle}</Text>
+                  <Text style={styles.serviceTitle}>{copy(SERVICES[4].title)}</Text>
+                  <Text style={styles.serviceSubtitle}>{copy(SERVICES[4].subtitle)}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -198,26 +197,17 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     gap: 10,
   },
-  avatarContainer: {
-    width: 45,
-    height: 45,
-    borderRadius: 37.5,
-    backgroundColor: '#FFC2EB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
 
   headerTextContainer: {
     flex: 1,
     gap: 2,
   },
   welcomeText: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#087EA4',
+    fontSize: 20,
     fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
+    fontWeight: '700',
+    lineHeight: 28,
   },
   emailText: {
     color: '#5D6165',
@@ -232,7 +222,7 @@ const styles = StyleSheet.create({
     height: 27,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#FFC2EB',
+    borderColor: '#E2F3FB',
     justifyContent: 'center',
     alignItems: 'center',
   },

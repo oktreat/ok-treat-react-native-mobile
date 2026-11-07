@@ -14,7 +14,7 @@ const { width, height } = Dimensions.get('window');
 export default function LanguageScreen({ navigation, route }) {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const currentLanguage = useSelector((s) => s.app?.language) || 'en-us';
+  const currentLanguage = useSelector((s) => s.app?.language) || 'system';
   // route.params.fromSettings === true → behave as a re-selection screen
   // (no Onboarding redirect, just goBack on Proceed). Default flow is the
   // first-launch onboarding path.
@@ -22,7 +22,8 @@ export default function LanguageScreen({ navigation, route }) {
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
 
   const handleContinue = async () => {
-    await dispatch(setLanguage(selectedLanguage));
+    try { await dispatch(setLanguage(selectedLanguage)).unwrap(); }
+    catch { return; }
     if (fromSettings) {
       navigation.goBack();
     } else {
@@ -48,7 +49,7 @@ export default function LanguageScreen({ navigation, route }) {
 
       {/* Language List */}
       <View style={styles.languageList}>
-        {SUPPORTED_LANGUAGES.map((language) => (
+        {[{ code: 'system', name: t('preferences.phoneLanguage') }, ...SUPPORTED_LANGUAGES].map((language) => (
           <TouchableOpacity
             key={language.code}
             style={[

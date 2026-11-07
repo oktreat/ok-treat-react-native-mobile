@@ -174,8 +174,8 @@ export default function ContactSitterScreen({ navigation, route }) {
 
     if (insufficient) {
       alert(
-        'Not Enough Coins',
-        `You need ${totalCost} coins for this booking but only have ${balance}. Tap Buy Coins to top up.`,
+        'Not Enough TreatCoins',
+        `You need ${totalCost} TreatCoins for this booking but only have ${balance}. Tap Buy TreatCoins to top up.`,
         'pending',
       );
       return;
@@ -206,7 +206,7 @@ export default function ContactSitterScreen({ navigation, route }) {
         alert('No connection', 'We couldn’t reach the server. Check your internet and try again.', 'error');
       } else if (msg && /coin balance/i.test(msg)) {
         // Server-side balance rejection — the message already has need/have numbers.
-        alert('Not enough coins', `${msg} Tap Buy Coins to top up.`, 'pending');
+        alert('Not enough TreatCoins', `${msg} Tap Buy TreatCoins to top up.`, 'pending');
       } else if (err?.status === 404) {
         alert('No longer available', msg || 'This sitter or pet is no longer available. Please search again.', 'pending');
       } else if (err?.status === 400 && msg) {
@@ -305,8 +305,8 @@ export default function ContactSitterScreen({ navigation, route }) {
               <Text style={styles.sectionTitle}>Price Estimate</Text>
               <View style={styles.card}>
                 <View style={styles.priceRow}>
-                  <Text style={styles.priceLabel}>{baseRate} coins x {unitCount || 1} {unitLabel}</Text>
-                  <Text style={styles.priceValue}>{totalCost} coins</Text>
+                  <Text style={styles.priceLabel}>{baseRate} TreatCoins x {unitCount || 1} {unitLabel}</Text>
+                  <Text style={styles.priceValue}>{totalCost} TreatCoins</Text>
                 </View>
                 <View style={[styles.priceRow, { marginTop: 8 }]}>
                   <Text style={[styles.priceLabel, { fontSize: 12, color: '#818898' }]}>Your balance</Text>
@@ -314,13 +314,13 @@ export default function ContactSitterScreen({ navigation, route }) {
                     styles.priceLabel,
                     { fontWeight: '600', color: insufficient ? '#E53E3E' : '#3FA477' }
                   ]}>
-                    {balance.toLocaleString()} coins
+                    {balance.toLocaleString()} TreatCoins
                   </Text>
                 </View>
                 {insufficient && (
                   <View style={{ marginTop: 12 }}>
                     <Text style={{ fontSize: 12, color: '#E53E3E', marginBottom: 8, fontFamily: 'Avenir LT Std' }}>
-                      You need {(totalCost - balance).toLocaleString()} more coins.
+                      You need {(totalCost - balance).toLocaleString()} more TreatCoins.
                     </Text>
                     <TouchableOpacity
                       onPress={() => navigation.navigate('ShopCoins')}
@@ -333,7 +333,7 @@ export default function ContactSitterScreen({ navigation, route }) {
                       }}
                     >
                       <Text style={{ color: '#fff', fontWeight: '600', fontSize: 13, fontFamily: 'Avenir LT Std' }}>
-                        Buy Coins
+                        Buy TreatCoins
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -442,7 +442,7 @@ export default function ContactSitterScreen({ navigation, route }) {
             </View>
           ) : (
             <Button
-              title={insufficient ? 'Not Enough Coins' : 'Send Request'}
+              title={insufficient ? 'Not Enough TreatCoins' : 'Send Request'}
               onPress={handleSendRequest}
               fullWidth
               size="medium"
