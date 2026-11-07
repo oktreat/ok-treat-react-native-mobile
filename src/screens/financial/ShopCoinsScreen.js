@@ -8,10 +8,8 @@ import {
   Image,
 } from 'react-native';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Localization from 'expo-localization';
 import { useTranslation } from 'react-i18next';
-import { CURRENCIES, resolveCurrency, formatUSD } from '../../i18n/preferences';
+import { formatUSD } from '../../i18n/preferences';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon } from '../../assets';
 import { Button } from '../../components';
@@ -27,19 +25,6 @@ const formatPrice = formatUSD;
 
 export default function ShopCoinsScreen({ navigation }) {
   const { t } = useTranslation();
-  const [currencyPreference, setCurrencyPreference] = useState('system');
-  const [currencyReady, setCurrencyReady] = useState(false);
-  const [currencyError, setCurrencyError] = useState(false);
-  const preferredCurrency = resolveCurrency(currencyPreference, Localization.getLocales?.() || []);
-  useEffect(() => {
-    let active = true;
-    AsyncStorage.getItem('@oktreat_currency').then(value => { if (active) setCurrencyPreference(CURRENCIES.includes(value) ? value : 'system'); }).catch(() => {}).finally(() => { if (active) setCurrencyReady(true); });
-    return () => { active = false; };
-  }, []);
-  const chooseCurrency = async value => {
-    try { await AsyncStorage.setItem('@oktreat_currency', value); setCurrencyPreference(value); setCurrencyError(false); }
-    catch { setCurrencyError(true); }
-  };
   const alert = useAppAlert();
   const { mode, publishableKey } = usePaymentConfig();
   const wallet = useWallet();
@@ -234,16 +219,7 @@ export default function ShopCoinsScreen({ navigation }) {
             <Text style={styles.totalCoinsLabel}>{t('shop.balance')}</Text>
           </View>
 
-          <View style={styles.currencySection}>
-            <Text style={styles.currencyTitle}>{t('preferences.currency')}</Text>
-            <View style={styles.currencyOptions}>
-              {['system', ...CURRENCIES].map(value => <TouchableOpacity key={value} disabled={!currencyReady} accessibilityRole="radio" accessibilityState={{ selected: currencyPreference === value }} onPress={() => chooseCurrency(value)} style={[styles.currencyOption, currencyPreference === value && styles.currencyOptionSelected]}>
-                <Text style={styles.currencyOptionText}>{value === 'system' ? t('preferences.phoneRegion') : value}</Text>
-              </TouchableOpacity>)}
-            </View>
-            <Text style={styles.currencyNote}>{preferredCurrency === 'USD' ? t('shop.usdOnly') : t('shop.localPending', { currency: preferredCurrency })}</Text>
-            {currencyError && <Text style={styles.currencyNote}>{t('preferences.saveError')}</Text>}
-          </View>
+          <Text style={styles.currencyNote}>{t('shop.usdOnly')}</Text>
 
           {/* Test-mode banner */}
           {mode === 'test' && (
@@ -391,13 +367,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir LT Std',
     fontWeight: '500',
   },
-  currencySection: { marginBottom: 20, gap: 8 },
-  currencyTitle: { fontSize: 14, fontWeight: '600', color: '#142D38' },
-  currencyOptions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  currencyOption: { paddingHorizontal: 12, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: '#DFE7EB' },
-  currencyOptionSelected: { backgroundColor: '#E2F3F5', borderColor: '#087EA4' },
-  currencyOptionText: { color: '#142D38', fontWeight: '600' },
-  currencyNote: { color: '#526571', fontSize: 12, lineHeight: 18 },
+  currencyNote: { color: '#526571', fontSize: 12, lineHeight: 18, marginBottom: 16 },
   packagesSection: { gap: 10 },
   packagesLoading: {
     paddingVertical: 32,

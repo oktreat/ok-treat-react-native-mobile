@@ -15,13 +15,12 @@ function harness(saved='CAD') {
  const find=fn=>nodes(render()).find(fn);
  return{render,find,posts,writes,init:async()=>{render();for(const f of [...effects])f();await new Promise(r=>setImmediate(r));}};
 }
-test('CAD preference is saved while packages, Pay and card confirmation stay explicitly USD',async()=>{
+test('purchase page has no currency picker and keeps the same USD amount through confirmation',async()=>{
  const h=harness();await h.init();
- assert.ok(h.find(n=>n.type==='Text'&&n.children.some(c=>typeof c==='string'&&c.includes('CAD preference saved'))));
+ assert.equal(h.find(n=>n.props.accessibilityRole==='radio'),undefined);
+ assert.ok(h.find(n=>n.type==='Text'&&n.children.includes('All payments are currently charged in USD.')));
  const pay=h.find(n=>n.type==='Button');assert.equal(pay.props.title,'Continue to Pay US$44.99');assert.equal(pay.props.disabled,false);
  assert.equal(h.find(n=>n.type==='StripeCardSheet').props.amountLabel,'US$44.99');
- await h.find(n=>n.props.accessibilityRole==='radio'&&n.children[0]?.children[0]==='JPY').props.onPress();
- assert.equal(h.writes[0][1],'JPY');assert.ok(h.find(n=>n.type==='Text'&&n.children.some(c=>typeof c==='string'&&c.includes('JPY preference saved'))));
  await h.find(n=>n.type==='StripeCardSheet').props.fetchClientSecret();
  assert.equal(h.posts.length,1);assert.equal(h.posts[0][0],'/coins/purchase');assert.equal(h.posts[0][1].packageId,'p2');assert.equal(Object.keys(h.posts[0][1]).length,1);
 });
