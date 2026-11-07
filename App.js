@@ -20,6 +20,7 @@ import { getLanguage } from './src/utils/storage';
 import { AlertProvider } from './src/context/AlertContext';
 import { PaymentConfigProvider, usePaymentConfig } from './src/context/PaymentConfigContext';
 import { WalletProvider } from './src/context/WalletContext';
+import { recordPushDiagnostic } from './src/services/pushDiagnostics';
 
 // Lock the app's typography to our design — ignore the device's "Font size" /
 // "Display size" accessibility scaling so large system settings can't inflate
@@ -106,7 +107,10 @@ export default function App() {
     let receivedSub = null;
     let appStateSub = null;
     if (Platform.OS !== 'web') {
-      receivedSub = Notifications.addNotificationReceivedListener(() => syncNotificationBadge());
+      receivedSub = Notifications.addNotificationReceivedListener((notification) => {
+        recordPushDiagnostic(notification, 'received');
+        syncNotificationBadge();
+      });
       appStateSub = AppState.addEventListener('change', (state) => {
         if (state === 'active') {
           syncNotificationBadge();
@@ -140,6 +144,7 @@ export default function App() {
       };
 
       responseSub = Notifications.addNotificationResponseReceivedListener((response) => {
+        recordPushDiagnostic(response?.notification, 'opened');
         try { routeFromPush(response?.notification?.request?.content?.data); }
         catch (e) { console.log('push tap routing failed:', e?.message); }
       });
@@ -149,6 +154,7 @@ export default function App() {
       Notifications.getLastNotificationResponseAsync()
         .then((response) => {
           if (!response) return;
+          recordPushDiagnostic(response.notification, 'cold-start');
           setTimeout(() => {
             try { routeFromPush(response?.notification?.request?.content?.data); }
             catch (e) { console.log('push cold-start routing failed:', e?.message); }

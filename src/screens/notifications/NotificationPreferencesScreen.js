@@ -13,6 +13,7 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon } from '../../assets';
 import { useAppAlert } from '../../context/AlertContext';
 import api from '../../config/api';
+import PushSoundDiagnostics from '../../components/PushSoundDiagnostics';
 
 const CATEGORIES = [
   {
@@ -120,6 +121,8 @@ export default function NotificationPreferencesScreen({ navigation }) {
           <Text style={styles.headerTitle}>Notification Preferences</Text>
           <View style={styles.placeholder} />
         </View>
+
+        <PushSoundDiagnostics />
 
         {loading ? (
           <View style={styles.center}>
