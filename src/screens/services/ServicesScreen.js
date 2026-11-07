@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
 import ScreenWrapper from '../../components/ScreenWrapper';
-import { Calendar2Icon, CalendarIconBlue, SplashIcon } from '../../assets';
+import { Calendar2Icon, CalendarIconBlue } from '../../assets';
 import { 
   SliderIcon,
   BriefcaseIcon,
@@ -86,9 +86,6 @@ export default function ServicesScreen({ navigation }) {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.avatarContainer}>
-            <Text style={{fontSize: 24, color: '#F38FB4'}}>🐾</Text>
-          </View>
           <View style={styles.headerTextContainer}>
             <Text style={styles.welcomeText}>Services</Text>
             <Text style={styles.emailText}>You can choose services</Text>
@@ -198,26 +195,17 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     gap: 10,
   },
-  avatarContainer: {
-    width: 45,
-    height: 45,
-    borderRadius: 37.5,
-    backgroundColor: '#FFC2EB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
 
   headerTextContainer: {
     flex: 1,
     gap: 2,
   },
   welcomeText: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#087EA4',
+    fontSize: 20,
     fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
+    fontWeight: '700',
+    lineHeight: 28,
   },
   emailText: {
     color: '#5D6165',
@@ -232,7 +220,7 @@ const styles = StyleSheet.create({
     height: 27,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#FFC2EB',
+    borderColor: '#E2F3FB',
     justifyContent: 'center',
     alignItems: 'center',
   },

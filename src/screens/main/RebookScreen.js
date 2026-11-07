@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions
 import { useState, useEffect, useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ScreenWrapper from '../../components/ScreenWrapper';
-import { SplashIcon, HomeIconNew, BriefcaseIcon, BuildingsIcon, SunIcon, PawIcon, Calendar2Icon, CalendarIcon, CalendarIconBlue } from '../../assets';
+import { HomeIconNew, BriefcaseIcon, BuildingsIcon, SunIcon, PawIcon, Calendar2Icon, CalendarIcon, CalendarIconBlue } from '../../assets';
 import { getUserBookings } from '../../services/bookingService';
 
 const { width } = Dimensions.get('window');
@@ -165,9 +165,6 @@ export default function RebookScreen({ navigation }) {
             <View style={styles.container}>
                 {/* Header */}
                 <View style={[styles.header, { top: insets.top }]}>
-                    <View style={styles.avatarContainer}>
-                        <Image source={SplashIcon} style={{ width: 30, height: 30 }} resizeMode="contain" />
-                    </View>
                     <View style={styles.headerTextContainer}>
                         <Text style={styles.headerTitle}>Rebook a Sitter</Text>
                         <Text style={styles.headerSubtitle}>You can manage your bookings</Text>
@@ -234,26 +231,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         zIndex: 10,
     },
-    avatarContainer: {
-        width: 45,
-        height: 45,
-        borderRadius: 37.5,
-        backgroundColor: '#FFC2EB',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden',
-    },
     headerTextContainer: {
         flex: 1,
         flexDirection: 'column',
         gap: 2,
     },
     headerTitle: {
-        color: '#F38FB4',
-        fontSize: 16,
+        color: '#087EA4',
+        fontSize: 20,
         fontFamily: 'Poppins',
-        fontWeight: '500',
-        lineHeight: 24.8,
+        fontWeight: '700',
+        lineHeight: 28,
     },
     headerSubtitle: {
         color: '#5D6165',
@@ -415,13 +403,13 @@ const styles = StyleSheet.create({
     rebookButton: {
         paddingHorizontal: 20,
         paddingVertical: 8,
-        backgroundColor: '#FFC2EB',
+        backgroundColor: '#087EA4',
         borderRadius: 9,
         justifyContent: 'center',
         alignItems: 'center',
     },
     rebookButtonText: {
-        color: '#32A6D8',
+        color: '#FFFFFF',
         fontSize: 10,
         fontFamily: 'Avenir LT Std',
         fontWeight: '750',

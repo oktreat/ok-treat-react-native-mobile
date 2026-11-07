@@ -279,7 +279,7 @@ export default function MoreScreen({ navigation }) {
             <Switch
               value={isSitterMode}
               onValueChange={handleSitterModeToggle}
-              trackColor={{ false: '#E5E5E5', true: '#126F82' }}
+              trackColor={{ false: '#E5E5E5', true: '#087EA4' }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#E5E5E5"
             />
@@ -307,7 +307,7 @@ export default function MoreScreen({ navigation }) {
                       </View>
                     )}
                   </View>
-                  {/* <Icon name="chevron-forward" size={24} color="#FFC2EB" /> */}
+                  {/* <Icon name="chevron-forward" size={24} color="#E2F3FB" /> */}
                 </TouchableOpacity>
               );
             })}
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 45,
     height: 45,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#E2F3FB',
     borderRadius: 37.5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -380,11 +380,11 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   headerTitle: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#087EA4',
+    fontSize: 20,
     fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
+    fontWeight: '700',
+    lineHeight: 28,
   },
   headerSubtitle: {
     color: '#5D6165',

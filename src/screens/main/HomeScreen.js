@@ -139,11 +139,11 @@ export default function HomeScreen({ navigation }) {
 
   const shortcuts = [
     { title: t('home.addPet'), detail: t('home.petDetail'), icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
-    { title: t('home.scanQr'), detail: t('home.qrDetail'), icon: 'scan-outline', bg: '#EAF7F0', color: '#267554', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
-    { title: t('home.bookings'), detail: t('home.bookingDetail'), icon: 'calendar-outline', bg: '#FFF0E7', color: '#985321', press: () => navigation.navigate('Bookings') },
-    { title: t('home.chat'), detail: t('home.chatDetail'), icon: 'chatbubbles-outline', bg: '#F1EDFA', color: '#715299', press: () => navigation.navigate('ChatList') },
-    { title: t('home.refer'), detail: t('home.referDetail'), icon: 'gift-outline', bg: '#FFF7DF', color: '#896614', press: () => navigation.navigate('InviteFriends') },
-    { title: t('home.tags'), detail: t('home.tagDetail'), icon: 'pricetag-outline', bg: '#EEF2FB', color: '#41618F', press: () => openSmartTags() },
+    { title: t('home.scanQr'), detail: t('home.qrDetail'), icon: 'scan-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
+    { title: t('home.bookings'), detail: t('home.bookingDetail'), icon: 'calendar-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('Bookings') },
+    { title: t('home.chat'), detail: t('home.chatDetail'), icon: 'chatbubbles-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('ChatList') },
+    { title: t('home.refer'), detail: t('home.referDetail'), icon: 'gift-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('InviteFriends') },
+    { title: t('home.tags'), detail: t('home.tagDetail'), icon: 'pricetag-outline', bg: '#EAF5FC', color: '#087EA4', press: () => openSmartTags() },
   ];
   const openSmartTags = () => Linking.openURL('https://www.amazon.com/stores/OKTreat/page/39C7FC72-20EB-4F6A-AE27-53D4958D9361').catch(() => {});
 
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   balance: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: '#FFF7DC', borderRadius: 22, padding: 10, minHeight: 44 },
   balanceText: { color: '#624A10', fontSize: 14, fontWeight: '700' },
   careActions: { flexDirection: 'row', gap: 10 },
-  findCare: { flex: 1, backgroundColor: '#126F82', padding: 13, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
+  findCare: { flex: 1, backgroundColor: '#087EA4', padding: 13, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
   offerCare: { flex: 1, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#9BBFC6', padding: 12, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
   findCareText: { fontSize: 13, color: '#FFF', fontWeight: '600' }, offerCareText: { fontSize: 13, color: '#14576A', fontWeight: '600' },
   aiLine: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingTop: 10, minHeight: 40 }, aiText: { fontSize: 12, color: '#285D6D', fontWeight: '600' },
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 37.5,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#E2F3FB',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#F38FB4',
+    backgroundColor: '#087EA4',
   },
   headerTextContainer: {
     flex: 1,

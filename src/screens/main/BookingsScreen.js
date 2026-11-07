@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabActive: {
-    backgroundColor: '#126F82',
+    backgroundColor: '#087EA4',
     shadowColor: '#858585',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,

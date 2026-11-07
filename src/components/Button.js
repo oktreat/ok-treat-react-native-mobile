@@ -5,7 +5,7 @@ import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
  * Reusable Button Component
  * 
  * Types:
- * - primary: Main action button (pink background, blue text)
+ * - primary: Main action button (deep brand blue, white text)
  * - secondary: Secondary action button (blue background, white text)
  * - outline: Outlined button
  * - text: Text-only button
@@ -83,25 +83,25 @@ const styles = StyleSheet.create({
 
   // Button Types
   button_primary: {
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#087EA4',
     borderWidth: 2,
-    borderColor: '#FFC2EB',
+    borderColor: '#087EA4',
   },
   button_secondary: {
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#087EA4',
     borderWidth: 2,
-    borderColor: '#32A6D8',
+    borderColor: '#087EA4',
   },
   button_outline: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: '#32A6D8',
+    borderColor: '#087EA4',
   },
   button_text: {
     backgroundColor: 'transparent',
   },
   button_icon: {
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#087EA4',
     borderRadius: 999,
     padding: 16,
   },
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   text_primary: {
-    color: '#32A6D8',
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '750',
     lineHeight: 20,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   text_outline: {
-    color: '#32A6D8',
+    color: '#087EA4',
     fontSize: 14,
     fontWeight: '750',
     lineHeight: 20,
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
 });
 
 // Circular Icon Button Component
-export function IconButton({ icon, onPress, size = 56, backgroundColor = '#32A6D8', style }) {
+export function IconButton({ icon, onPress, size = 56, backgroundColor = '#087EA4', style }) {
   return (
     <TouchableOpacity
       style={[

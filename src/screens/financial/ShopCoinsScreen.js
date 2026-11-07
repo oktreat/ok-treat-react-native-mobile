@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     height: 164,
     marginBottom: 8,
   },
-  payButton: { backgroundColor: '#007E87', borderColor: '#007E87' },
+  payButton: { backgroundColor: '#087EA4', borderColor: '#087EA4' },
   payButtonText: { color: '#FFFFFF', fontWeight: '700' },
   totalCoinsAmount: {
     color: 'black',
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   currencyTitle: { fontSize: 14, fontWeight: '600', color: '#142D38' },
   currencyOptions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   currencyOption: { paddingHorizontal: 12, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: '#DFE7EB' },
-  currencyOptionSelected: { backgroundColor: '#E2F3F5', borderColor: '#007E87' },
+  currencyOptionSelected: { backgroundColor: '#E2F3F5', borderColor: '#087EA4' },
   currencyOptionText: { color: '#142D38', fontWeight: '600' },
   currencyNote: { color: '#526571', fontSize: 12, lineHeight: 18 },
   packagesSection: { gap: 10 },
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   },
   packageCardSelected: {
     borderWidth: 2,
-    borderColor: '#007E87',
+    borderColor: '#087EA4',
   },
   packageLeft: { gap: 4 },
   packagePrice: {

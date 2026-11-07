@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, ActivityIndicator, RefreshControl, Animated, PanResponder, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Button from '../../components/Button';
-import { SplashIcon, DeleteIcon, CheckCircleIcon } from '../../assets';
+import { DeleteIcon, CheckCircleIcon } from '../../assets';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { getUserPets, deletePet } from '../../services/petService';
 
@@ -212,9 +212,6 @@ export default function PetListScreen({ navigation }) {
       <View style={styles.container}>
         {/* Header */}
         <View style={[styles.header, { top: insets.top }]}>
-          <View style={styles.avatarContainer}>
-            <Image source={SplashIcon} style={{ width: 30, height: 30 }} resizeMode="contain" />
-          </View>
           <View style={styles.headerTextContainer}>
             <Text style={styles.headerTitle}>Your Pets</Text>
             <Text style={styles.headerSubtitle}>You can manage your pets</Text>
@@ -375,26 +372,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     zIndex: 10,
   },
-  avatarContainer: {
-    width: 45,
-    height: 45,
-    borderRadius: 37.5,
-    backgroundColor: '#FFC2EB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
   headerTextContainer: {
     width: width,
     flexDirection: 'column',
     gap: 2,
   },
   headerTitle: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#087EA4',
+    fontSize: 20,
     fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
+    fontWeight: '700',
+    lineHeight: 28,
   },
   headerSubtitle: {
     color: '#5D6165',
@@ -648,7 +636,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 52,
-     backgroundColor: '#F38FB4',
+     backgroundColor: '#C83737',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -666,7 +654,7 @@ const styles = StyleSheet.create({
   okButton: {
     width: width * 0.7,
     height: 40,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#E2F3FB',
     borderRadius: 52,
     justifyContent: 'center',
     alignItems: 'center',
