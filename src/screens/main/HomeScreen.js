@@ -138,6 +138,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   const shortcuts = [
+    { title: 'OkTreat Bonding', detail: 'Meet locals · Preview', icon: 'people-outline', bg: '#DDF4FA', color: '#087EA4', press: () => navigation.navigate('Bonding') },
     { title: t('home.addPet'), detail: t('home.petDetail'), icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
     { title: t('home.scanQr'), detail: t('home.qrDetail'), icon: 'scan-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
     { title: t('home.bookings'), detail: t('home.bookingDetail'), icon: 'calendar-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('Bookings') },
@@ -411,3 +412,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
