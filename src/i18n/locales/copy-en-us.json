@@ -224,5 +224,19 @@
   "ID submitted through Stripe": "ID submitted through Stripe",
   "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.": "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.",
   "Support is not monitored continuously. Report a safety concern in the app.": "Support is not monitored continuously. Report a safety concern in the app.",
-  "Discuss care instructions and emergency contacts before each booking.": "Discuss care instructions and emergency contacts before each booking."
+  "Discuss care instructions and emergency contacts before each booking.": "Discuss care instructions and emergency contacts before each booking.",
+  "OkTreat Support is not an emergency service. For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.": "OkTreat Support is not an emergency service. For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.",
+  "Payment currency": "Payment currency",
+  "Your phone region suggests a currency. Choose one of these six checkout currencies. Language is set separately.": "Your phone region suggests a currency. Choose one of these six checkout currencies. Language is set separately.",
+  "Confirm currency": "Confirm currency",
+  "Could not load currencies. Please try again.": "Could not load currencies. Please try again.",
+  "Could not save currency. Please try again.": "Could not save currency. Please try again.",
+  "US Dollar": "US Dollar",
+  "Canadian Dollar": "Canadian Dollar",
+  "Australian Dollar": "Australian Dollar",
+  "Japanese Yen": "Japanese Yen",
+  "British Pound": "British Pound",
+  "Euro": "Euro",
+  "Give {{friend}}, get {{inviter}}": "Give {{friend}}, get {{inviter}}",
+  "Your friend gets {{friend}} bonus TreatCoins and you get {{inviter}} TreatCoins when they verify their account and apply your referral code. One referral reward per account. Promotional TreatCoins cannot be withdrawn as cash.": "Your friend gets {{friend}} bonus TreatCoins and you get {{inviter}} TreatCoins when they verify their account and apply your referral code. One referral reward per account. Promotional TreatCoins cannot be withdrawn as cash."
 }

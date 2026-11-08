@@ -9,8 +9,8 @@ export async function getPaymentMarket() {
   const response = await api.get('/coins/market', { params: { region: phoneRegion() } });
   return response.data.data;
 }
-export async function savePaymentCountry(country) {
-  const response = await api.put('/coins/market', { country });
+export async function savePaymentCountry(country, currency) {
+  const response = await api.put('/coins/market', { country, ...(currency ? { currency } : {}) });
   return response.data.data;
 }
 export function countryName(country, language) {

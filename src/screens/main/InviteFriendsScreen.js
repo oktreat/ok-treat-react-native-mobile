@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -12,15 +13,15 @@ import { useDispatch } from 'react-redux';
 import { loadRemoteConfig } from '../../store/slices/appSlice';
 
 export default function InviteFriendsScreen({ navigation }) {
+  useCopyUpdates();
   const { user } = useSelector((state) => state.auth);
   // Store links come from the admin-editable remote config so they can change
   // without an app update. Empty links are simply omitted from the message.
-  const { playStoreUrl, appStoreUrl, referralProgram } = useRemoteConfig();
+  const { playStoreUrl, appStoreUrl } = useRemoteConfig();
   const dispatch = useDispatch();
-  const { referrerReward = 100, referredReward = 100 } = referralProgram || {};
-  const enabled = referralProgram?.enabled === true &&
-    referralProgram?.qualification === 'NEW_USER_VERIFIED_REFERRER_FIRST_BOOKING';
   const [stats, setStats] = useState(null);
+  const referrerReward = stats?.rewardAmounts?.referrerReward ?? 100;
+  const referredReward = stats?.rewardAmounts?.referredReward ?? 100;
   const [copied, setCopied] = useState(false);
 
   const code = stats?.referralCode || user?.referralCode || '';
@@ -60,7 +61,7 @@ export default function InviteFriendsScreen({ navigation }) {
         message:
           `Join me on OkTreat — the app for trusted pet sitters! 🐾\n\n` +
           `Use my referral code ${code}.` +
-          (enabled ? ` Verify your account and apply my code to get ${referredReward} bonus TreatCoins toward your first booking. I get ${referrerReward} TreatCoins after you complete your first booking. Promotional TreatCoins cannot be withdrawn as cash.` : '') +
+          ` Verify your account and apply my code to get ${referredReward} bonus TreatCoins. I get ${referrerReward} TreatCoins too. Promotional TreatCoins cannot be withdrawn as cash.` +
           downloadBlock,
       });
     } catch (e) { /* dismissed */ }
@@ -85,11 +86,9 @@ export default function InviteFriendsScreen({ navigation }) {
           {/* Hero */}
           <View style={styles.hero}>
             <Icon name="gift" size={28} color="#32A6D8" />
-            <Text style={styles.heroTitle}>{enabled ? `Give ${referredReward}, get ${referrerReward}` : 'Invite your friends'}</Text>
+            <Text style={styles.heroTitle}>{copy('Give {{friend}}, get {{inviter}}', { friend: referredReward, inviter: referrerReward })}</Text>
             <Text style={styles.heroSubtitle}>
-              {enabled
-                ? `Your friend gets ${referredReward} bonus TreatCoins after verifying their account and applying your code, ready to use toward their first booking. You get ${referrerReward} TreatCoins after they complete their first booking. Apply the code before the first completed booking. The offer active when each reward qualifies applies. Promotional TreatCoins cannot be withdrawn as cash.`
-                : 'Share your code with friends. Referral rewards are currently unavailable.'}
+              {copy("Your friend gets {{friend}} bonus TreatCoins and you get {{inviter}} TreatCoins when they verify their account and apply your referral code. One referral reward per account. Promotional TreatCoins cannot be withdrawn as cash.", { friend: referredReward, inviter: referrerReward })}
             </Text>
           </View>
 

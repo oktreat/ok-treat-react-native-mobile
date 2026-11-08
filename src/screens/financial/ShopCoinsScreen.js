@@ -235,7 +235,7 @@ export default function ShopCoinsScreen({ navigation }) {
           </View>
 
           {!!market && <Text style={styles.currencyNote}>{copy('Payment country: {{country}} · {{currency}}', { country: countryName(market.country, i18n.language), currency: market.currency })}</Text>}
-          {market && !market.isConfirmed && <Button title={copy('Confirm payment country')} onPress={() => navigation.navigate('PaymentCountry')} fullWidth/>}
+          {market && !market.isConfirmed && <Button title={copy('Confirm currency')} onPress={() => navigation.navigate('PaymentCountry')} fullWidth/>}
           {!!priceError && <Text accessibilityRole="alert" style={styles.currencyNote}>{priceError}</Text>}
           {(priceError || quoteExpired) && <Button title={copy('Refresh prices')} onPress={fetchPackages} fullWidth/>}
           {quoteExpired && <Text style={styles.currencyNote}>{copy('This price has expired. Refresh prices before paying.')}</Text>}

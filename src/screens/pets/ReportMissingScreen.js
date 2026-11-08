@@ -253,7 +253,7 @@ export default function ReportMissingScreen({ navigation, route }) {
 
           <View style={styles.safetyNotice}>
             <Text style={styles.safetyText}>{copy("OkTreat’s alerts and support tools do not replace emergency or veterinary care. Alert delivery and pet recovery are not guaranteed. Nearby alerts depend on users’ locations, notification settings and connectivity.")}</Text>
-            <Text style={styles.safetyText}>{copy("For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.")}</Text>
+            <Text style={styles.safetyText}>{copy("OkTreat Support is not an emergency service. For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.")}</Text>
           </View>
 
           <TouchableOpacity

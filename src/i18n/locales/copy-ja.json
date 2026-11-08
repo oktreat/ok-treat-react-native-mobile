@@ -224,5 +224,19 @@
   "ID submitted through Stripe": "Stripeを通じて身分証明書を提出",
   "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.": "問題はOkTreatサポートに報告してください。ペットの緊急のけがや病気については、獣医師に連絡してください。",
   "Support is not monitored continuously. Report a safety concern in the app.": "サポートは常時対応ではありません。安全上の懸念はアプリで報告してください。",
-  "Discuss care instructions and emergency contacts before each booking.": "各予約の前に、ケアの方法と緊急連絡先について話し合ってください。"
+  "Discuss care instructions and emergency contacts before each booking.": "各予約の前に、ケアの方法と緊急連絡先について話し合ってください。",
+  "OkTreat Support is not an emergency service. For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.": "OkTreatサポートは緊急対応サービスではありません。ペットの緊急のけがや病気については、直ちに獣医師に連絡してください。人に差し迫った危険がある場合は、地域の緊急サービスに連絡してください。OkTreatサポートは常時対応ではありません。",
+  "Payment currency": "支払い通貨",
+  "Your phone region suggests a currency. Choose one of these six checkout currencies. Language is set separately.": "端末の地域設定に基づいて通貨が提案されます。決済には次の6種類から選択できます。言語は別に設定します。",
+  "Confirm currency": "通貨を確認",
+  "Could not load currencies. Please try again.": "通貨を読み込めませんでした。もう一度お試しください。",
+  "Could not save currency. Please try again.": "通貨を保存できませんでした。もう一度お試しください。",
+  "US Dollar": "米ドル",
+  "Canadian Dollar": "カナダドル",
+  "Australian Dollar": "豪ドル",
+  "Japanese Yen": "日本円",
+  "British Pound": "英ポンド",
+  "Euro": "ユーロ",
+  "Give {{friend}}, get {{inviter}}": "友達に{{friend}}、あなたに{{inviter}}",
+  "Your friend gets {{friend}} bonus TreatCoins and you get {{inviter}} TreatCoins when they verify their account and apply your referral code. One referral reward per account. Promotional TreatCoins cannot be withdrawn as cash.": "友達がアカウントを認証し、あなたの紹介コードを使用すると、友達に{{friend}}ボーナスTreatCoins、あなたに{{inviter}}TreatCoinsが付与されます。紹介特典は1アカウントにつき1回です。ボーナスTreatCoinsは現金で引き出せません。"
 }

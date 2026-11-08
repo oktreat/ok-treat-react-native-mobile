@@ -224,5 +224,19 @@
   "ID submitted through Stripe": "Pièce d’identité transmise via Stripe",
   "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.": "Signalez les problèmes à l’assistance OkTreat. En cas de blessure ou de maladie urgente d’un animal, contactez un vétérinaire.",
   "Support is not monitored continuously. Report a safety concern in the app.": "L’assistance n’est pas surveillée en permanence. Signalez un problème de sécurité dans l’application.",
-  "Discuss care instructions and emergency contacts before each booking.": "Discutez des consignes de garde et des contacts d’urgence avant chaque réservation."
+  "Discuss care instructions and emergency contacts before each booking.": "Discutez des consignes de garde et des contacts d’urgence avant chaque réservation.",
+  "OkTreat Support is not an emergency service. For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.": "L’assistance OkTreat n’est pas un service d’urgence. En cas de blessure ou de maladie urgente d’un animal, contactez immédiatement un vétérinaire. En cas de danger immédiat pour une personne, contactez les services d’urgence locaux. L’assistance OkTreat n’est pas surveillée en permanence.",
+  "Payment currency": "Devise de paiement",
+  "Your phone region suggests a currency. Choose one of these six checkout currencies. Language is set separately.": "La région de votre téléphone suggère une devise. Choisissez parmi ces six devises de paiement. La langue se règle séparément.",
+  "Confirm currency": "Confirmer la devise",
+  "Could not load currencies. Please try again.": "Impossible de charger les devises. Veuillez réessayer.",
+  "Could not save currency. Please try again.": "Impossible d’enregistrer la devise. Veuillez réessayer.",
+  "US Dollar": "Dollar américain",
+  "Canadian Dollar": "Dollar canadien",
+  "Australian Dollar": "Dollar australien",
+  "Japanese Yen": "Yen japonais",
+  "British Pound": "Livre sterling",
+  "Euro": "Euro",
+  "Give {{friend}}, get {{inviter}}": "Offrez {{friend}}, recevez {{inviter}}",
+  "Your friend gets {{friend}} bonus TreatCoins and you get {{inviter}} TreatCoins when they verify their account and apply your referral code. One referral reward per account. Promotional TreatCoins cannot be withdrawn as cash.": "Votre ami reçoit {{friend}} TreatCoins bonus et vous recevez {{inviter}} TreatCoins lorsqu’il vérifie son compte et utilise votre code de parrainage. Une récompense de parrainage par compte. Les TreatCoins promotionnels ne peuvent pas être retirés en espèces."
 }
