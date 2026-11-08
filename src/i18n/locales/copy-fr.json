@@ -215,5 +215,14 @@
   "The payment total changed. Please close payment and refresh prices.": "Le montant du paiement a changé. Fermez le paiement et actualisez les prix.",
   "Prices changed. Please refresh and review the new total before paying.": "Les prix ont changé. Actualisez et vérifiez le nouveau total avant de payer.",
   "Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.": "Conversion depuis l’USD au taux de référence quotidien. Le prix affiché est garanti pendant 10 minutes.",
-  "Exchange-rate source": "Source du taux de change"
+  "Exchange-rate source": "Source du taux de change",
+  "During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.": "Lors de l’inscription des pet sitters, Stripe Identity vérifie une pièce d’identité officielle avec photo et un selfie correspondant pour aider à confirmer leur identité et à renforcer la sécurité de la communauté.",
+  "Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.": "La vérification d’identité n’est pas une vérification du casier judiciaire et ne garantit ni le comportement ni les compétences en garde d’animaux. Consultez les profils, discutez des besoins de votre animal et organisez une rencontre avant de réserver.",
+  "OkTreat’s alerts and support tools do not replace emergency or veterinary care. Alert delivery and pet recovery are not guaranteed. Nearby alerts depend on users’ locations, notification settings and connectivity.": "Les alertes et outils d’assistance d’OkTreat ne remplacent pas les services d’urgence ni les soins vétérinaires. L’envoi des alertes et le retour de l’animal ne sont pas garantis. Les alertes de proximité dépendent de la localisation des utilisateurs, de leurs réglages de notification et de leur connexion.",
+  "For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.": "En cas de blessure ou de maladie urgente d’un animal, contactez immédiatement un vétérinaire. En cas de danger immédiat pour une personne, contactez les services d’urgence locaux. L’assistance OkTreat n’est pas surveillée en permanence.",
+  "Sitter identity checks": "Vérification d’identité des pet sitters",
+  "ID submitted through Stripe": "Pièce d’identité transmise via Stripe",
+  "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.": "Signalez les problèmes à l’assistance OkTreat. En cas de blessure ou de maladie urgente d’un animal, contactez un vétérinaire.",
+  "Support is not monitored continuously. Report a safety concern in the app.": "L’assistance n’est pas surveillée en permanence. Signalez un problème de sécurité dans l’application.",
+  "Discuss care instructions and emergency contacts before each booking.": "Discutez des consignes de garde et des contacts d’urgence avant chaque réservation."
 }

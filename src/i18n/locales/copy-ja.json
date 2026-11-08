@@ -215,5 +215,14 @@
   "The payment total changed. Please close payment and refresh prices.": "支払い合計が変更されました。支払い画面を閉じ、価格を更新してください。",
   "Prices changed. Please refresh and review the new total before paying.": "価格が変更されました。更新して新しい合計を確認してからお支払いください。",
   "Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.": "日次の参考為替レートで米ドルから換算しています。表示価格は10分間有効です。",
-  "Exchange-rate source": "為替レートの情報源"
+  "Exchange-rate source": "為替レートの情報源",
+  "During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.": "シッター登録時に、Stripe Identityが政府発行の写真付き身分証明書と自撮り写真の一致を確認し、本人確認とより安全なコミュニティづくりを支援します。",
+  "Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.": "本人確認は犯罪歴の調査ではなく、行動やペットの世話の能力を保証するものでもありません。予約前にプロフィールを確認し、ペットのニーズについて話し合い、事前の顔合わせを行ってください。",
+  "OkTreat’s alerts and support tools do not replace emergency or veterinary care. Alert delivery and pet recovery are not guaranteed. Nearby alerts depend on users’ locations, notification settings and connectivity.": "OkTreatのアラートやサポート機能は、緊急対応や獣医療に代わるものではありません。通知の配信やペットの発見を保証するものではありません。近隣への通知は、ユーザーの位置情報、通知設定、通信状況に左右されます。",
+  "For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.": "ペットの緊急のけがや病気については、直ちに獣医師に連絡してください。人に差し迫った危険がある場合は、地域の緊急サービスに連絡してください。OkTreatサポートは常時対応ではありません。",
+  "Sitter identity checks": "シッターの本人確認",
+  "ID submitted through Stripe": "Stripeを通じて身分証明書を提出",
+  "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.": "問題はOkTreatサポートに報告してください。ペットの緊急のけがや病気については、獣医師に連絡してください。",
+  "Support is not monitored continuously. Report a safety concern in the app.": "サポートは常時対応ではありません。安全上の懸念はアプリで報告してください。",
+  "Discuss care instructions and emergency contacts before each booking.": "各予約の前に、ケアの方法と緊急連絡先について話し合ってください。"
 }

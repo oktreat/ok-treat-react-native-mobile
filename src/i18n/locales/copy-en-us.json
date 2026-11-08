@@ -215,5 +215,14 @@
   "The payment total changed. Please close payment and refresh prices.": "The payment total changed. Please close payment and refresh prices.",
   "Prices changed. Please refresh and review the new total before paying.": "Prices changed. Please refresh and review the new total before paying.",
   "Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.": "Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.",
-  "Exchange-rate source": "Exchange-rate source"
+  "Exchange-rate source": "Exchange-rate source",
+  "During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.": "During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.",
+  "Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.": "Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.",
+  "OkTreat’s alerts and support tools do not replace emergency or veterinary care. Alert delivery and pet recovery are not guaranteed. Nearby alerts depend on users’ locations, notification settings and connectivity.": "OkTreat’s alerts and support tools do not replace emergency or veterinary care. Alert delivery and pet recovery are not guaranteed. Nearby alerts depend on users’ locations, notification settings and connectivity.",
+  "For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.": "For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.",
+  "Sitter identity checks": "Sitter identity checks",
+  "ID submitted through Stripe": "ID submitted through Stripe",
+  "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.": "Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.",
+  "Support is not monitored continuously. Report a safety concern in the app.": "Support is not monitored continuously. Report a safety concern in the app.",
+  "Discuss care instructions and emergency contacts before each booking.": "Discuss care instructions and emergency contacts before each booking."
 }

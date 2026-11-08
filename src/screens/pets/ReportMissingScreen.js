@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useEffect } from 'react';
 import {
   View,
@@ -21,6 +22,7 @@ import { defaultCountryInfo, parsePhone, toE164, isValidPhone } from '../../util
 import { iosKeyboardDismissMode } from '../../utils/keyboard';
 
 export default function ReportMissingScreen({ navigation, route }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   const { pet } = route.params || {};
   const currentUser = useSelector((s) => s.auth?.user);
@@ -249,6 +251,11 @@ export default function ReportMissingScreen({ navigation, route }) {
             />
           </View>
 
+          <View style={styles.safetyNotice}>
+            <Text style={styles.safetyText}>{copy("OkTreat’s alerts and support tools do not replace emergency or veterinary care. Alert delivery and pet recovery are not guaranteed. Nearby alerts depend on users’ locations, notification settings and connectivity.")}</Text>
+            <Text style={styles.safetyText}>{copy("For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.")}</Text>
+          </View>
+
           <TouchableOpacity
             style={[styles.submitButton, submitting && styles.submitDisabled]}
             onPress={handleSubmit}
@@ -345,6 +352,8 @@ const styles = StyleSheet.create({
   },
   notesInput: { textAlignVertical: 'top', minHeight: 96 },
   hint: { color: '#818898', fontSize: 11, fontFamily: 'Avenir LT Std', marginTop: 4, paddingHorizontal: 4 },
+  safetyNotice: { marginTop: 20, padding: 14, backgroundColor: '#E2F3FB', borderRadius: 12, gap: 8 },
+  safetyText: { fontSize: 14, lineHeight: 21, color: '#183944' },
   submitButton: {
     marginTop: 24,
     backgroundColor: '#D93025',
