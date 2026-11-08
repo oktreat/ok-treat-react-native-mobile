@@ -4,6 +4,7 @@ import Icon from '@expo/vector-icons/Ionicons';
 import ClearTabBar from '../components/ClearTabBar';
 
 import HomeScreen from '../screens/main/HomeScreen';
+import BondingScreen from '../screens/community/BondingScreen';
 import BookingsScreen from '../screens/main/BookingsScreen';
 import BookingDetailScreen from '../screens/main/BookingDetailScreen';
 import RebookScreen from '../screens/main/RebookScreen';
@@ -257,6 +258,7 @@ export default function MainNavigator() {
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
       <RootStack.Screen name="MainTabs" component={TabNavigator} />
+      <RootStack.Screen name="Bonding" component={BondingScreen} />
       <RootStack.Screen name="SitterTabs" component={SitterTabNavigator} />
       {/* Modal-like screens without bottom tabs */}
       <RootStack.Screen name="Bookings" component={BookingsScreen} />
@@ -335,3 +337,4 @@ export default function MainNavigator() {
     </RootStack.Navigator>
   );
 }
+
