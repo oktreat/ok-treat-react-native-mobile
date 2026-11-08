@@ -22,7 +22,7 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Verify notification regressions
-        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs tests/translations.cjs tests/payment-country.cjs
+        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs tests/translations.cjs tests/payment-country.cjs tests/chat-messages.cjs
       - run: pod install --deployment
         working-directory: ios
       - name: Install signing identity and profile
@@ -88,4 +88,4 @@ jobs:
           PY
           xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/OkTreat.xcarchive" -exportPath "$RUNNER_TEMP/export" -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" -authenticationKeyPath "$key" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER"
 
-# Release includes the confirmed six-currency selection and safety notices.
+# Release includes the confirmed six-currency selection, safety notices and chronological chat fix.
