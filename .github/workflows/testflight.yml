@@ -69,7 +69,7 @@ jobs:
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat 2.0.0 referrals currency and safety updates to TestFlight'
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat 2.0.0 SMS verification to TestFlight'
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
@@ -88,4 +88,4 @@ jobs:
           PY
           xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/OkTreat.xcarchive" -exportPath "$RUNNER_TEMP/export" -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" -authenticationKeyPath "$key" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER"
 
-# Release includes the confirmed six-currency selection, safety notices and chronological chat fix.
+# Release restores SMS verification alongside Email using the existing Twilio Verify integration.
