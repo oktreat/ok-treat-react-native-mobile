@@ -87,3 +87,5 @@ jobs:
               plistlib.dump(dict(method='app-store-connect',destination='upload',teamID='2TC9W568PJ',signingStyle='manual',signingCertificate='Apple Distribution',manageAppVersionAndBuildNumber=False,provisioningProfiles={'com.mubbits.oktreat':'OkTreat App Store 2026-11-06'}),f)
           PY
           xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/OkTreat.xcarchive" -exportPath "$RUNNER_TEMP/export" -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" -authenticationKeyPath "$key" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER"
+
+# Release includes the confirmed six-currency selection and safety notices.

@@ -32,7 +32,7 @@ test('JPY formats whole yen and package changes update the exact card total',asy
  const h=harness('JPY');await h.init();assert.equal(h.find(n=>n.type==='StripeCardSheet').props.amountLabel,'JPY 6,749');h.find(n=>n.type==='TouchableOpacity'&&n.props.key==='p1').props.onPress();assert.equal(h.find(n=>n.type==='StripeCardSheet').props.amountLabel,'JPY 3,749');
 });
 test('unconfirmed country requires confirmation and never loads payable packages',async()=>{
- const h=harness('CAD',{confirmed:false});await h.init();h.find(n=>n.type==='Button'&&n.props.title==='Confirm payment country').props.onPress();assert.equal(h.navigations[0][0],'PaymentCountry');assert.equal(h.gets.some(x=>x.path.includes('packages')),false);assert.equal(h.find(n=>n.type==='Button'&&n.props.title==='Select a package').props.disabled,true);
+ const h=harness('CAD',{confirmed:false});await h.init();h.find(n=>n.type==='Button'&&n.props.title==='Confirm currency').props.onPress();assert.equal(h.navigations[0][0],'PaymentCountry');assert.equal(h.gets.some(x=>x.path.includes('packages')),false);assert.equal(h.find(n=>n.type==='Button'&&n.props.title==='Select a package').props.disabled,true);
 });
 test('expired/offline quotes disable payment and stale purchases require price review',async()=>{
  const expired=harness('CAD',{expired:true});await expired.init();assert.equal(expired.find(n=>n.type==='Button'&&n.props.title==='Continue to Pay CAD 62.99').props.disabled,true);assert.ok(expired.find(n=>n.type==='Button'&&n.props.title==='Refresh prices'));
