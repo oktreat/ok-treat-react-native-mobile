@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import Svg, { Path, Circle, Defs, LinearGradient, Stop, Polygon } from 'react-native-svg';
 import ScreenWrapper from '../../../components/ScreenWrapper';
+import SitterModeSwitch from '../../../components/SitterModeSwitch';
 import { DogImage, ChatIcon } from '../../../assets';
 import Icon from '@expo/vector-icons/Ionicons';
 import { getSitterEarnings, getSitterBookings, getSitterRequests } from '../../../services/bookingService';
@@ -178,6 +179,8 @@ export default function SitterHomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
+        <View style={{ marginHorizontal: 24, marginTop: 12 }}><SitterModeSwitch sitterMode={true} onChange={() => navigation.navigate('MainTabs', { screen: 'Home' })} /></View>
+
         {/* Overview Card */}
         <View style={styles.overviewCard}>
           {/* Overview Header */}
@@ -260,7 +263,7 @@ export default function SitterHomeScreen({ navigation }) {
               <Text style={styles.statLabel}>This month's earnings</Text>
               <View style={styles.statValueRow}>
                 <Icon name="server-outline" size={13} color="#FBCE04" />
-                <Text style={styles.statValue}>{Number(totalSales || 0).toLocaleString()} coins</Text>
+                <Text style={styles.statValue}>{Number(totalSales || 0).toLocaleString()} TreatCoins</Text>
               </View>
             </View>
             <View style={styles.statItem}>
@@ -400,11 +403,11 @@ const styles = StyleSheet.create({
     lineHeight: 14.4,
   },
   userName: {
-    color: '#212121',
-    fontSize: 16,
+    color: '#142D38',
+    fontSize: 24,
     fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 19.2,
+    fontWeight: '700',
+    lineHeight: 32,
   },
   notificationButton: {
     width: 24.55,

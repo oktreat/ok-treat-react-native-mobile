@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates, serviceLabel } from '../../i18n/copy';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
@@ -59,6 +60,7 @@ const formatDateRange = (startDate, endDate) => {
 };
 
 export default function BookingsScreen({ navigation, route }) {
+  useCopyUpdates();
   // `initialTab` lets deep links from notifications/requests land on the right list
   // (e.g. BOOKING_COMPLETED notification → Past tab). `bookingId` is read by the
   // card-render to highlight the just-tapped booking briefly.
@@ -66,7 +68,7 @@ export default function BookingsScreen({ navigation, route }) {
   const highlightedBookingId = route?.params?.bookingId || null;
 
   const [selectedTab, setSelectedTab] = useState(
-    ['All', 'Upcoming', 'Past'].includes(initialTab) ? initialTab : 'All'
+    ['Upcoming', 'My Requests', 'Past'].includes(initialTab) ? initialTab : 'Upcoming'
   );
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ export default function BookingsScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
   const [confirmingId, setConfirmingId] = useState(null);
 
-  const tabs = ['All', 'Upcoming', 'Past'];
+  const tabs = ['Upcoming', 'My Requests', 'Past'];
 
   const fetchBookings = useCallback(async () => {
     try {
@@ -121,12 +123,12 @@ export default function BookingsScreen({ navigation, route }) {
       const res = await confirmBookingCompletion(booking.id);
       await fetchBookings();
       Alert.alert(
-        'Booking confirmed',
-        'Thanks! Your sitter has been paid. Would you like to leave a review?',
+        copy("Booking confirmed"),
+        copy("Thanks! Your sitter has been paid. Would you like to leave a review?"),
         [
-          { text: 'Not now', style: 'cancel' },
+          { text: copy("Not now"), style: 'cancel' },
           {
-            text: 'Leave Review',
+            text: copy("Leave Review"),
             onPress: () =>
               navigation.navigate('SubmitReview', {
                 booking: res?.data?.booking || booking,
@@ -136,7 +138,7 @@ export default function BookingsScreen({ navigation, route }) {
         ]
       );
     } catch (err) {
-      Alert.alert('Could not confirm', err?.message || 'Please try again in a moment.');
+      Alert.alert(copy("Could not confirm"), err?.message || copy('Please try again in a moment.'));
     } finally {
       setConfirmingId(null);
     }
@@ -144,11 +146,11 @@ export default function BookingsScreen({ navigation, route }) {
 
   const handleConfirmCompletion = (booking) => {
     Alert.alert(
-      'Confirm completion?',
-      'Confirm this booking is complete. This releases the coins to your sitter and can’t be undone.',
+      copy("Confirm completion?"),
+      copy("Confirm this booking is complete. This releases the TreatCoins to your sitter and can’t be undone."),
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Confirm', onPress: () => doConfirmCompletion(booking) },
+        { text: copy("Cancel"), style: 'cancel' },
+        { text: copy("Confirm"), onPress: () => doConfirmCompletion(booking) },
       ]
     );
   };
@@ -164,10 +166,8 @@ export default function BookingsScreen({ navigation, route }) {
 
   // Filter bookings based on selected tab
   const getFilteredBookings = () => {
-    if (selectedTab === 'All') {
-      return bookings;
-    }
-    return bookings.filter(booking => getCategory(booking.status) === selectedTab);
+    if (selectedTab === 'My Requests') return bookings.filter(booking => booking.status?.toUpperCase() === 'PENDING');
+    return bookings.filter(booking => getCategory(booking.status) === selectedTab && booking.status?.toUpperCase() !== 'PENDING');
   };
 
   const filteredBookings = getFilteredBookings();
@@ -213,7 +213,7 @@ export default function BookingsScreen({ navigation, route }) {
             <View style={styles.infoContainer}>
               <Text style={styles.sitterName}>{sitterName}</Text>
               <Text style={styles.serviceInfo}>
-                <Text style={styles.serviceType}>{serviceType}</Text>
+                <Text style={styles.serviceType}>{serviceLabel(serviceType)}</Text>
                 <Text style={styles.separator}> - </Text>
                 <Text style={styles.dateRange}>{dateRange}</Text>
               </Text>
@@ -223,7 +223,7 @@ export default function BookingsScreen({ navigation, route }) {
           {/* Right: Status Badge */}
           <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
             <Text style={[styles.statusText, { color: statusStyle.text }]}>
-              {statusStyle.label}
+              {copy(statusStyle.label)}
             </Text>
           </View>
         </View>
@@ -232,7 +232,7 @@ export default function BookingsScreen({ navigation, route }) {
         <View style={styles.middleSection}>
           <View style={styles.ratingContainer}>
             <StarIcon width={16} height={16} fill="#FBBC04" />
-            <Text style={styles.ratingText}>{rating} ({reviews} reviews)</Text>
+            <Text style={styles.ratingText}>{rating} ({reviews}{' '}{copy("reviews)")}</Text>
           </View>
           {statusStyle.label === 'Completed' ? (
             <View style={styles.completedActions}>
@@ -243,13 +243,13 @@ export default function BookingsScreen({ navigation, route }) {
                   sitter: booking.sitter,
                 })}
               >
-                <Text style={styles.reviewButtonText}>Leave Review</Text>
+                <Text style={styles.reviewButtonText}>{copy("Leave Review")}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.reorderButton}
                 onPress={() => handleReorder(booking)}
               >
-                <Text style={styles.reorderText}>Reorder</Text>
+                <Text style={styles.reorderText}>{copy("Reorder")}</Text>
               </TouchableOpacity>
             </View>
           ) : canConfirm ? (
@@ -261,7 +261,7 @@ export default function BookingsScreen({ navigation, route }) {
               {isConfirming ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
-                <Text style={styles.confirmButtonText}>Confirm completion</Text>
+                <Text style={styles.confirmButtonText}>{copy("Confirm completion")}</Text>
               )}
             </TouchableOpacity>
           ) : null}
@@ -269,17 +269,15 @@ export default function BookingsScreen({ navigation, route }) {
 
         {/* Awaiting-confirmation nudge (sitter marked it done) */}
         {awaitingConfirm && (
-          <Text style={styles.awaitingHint}>
-            Your sitter marked this complete — confirm to release their coins.
-          </Text>
+          <Text style={styles.awaitingHint}>{copy("Your sitter marked this complete — confirm to release their TreatCoins.")}</Text>
         )}
 
         {/* Bottom Section: Total Payment */}
         <View style={styles.bottomSection}>
-          <Text style={styles.paymentLabel}>Total Payment</Text>
+          <Text style={styles.paymentLabel}>{copy("Total Payment")}</Text>
           <View style={styles.paymentAmount}>
             <CoinIcon width={19} height={19} />
-            <Text style={styles.coinsText}>{totalPayment} Coins</Text>
+            <Text style={styles.coinsText}>{totalPayment}{' '}{copy("TreatCoins")}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -294,7 +292,7 @@ export default function BookingsScreen({ navigation, route }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Bookings</Text>
+          <Text style={styles.headerTitle}>{copy("Bookings")}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -314,7 +312,7 @@ export default function BookingsScreen({ navigation, route }) {
                   styles.tabText,
                   selectedTab === tab && styles.tabTextActive
                 ]}>
-                  {tab}
+                  {copy(tab === 'Past' ? 'History' : tab)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -326,18 +324,18 @@ export default function BookingsScreen({ navigation, route }) {
           {loading ? (
             <View style={styles.centerContainer}>
               <ActivityIndicator size="large" color="#32A6D8" />
-              <Text style={styles.loadingText}>Loading bookings...</Text>
+              <Text style={styles.loadingText}>{copy("Loading bookings...")}</Text>
             </View>
           ) : error ? (
             <View style={styles.centerContainer}>
               <Text style={styles.errorText}>{error}</Text>
               <TouchableOpacity style={styles.retryButton} onPress={fetchBookings}>
-                <Text style={styles.retryText}>Retry</Text>
+                <Text style={styles.retryText}>{copy("Retry")}</Text>
               </TouchableOpacity>
             </View>
           ) : filteredBookings.length === 0 ? (
             <View style={styles.centerContainer}>
-              <Text style={styles.emptyText}>No bookings found</Text>
+              <Text style={styles.emptyText}>{copy("No bookings found")}</Text>
             </View>
           ) : (
             <ScrollView
@@ -426,7 +424,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabActive: {
-    backgroundColor: 'white',
+    backgroundColor: '#087EA4',
     shadowColor: '#858585',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -435,14 +433,14 @@ const styles = StyleSheet.create({
   },
   tabText: {
     textAlign: 'center',
-    color: '#858585',
-    fontSize: 14,
+    color: '#344D58',
+    fontSize: 13,
     fontFamily: 'Manrope',
     fontWeight: '600',
     lineHeight: 18.2,
   },
   tabTextActive: {
-    color: '#45594B',
+    color: '#FFFFFF',
   },
   contentContainer: {
     position: 'absolute',
@@ -468,8 +466,8 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    color: '#858585',
-    fontSize: 14,
+    color: '#344D58',
+    fontSize: 13,
     fontFamily: 'Poppins',
     fontWeight: '400',
   },
@@ -494,8 +492,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   emptyText: {
-    color: '#858585',
-    fontSize: 14,
+    color: '#344D58',
+    fontSize: 13,
     fontFamily: 'Poppins',
     fontWeight: '400',
     textAlign: 'center',

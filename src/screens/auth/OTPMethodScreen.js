@@ -155,14 +155,12 @@ export default function OTPMethodScreen({ route, navigation }) {
             detail={maskEmail(email)}
             recommended
           />
-          {/* SMS verification temporarily hidden — email only for now.
-              Logic untouched; restore this block to re-enable the SMS option. */}
-          {/* <Option
+          <Option
             method="sms"
             icon={<PhoneCallIcon width={20} height={20} fill={selectedMethod === 'sms' ? '#32A6D8' : '#999'} />}
-            label="Text Message"
+            label="Text Message (SMS)"
             detail={maskPhone(phoneNumber)}
-          /> */}
+          />
         </View>
       </View>
 

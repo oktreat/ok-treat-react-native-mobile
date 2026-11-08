@@ -46,7 +46,7 @@ export default function PaymentMethodsScreen({ navigation }) {
       // transaction tabs. The wallet refresh runs in parallel below.
       let txFetchFailed = false;
       const txRes = await api.get('/coins/transactions').catch((err) => {
-        console.warn('Failed to load coin transactions:', err?.message);
+        console.warn('Failed to load TreatCoin transactions:', err?.message);
         txFetchFailed = true;
         return { data: {} };
       });
@@ -133,7 +133,7 @@ export default function PaymentMethodsScreen({ navigation }) {
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
               <BackArrowIcon width={20} height={20} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>AlohaPay Methods</Text>
+            <Text style={styles.headerTitle}>Wallet</Text>
             <View style={styles.placeholder} />
           </View>
           <View style={styles.loadingContainer}>
@@ -152,7 +152,7 @@ export default function PaymentMethodsScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>AlohaPay Methods</Text>
+          <Text style={styles.headerTitle}>Wallet</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -169,7 +169,7 @@ export default function PaymentMethodsScreen({ navigation }) {
               </View>
               <View style={styles.coinsDisplay}>
                 <CoinIcon width={18} height={18} />
-                <Text style={styles.coinsText}>{wallet.coinBalance.toLocaleString()} Coins</Text>
+                <Text style={styles.coinsText}>{wallet.coinBalance.toLocaleString()} TreatCoins</Text>
               </View>
             </View>
 
@@ -182,7 +182,7 @@ export default function PaymentMethodsScreen({ navigation }) {
                 </View>
                 <View style={styles.coinsDisplay}>
                   <CoinIcon width={18} height={18} />
-                  <Text style={styles.coinsText}>{wallet.upcomingEarnings.toLocaleString()} Coins</Text>
+                  <Text style={styles.coinsText}>{wallet.upcomingEarnings.toLocaleString()} TreatCoins</Text>
                 </View>
               </View>
             )}
@@ -193,13 +193,13 @@ export default function PaymentMethodsScreen({ navigation }) {
                 <Text style={styles.infoTitle}>Processing Payments</Text>
                 <Text style={styles.promoText}>
                   {isSitter
-                    ? 'Coins arriving from CONFIRMED bookings'
-                    : 'Coins held for your active bookings'}
+                    ? 'TreatCoins arriving from CONFIRMED bookings'
+                    : 'TreatCoins held for your active bookings'}
                 </Text>
               </View>
               <View style={styles.coinsDisplay}>
                 <CoinIcon width={18} height={18} />
-                <Text style={styles.coinsText}>{wallet.processingPayments.toLocaleString()} Coins</Text>
+                <Text style={styles.coinsText}>{wallet.processingPayments.toLocaleString()} TreatCoins</Text>
               </View>
             </View>
 
@@ -283,7 +283,7 @@ export default function PaymentMethodsScreen({ navigation }) {
                           {transaction.type}
                         </Text>
                         <Text style={styles.transactionPhone} numberOfLines={1}>
-                          {transaction.source === 'EARNED' ? 'Earned coins' : 'Purchased coins'}
+                          {transaction.source === 'EARNED' ? 'Earned TreatCoins' : 'Purchased TreatCoins'}
                         </Text>
                       </View>
                     </View>
@@ -310,11 +310,11 @@ export default function PaymentMethodsScreen({ navigation }) {
           ) : (
             <Text style={styles.emptyText}>
               {selectedTab === 'Earning'
-                ? 'No earning activity yet. Coin purchases and refunds will show up here.'
+                ? 'No earning activity yet. TreatCoin purchases and refunds will show up here.'
                 : selectedTab === 'Pending Earnings'
-                ? "Sitters earn coins on completed bookings, held 30 days before becoming cashable. You'll see pending earnings here once you complete a booking as a sitter."
+                ? "Sitters earn TreatCoins on completed bookings, held 30 days before becoming cashable. You'll see pending earnings here once you complete a booking as a sitter."
                 : selectedTab === 'Payments'
-                ? "No payments yet. When you book a service, the coins spent will appear here."
+                ? "No payments yet. When you book a service, the TreatCoins spent will appear here."
                 : 'No transactions in this tab yet.'}
             </Text>
           )}
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   infoCard: {
-    height: 56,
+    minHeight: 56,
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderRadius: 16,
@@ -379,9 +379,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 10,
   },
   infoLeft: {
-    gap: 7,
+    flexGrow: 1,
+    flexBasis: 160,
+    maxWidth: '100%',
+    gap: 4,
   },
   infoTitle: {
     color: '#090E12',
@@ -398,11 +403,13 @@ const styles = StyleSheet.create({
     lineHeight: 18.6,
   },
   coinsDisplay: {
+    maxWidth: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6.88,
   },
   coinsText: {
+    flexShrink: 1,
     color: '#32A6D8',
     fontSize: 13.76,
     fontFamily: 'Avenir LT Std',

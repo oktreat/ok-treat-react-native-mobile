@@ -74,9 +74,9 @@ export default function CashOutScreen({ navigation }) {
 
   // ---- strong, explicit validation ----
   let amountError = '';
-  if (amount && !Number.isFinite(coins)) amountError = 'Enter a whole number of coins.';
-  else if (coins > 0 && coins > cashable) amountError = `You only have ${cashable} coins available.`;
-  else if (coins > 0 && bd && bd.grossCents < settings.minWithdrawalCents) amountError = `Minimum withdrawal is ${money(settings.minWithdrawalCents)} (${minCoins} coins).`;
+  if (amount && !Number.isFinite(coins)) amountError = 'Enter a whole number of TreatCoins.';
+  else if (coins > 0 && coins > cashable) amountError = `You only have ${cashable} TreatCoins available.`;
+  else if (coins > 0 && bd && bd.grossCents < settings.minWithdrawalCents) amountError = `Minimum withdrawal is ${money(settings.minWithdrawalCents)} (${minCoins} TreatCoins).`;
   else if (coins > 0 && bd && bd.netCents <= 0) amountError = 'Amount is too low after fees.';
 
   const amountValid = coins > 0 && !amountError;
@@ -162,7 +162,7 @@ export default function CashOutScreen({ navigation }) {
             <Text style={styles.balanceValue}>{money(balCents)}</Text>
             <View style={styles.balancePill}>
               <Icon name="server-outline" size={12} color="#FFFFFF" />
-              <Text style={styles.balancePillText}>{cashable} coins · {settings.coinsPerDollar} coins = $1</Text>
+              <Text style={styles.balancePillText}>{cashable} TreatCoins · {settings.coinsPerDollar} TreatCoins = $1</Text>
             </View>
           </View>
 
@@ -204,7 +204,7 @@ export default function CashOutScreen({ navigation }) {
                     onBlur={() => setTouched(true)}
                     maxLength={9}
                   />
-                  <Text style={styles.coinsSuffix}>coins</Text>
+                  <Text style={styles.coinsSuffix}>TreatCoins</Text>
                   <TouchableOpacity onPress={() => { setAmount(String(cashable)); }} style={styles.maxBtn}>
                     <Text style={styles.maxText}>MAX</Text>
                   </TouchableOpacity>
@@ -212,7 +212,7 @@ export default function CashOutScreen({ navigation }) {
                 {amountValid
                   ? <Text style={styles.amountSub}>= {money(bd.grossCents)}</Text>
                   : (amountError ? <Text style={styles.errText}><Icon name="alert-circle" size={13} color="#E53D3D" /> {amountError}</Text>
-                    : <Text style={styles.amountSub}>Min {money(settings.minWithdrawalCents)} · {minCoins} coins</Text>)}
+                    : <Text style={styles.amountSub}>Min {money(settings.minWithdrawalCents)} · {minCoins} TreatCoins</Text>)}
 
                 {amountValid && (
                   <>
@@ -256,7 +256,7 @@ export default function CashOutScreen({ navigation }) {
                 <View key={h.id} style={styles.histRow}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.histAmount}>{money(h.netCents)}</Text>
-                    <Text style={styles.histSub}>{h.amountCoins} coins · {new Date(h.createdAt).toLocaleDateString('en-US')}</Text>
+                    <Text style={styles.histSub}>{h.amountCoins} TreatCoins · {new Date(h.createdAt).toLocaleDateString('en-US')}</Text>
                   </View>
                   <StatusBadge status={h.status} />
                 </View>

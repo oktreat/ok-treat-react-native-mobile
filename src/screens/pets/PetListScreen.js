@@ -1,8 +1,9 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, ActivityIndicator, RefreshControl, Animated, PanResponder, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Button from '../../components/Button';
-import { SplashIcon, DeleteIcon, CheckCircleIcon } from '../../assets';
+import { DeleteIcon, CheckCircleIcon } from '../../assets';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { getUserPets, deletePet } from '../../services/petService';
 
@@ -73,10 +74,12 @@ const SwipeablePetCard = ({ pet, onPress, onDelete }) => {
     const years = pet.ageYears || 0;
     const months = pet.ageMonths || 0;
     
-    if (years === 0 && months === 0) return 'Age not specified';
-    if (years === 0) return `${months} month${months !== 1 ? 's' : ''}`;
-    if (months === 0) return `${years} year${years !== 1 ? 's' : ''}`;
-    return `${years} year${years !== 1 ? 's' : ''} & ${months} month${months !== 1 ? 's' : ''}`;
+    if (years === 0 && months === 0) return copy('Age not specified');
+    const monthText = copy(months === 1 ? '{{count}} month' : '{{count}} months', { count: months });
+    const yearText = copy(years === 1 ? '{{count}} year' : '{{count}} years', { count: years });
+    if (years === 0) return monthText;
+    if (months === 0) return yearText;
+    return yearText + ' · ' + monthText;
   };
 
   const getWeightDisplay = () => {
@@ -121,9 +124,9 @@ const SwipeablePetCard = ({ pet, onPress, onDelete }) => {
           </View>
           <View style={styles.petDetails}>
             <Text style={styles.petDetailsText}>
-              <Text style={styles.detailLabel}>Weight:</Text>
+              <Text style={styles.detailLabel}>{copy("Weight:")}</Text>
               <Text style={styles.detailValue}> {getWeightDisplay()}  .  </Text>
-              <Text style={styles.detailLabel}>Age:</Text>
+              <Text style={styles.detailLabel}>{copy("Age:")}</Text>
               <Text style={styles.detailValue}> {getAgeDisplay()}</Text>
             </Text>
           </View>
@@ -134,6 +137,7 @@ const SwipeablePetCard = ({ pet, onPress, onDelete }) => {
 };
 
 export default function PetListScreen({ navigation }) {
+  useCopyUpdates();
   const insets = useSafeAreaInsets();
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -191,7 +195,7 @@ export default function PetListScreen({ navigation }) {
       // setShowSuccessModal(true);
     } catch (error) {
       console.error('Error deleting pet:', error);
-      setErrorMessage('Failed to delete pet. Please try again.');
+      setErrorMessage(copy("Failed to delete pet. Please try again."));
       setShowErrorModal(true);
     } finally {
       setSelectedPet(null);
@@ -212,12 +216,9 @@ export default function PetListScreen({ navigation }) {
       <View style={styles.container}>
         {/* Header */}
         <View style={[styles.header, { top: insets.top }]}>
-          <View style={styles.avatarContainer}>
-            <Image source={SplashIcon} style={{ width: 30, height: 30 }} resizeMode="contain" />
-          </View>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>Your Pets</Text>
-            <Text style={styles.headerSubtitle}>You can manage your pets</Text>
+            <Text style={styles.headerTitle}>{copy("Your Pets")}</Text>
+            <Text style={styles.headerSubtitle}>{copy("You can manage your pets")}</Text>
           </View>
         </View>
 
@@ -226,12 +227,12 @@ export default function PetListScreen({ navigation }) {
           {loading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#32A6D8" />
-              <Text style={styles.loadingText}>Loading your pets...</Text>
+              <Text style={styles.loadingText}>{copy("Loading your pets...")}</Text>
             </View>
           ) : pets.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyTitle}>No Pets Yet</Text>
-              <Text style={styles.emptyText}>Add your first pet to get started!</Text>
+              <Text style={styles.emptyTitle}>{copy("No Pets Yet")}</Text>
+              <Text style={styles.emptyText}>{copy("Add your first pet to get started!")}</Text>
             </View>
           ) : (
             <ScrollView
@@ -262,7 +263,7 @@ export default function PetListScreen({ navigation }) {
         {/* Add Pet Button */}
         <View style={styles.footer}>
           <Button
-            title="Add a Pet"
+            title={copy("Add a Pet")}
             onPress={handleAddPet}
             fullWidth
             size="medium"
@@ -280,17 +281,15 @@ export default function PetListScreen({ navigation }) {
             <View style={styles.modalContent}>
              
               <View style={styles.modalTextContainer}>
-                <Text style={styles.modalTitle}>Delete Pet</Text>
-                <Text style={styles.modalMessage}>
-                  Are you sure you want to delete {selectedPet?.name}? This action cannot be undone.
-                </Text>
+                <Text style={styles.modalTitle}>{copy("Delete Pet")}</Text>
+                <Text style={styles.modalMessage}>{copy('Delete {{name}}? This action cannot be undone.', { name: selectedPet?.name })}</Text>
               </View>
               <View style={styles.modalButtonsContainer}>
                 <TouchableOpacity style={styles.cancelButton} onPress={cancelDelete}>
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                  <Text style={styles.cancelButtonText}>{copy("Cancel")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.deleteButtonModel} onPress={confirmDelete}>
-                  <Text style={styles.deleteButtonText}>Delete</Text>
+                  <Text style={styles.deleteButtonText}>{copy("Delete")}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -310,13 +309,11 @@ export default function PetListScreen({ navigation }) {
                 <CheckCircleIcon width={66} height={66} color="#32A6D8" />
               </View>
               <View style={styles.modalTextContainer}>
-                <Text style={styles.modalTitle}>Successfully Deleted</Text>
-                <Text style={styles.modalMessage}>
-                  The pet has been successfully removed from your list.
-                </Text>
+                <Text style={styles.modalTitle}>{copy("Successfully Deleted")}</Text>
+                <Text style={styles.modalMessage}>{copy("The pet has been successfully removed from your list.")}</Text>
               </View>
               <TouchableOpacity style={styles.okButton} onPress={() => setShowSuccessModal(false)}>
-                <Text style={styles.okButtonText}>OK</Text>
+                <Text style={styles.okButtonText}>{copy("OK")}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -335,11 +332,11 @@ export default function PetListScreen({ navigation }) {
                 <Text style={styles.errorIcon}>⚠️</Text>
               </View>
               <View style={styles.modalTextContainer}>
-                <Text style={styles.modalTitle}>Error</Text>
+                <Text style={styles.modalTitle}>{copy("Error")}</Text>
                 <Text style={styles.modalMessage}>{errorMessage}</Text>
               </View>
               <TouchableOpacity style={styles.okButton} onPress={() => setShowErrorModal(false)}>
-                <Text style={styles.okButtonText}>OK</Text>
+                <Text style={styles.okButtonText}>{copy("OK")}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -375,26 +372,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     zIndex: 10,
   },
-  avatarContainer: {
-    width: 45,
-    height: 45,
-    borderRadius: 37.5,
-    backgroundColor: '#FFC2EB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
   headerTextContainer: {
     width: width,
     flexDirection: 'column',
     gap: 2,
   },
   headerTitle: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#087EA4',
+    fontSize: 20,
     fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
+    fontWeight: '700',
+    lineHeight: 28,
   },
   headerSubtitle: {
     color: '#5D6165',
@@ -648,7 +636,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 52,
-     backgroundColor: '#F38FB4',
+     backgroundColor: '#C83737',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -666,7 +654,7 @@ const styles = StyleSheet.create({
   okButton: {
     width: width * 0.7,
     height: 40,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#E2F3FB',
     borderRadius: 52,
     justifyContent: 'center',
     alignItems: 'center',

@@ -1,11 +1,11 @@
 /**
- * Edge ML — context-aware sitter ranking.
+ * Context-aware sitter ranking with rotation among similarly suitable sitters.
  *
  * Pure JavaScript, runs entirely on device (no API calls).
  * Score = Σ weight_i * normalizedFeature_i, where weights shift based on
  * the user's pet profile and stated preferences.
  *
- * Each ranked sitter also gets a `matchScore` (0–100) and a short
+ * Each ranked sitter also gets an internal `matchScore` (0–100 points, not a probability) and a short
  * `matchReasons[]` list of human-readable explanations of why the sitter
  * scored high on this user's specific criteria.
  */
@@ -20,7 +20,7 @@ const clamp = (x, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, x));
 const ratingNorm = (rating) => clamp((rating || 0) / 5);
 
 // Distance: 0km = 1.0, falls to 0.0 by maxDistance km. Linear decay.
-const distanceNorm = (distance, maxDistance = 30) => clamp(1 - (distance || 0) / maxDistance);
+const distanceNorm = (distance, maxDistance = 30) => Number.isFinite(distance) && distance >= 0 ? clamp(1 - distance / maxDistance) : 0.5;
 
 // Trust signal — log-scaled review count, capped at ~200 reviews.
 const reviewsNorm = (reviews) => clamp(Math.log10((reviews || 0) + 1) / Math.log10(201));
@@ -37,7 +37,9 @@ const completedNorm = (n) => clamp(Math.log10((n || 0) + 1) / Math.log10(301));
 // Last update recency: 0 days ago = 1.0, 90+ days = 0.0
 const recencyNorm = (lastUpdate) => {
   if (!lastUpdate) return 0.5;
-  const days = Math.floor((Date.now() - new Date(lastUpdate).getTime()) / (1000 * 60 * 60 * 24));
+  const timestamp = new Date(lastUpdate).getTime();
+  if (!Number.isFinite(timestamp)) return 0.5;
+  const days = Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24));
   return clamp(1 - days / 90);
 };
 
@@ -81,7 +83,8 @@ function petMatchScore(sitter, pet, serviceSettings) {
   // Pet type compatibility (biggest signal)
   max += 0.4;
   const acceptedTypes = serviceSettings?.petPreferences || sitter.pets || [];
-  if (petTypeMatches(acceptedTypes, pet.type)) score += 0.4;
+  if (!acceptedTypes.length) score += 0.2;
+  else if (petTypeMatches(acceptedTypes, pet.type)) score += 0.4;
 
   // Size compatibility
   max += 0.25;
@@ -134,12 +137,12 @@ function petMatchScore(sitter, pet, serviceSettings) {
  */
 function deriveWeights(pet, user) {
   const w = {
-    rating: 0.22,
-    distance: 0.18,
-    reviews: 0.12,
-    price: 0.13,
-    experience: 0.10,
-    petMatch: 0.15,
+    rating: 0.18,
+    distance: 0.20,
+    reviews: 0.05,
+    price: 0.10,
+    experience: 0.08,
+    petMatch: 0.29,
     recency: 0.05,
     completed: 0.05,
   };
@@ -189,14 +192,16 @@ function scoreSitter(sitter, ctx, weights) {
   const rate = serviceSettings.baseRate ?? sitter.coins ?? 0;
 
   const features = {
-    rating: ratingNorm(sitter.rating),
+    // Shrink unproven ratings toward a neutral prior; no reviews is not 5 stars.
+    rating: clamp(((sitter.reviews || 0) * ratingNorm(sitter.rating) + 5 * 0.7) / ((sitter.reviews || 0) + 5)),
     distance: distanceNorm(sitter.distance, maxDistance),
-    reviews: reviewsNorm(sitter.reviews),
+    reviews: 0.5 + 0.5 * reviewsNorm(sitter.reviews),
     price: priceFit(rate, userBudget),
     experience: experienceNorm(sitter.yearsOfExperience),
     petMatch: petMatchScore(sitter, pet, serviceSettings),
     recency: recencyNorm(sitter.lastUpdate),
-    completed: completedNorm(sitter.repeatClients ?? sitter.completedBookings ?? 0),
+    // Do not use repeatClients: the current API derives it from a booking estimate.
+    completed: 0.5 + 0.5 * completedNorm(sitter.completedBookings || 0),
   };
 
   let score = 0;
@@ -228,6 +233,7 @@ function buildReasons(sitter, ctx, breakdown, features) {
   for (const r of top) {
     switch (r.key) {
       case 'rating':
+        if (!(sitter.reviews >= 3)) break;
         if (sitter.rating >= 4.8) reasons.push(`Top-rated (${sitter.rating}★)`);
         else if (sitter.rating >= 4.5) reasons.push(`Highly rated (${sitter.rating}★)`);
         break;
@@ -239,7 +245,7 @@ function buildReasons(sitter, ctx, breakdown, features) {
         else if (sitter.reviews >= 30) reasons.push(`Well-reviewed (${sitter.reviews})`);
         break;
       case 'price':
-        if (features.price >= 0.85) reasons.push(`Within your budget`);
+        if (ctx.userBudget && features.price >= 0.85) reasons.push(`Within your budget`);
         break;
       case 'experience':
         const exp = parseInt(sitter.yearsOfExperience, 10);
@@ -260,7 +266,7 @@ function buildReasons(sitter, ctx, breakdown, features) {
         if (features.recency >= 0.9) reasons.push(`Recently active`);
         break;
       case 'completed':
-        if (sitter.repeatClients >= 50) reasons.push(`${sitter.repeatClients}+ repeat clients`);
+        if (sitter.completedBookings >= 50) reasons.push(`${sitter.completedBookings}+ completed bookings`);
         break;
     }
   }
@@ -283,8 +289,9 @@ function buildReasons(sitter, ctx, breakdown, features) {
  *   - serviceType: string (enum value e.g. 'PET_WALKING')
  *   - userBudget?: number (coins) - if known
  *   - maxDistance?: number (km), default 30
+ *   - rotationKey?: stable per-search key; new searches rotate similar candidates
  * @returns {Array} sitters with extra fields:
- *   - matchScore: 0..100
+ *   - matchScore: 0..100 internal points, never displayed as a compatibility percentage
  *   - matchReasons: string[]
  *   - _matchBreakdown: object (for debugging)
  */
@@ -300,24 +307,37 @@ export function rankSitters(sitters, ctx = {}) {
     return { sitter: s, score, breakdown, features, reasons };
   });
 
-  // Normalize to 0–100 with a soft ceiling so top sitter ≈ 96–99 typically
-  const maxScore = Math.max(...scored.map((x) => x.score), 0.0001);
-  const minScore = Math.min(...scored.map((x) => x.score));
-
-  return scored
-    .sort((a, b) => b.score - a.score)
-    .map(({ sitter, score, breakdown, features, reasons }) => {
-      // Map [min, max] -> [70, 99]. Single sitter -> 92.
-      const range = maxScore - minScore;
-      const matchScore =
-        range < 0.001 ? 92 : Math.round(70 + ((score - minScore) / range) * 29);
-      return {
-        ...sitter,
-        matchScore,
-        matchReasons: reasons,
-        _matchBreakdown: breakdown,
-      };
-    });
+  // Bookable sitters and known pet compatibility always take priority.
+  // Rotate only candidates within five actual score points of the band's best.
+  // Anchoring each band prevents a chain of near-ties mixing distant scores.
+  const key = String(ctx.rotationKey ?? Math.random());
+  const hash = value => { let h = 2166136261; for (const c of value) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const group = sitter => {
+    const settings = sitter.services?.[ctx.serviceType] || sitter.serviceSettings || {};
+    const types = settings.petPreferences || sitter.pets || [];
+    const sizes = settings.petSizePreference || [];
+    const size = sizeBucket(ctx.pet?.weight);
+    const mismatch = !!(ctx.pet && ((types.length && ctx.pet.type && !petTypeMatches(types, ctx.pet.type)) || (size && sizes.length && !sizes.includes(size))));
+    return (sitter.approvalStatus === 'APPROVED' && sitter.availableForBooking !== false ? 0 : 2) + (mismatch ? 1 : 0);
+  };
+  scored.forEach(item => { item.group = group(item.sitter); });
+  scored.sort((a, b) => a.group - b.group || b.score - a.score || String(a.sitter.id).localeCompare(String(b.sitter.id)));
+  const ordered = [];
+  for (let start = 0; start < scored.length;) {
+    let end = start + 1;
+    while (end < scored.length && scored[end].group === scored[start].group && scored[start].score - scored[end].score <= 0.05) end++;
+    const band = scored.slice(start, end).sort((a, b) => String(a.sitter.id).localeCompare(String(b.sitter.id)));
+    const offset = hash(key + ':' + band.map(item => item.sitter.id).join(',')) % band.length;
+    ordered.push(...band.slice(offset), ...band.slice(0, offset));
+    start = end;
+  }
+  return ordered.map(({ sitter, score, breakdown, reasons, group: eligibilityGroup }) => ({
+    ...sitter,
+    matchScore: Math.round(score * 100),
+    matchEligible: eligibilityGroup === 0,
+    matchReasons: reasons,
+    _matchBreakdown: breakdown,
+  }));
 }
 
 /**

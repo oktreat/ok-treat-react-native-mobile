@@ -19,6 +19,8 @@ export const DEFAULT_REMOTE_CONFIG = {
   supportEmail: 'careteam@oktreat.com',
   supportPhone: '+1 (778) 772-3666',
   supportWhatsapp: '+1 (778) 772-3666',
+  // Never advertise the new offer against an older backend without the policy.
+  referralProgram: { enabled: false, referrerReward: 100, referredReward: 100, qualification: 'NEW_USER_VERIFIED_REFERRER_FIRST_BOOKING' },
   maintenance: { ...DEFAULT_MAINTENANCE },
 };
 
@@ -29,6 +31,7 @@ function mergeConfig(raw) {
   return {
     ...DEFAULT_REMOTE_CONFIG,
     ...cfg,
+    referralProgram: { ...DEFAULT_REMOTE_CONFIG.referralProgram, ...(cfg.referralProgram || {}) },
     maintenance: { ...DEFAULT_MAINTENANCE, ...(cfg.maintenance || {}) },
   };
 }

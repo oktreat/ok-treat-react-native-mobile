@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image, Linking, Alert } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -19,6 +20,7 @@ import {
 } from '../../assets';
 
 export default function MoreScreen({ navigation }) {
+  useCopyUpdates();
   const { user } = useSelector(state => state.auth);
   // Admin-editable remote config (store links, Amazon "buy more tags" URL).
   const { amazonTagsUrl } = useRemoteConfig();
@@ -34,6 +36,7 @@ export default function MoreScreen({ navigation }) {
   // Check sitter status on every screen focus
   useFocusEffect(
     useCallback(() => {
+      setIsSitterMode(false); // This screen belongs to owner navigation.
       const checkSitterStatus = async () => {
         try {
           const response = await api.get('/sitter/status');
@@ -109,7 +112,7 @@ export default function MoreScreen({ navigation }) {
   const handleBuyTags = async () => {
     const url = (amazonTagsUrl || '').trim();
     if (!url) {
-      Alert.alert('Coming soon', 'Buying more tags in the app is under development. Check back soon!');
+      Alert.alert(copy("Coming soon"), copy("Buying more tags in the app is under development. Check back soon!"));
       return;
     }
     try {
@@ -117,10 +120,10 @@ export default function MoreScreen({ navigation }) {
       if (supported) {
         await Linking.openURL(url);
       } else {
-        Alert.alert('Coming soon', 'Buying more tags in the app is under development. Check back soon!');
+        Alert.alert(copy("Coming soon"), copy("Buying more tags in the app is under development. Check back soon!"));
       }
     } catch (e) {
-      Alert.alert('Coming soon', 'Buying more tags in the app is under development. Check back soon!');
+      Alert.alert(copy("Coming soon"), copy("Buying more tags in the app is under development. Check back soon!"));
     }
   };
 
@@ -159,7 +162,7 @@ export default function MoreScreen({ navigation }) {
       onPress: handleBuyTags,
     },
     {
-      title: 'Shop Coins',
+      title: 'Shop TreatCoins',
       screen: 'ShopCoins',
       component: CreditCardIcon
     },
@@ -184,7 +187,7 @@ export default function MoreScreen({ navigation }) {
       component: SettingsIcon
     },
     { 
-      title: 'AlohaPay', 
+      title: 'Wallet',
       screen: 'PaymentMethods',
       component: StoreIcon 
     },
@@ -254,8 +257,8 @@ export default function MoreScreen({ navigation }) {
             )}
           </View>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>More</Text>
-            <Text style={styles.headerSubtitle}>You can manage your preferences</Text>
+            <Text style={styles.headerTitle}>{copy("More")}</Text>
+            <Text style={styles.headerSubtitle}>{copy("You can manage your preferences")}</Text>
           </View>
         </View>
 
@@ -264,21 +267,21 @@ export default function MoreScreen({ navigation }) {
           {/* Sitter Mode Toggle */}
           <View style={styles.toggleRow}>
             <View style={styles.toggleLeft}>
-              <Text style={styles.toggleLabel}>Switch to Sitter Mode</Text>
+              <Text style={styles.toggleLabel}>{copy("Sitter mode")}</Text>
               {sitterStatus === 'PENDING' && (
-                <Text style={styles.toggleStatus}>Application pending review</Text>
+                <Text style={styles.toggleStatus}>{copy("Application pending review")}</Text>
               )}
               {sitterStatus === 'REJECTED' && (
-                <Text style={[styles.toggleStatus, { color: '#FF3B30' }]}>Application not approved</Text>
+                <Text style={[styles.toggleStatus, { color: '#FF3B30' }]}>{copy("Application not approved")}</Text>
               )}
               {!hasSitterProfile && !sitterStatus && (
-                <Text style={styles.toggleStatus}>Become a sitter to earn</Text>
+                <Text style={styles.toggleStatus}>{copy("Become a sitter to earn")}</Text>
               )}
             </View>
             <Switch
               value={isSitterMode}
               onValueChange={handleSitterModeToggle}
-              trackColor={{ false: '#E5E5E5', true: '#FFC2EB' }}
+              trackColor={{ false: '#E5E5E5', true: '#087EA4' }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#E5E5E5"
             />
@@ -299,14 +302,14 @@ export default function MoreScreen({ navigation }) {
                     <View style={styles.menuIconContainer}>
                       <IconComponent width={24} height={24} fill="#32A6D8" />
                     </View>
-                    <Text style={styles.menuTitle}>{item.title}</Text>
+                    <Text style={styles.menuTitle}>{copy(item.title)}</Text>
                     {item.isDev && (
                       <View style={styles.devPill}>
-                        <Text style={styles.devPillText}>DEV</Text>
+                        <Text style={styles.devPillText}>{copy("DEV")}</Text>
                       </View>
                     )}
                   </View>
-                  {/* <Icon name="chevron-forward" size={24} color="#FFC2EB" /> */}
+                  {/* <Icon name="chevron-forward" size={24} color="#E2F3FB" /> */}
                 </TouchableOpacity>
               );
             })}
@@ -318,9 +321,9 @@ export default function MoreScreen({ navigation }) {
       <ProfileVerifiedModal
         visible={showApprovedModal}
         onNext={handleApprovedModalNext}
-        title="Application Approved!"
-        description="Congratulations! Your sitter application has been approved. You can now start accepting bookings!"
-        buttonText="Go to Dashboard"
+        title={copy("Application Approved!")}
+        description={copy("Congratulations! Your sitter application has been approved. You can now start accepting bookings!")}
+        buttonText={copy("Go to Dashboard")}
         iconType="success"
       />
 
@@ -328,9 +331,9 @@ export default function MoreScreen({ navigation }) {
       <ProfileVerifiedModal
         visible={showRejectedModal}
         onNext={handleRejectedModalNext}
-        title="Application Rejected"
+        title={copy("Application Rejected")}
         description={rejectionReason}
-        buttonText="Update Profile"
+        buttonText={copy("Update Profile")}
         iconType="error"
       />
 
@@ -338,9 +341,9 @@ export default function MoreScreen({ navigation }) {
       <ProfileVerifiedModal
         visible={showPendingModal}
         onNext={handlePendingModalNext}
-        title="Application Pending"
-        description="Your sitter application is currently under review. We'll notify you once it's been processed."
-        buttonText="OK"
+        title={copy("Application Pending")}
+        description={copy("Your sitter application is currently under review. We'll notify you once it's been processed.")}
+        buttonText={copy("OK")}
         iconType="pending"
       />
     </ScreenWrapper>
@@ -363,7 +366,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 45,
     height: 45,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#E2F3FB',
     borderRadius: 37.5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -379,11 +382,11 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   headerTitle: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#087EA4',
+    fontSize: 20,
     fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
+    fontWeight: '700',
+    lineHeight: 28,
   },
   headerSubtitle: {
     color: '#5D6165',

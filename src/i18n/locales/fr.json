@@ -1,0 +1,89 @@
+{
+  "common": {
+    "cancel": "Annuler",
+    "ok": "OK",
+    "save": "Enregistrer",
+    "continue": "Continuer",
+    "proceed": "Continuer",
+    "back": "Retour",
+    "next": "Suivant",
+    "skip": "Passer",
+    "loading": "Chargement…",
+    "retry": "Réessayer",
+    "error": "Erreur",
+    "success": "Réussi"
+  },
+  "home": {
+    "welcome": "Bon retour",
+    "noEmail": "Aucun courriel",
+    "addPet": "Ajouter un animal",
+    "scanQr": "Scanner un QR",
+    "bookings": "Réservations",
+    "myRequests": "Mes demandes",
+    "notifications": "Notifications",
+    "inbox": "Messages",
+    "becomeASitter": "Devenir gardien",
+    "chat": "Messages",
+    "refer": "Inviter un ami",
+    "tags": "Médailles QR",
+    "petDetail": "Présentez votre compagnon",
+    "qrDetail": "Associez une médaille QR",
+    "bookingDetail": "Gardes et demandes",
+    "chatDetail": "Gardez le contact",
+    "referDetail": "Agrandissez votre réseau",
+    "tagDetail": "Voir OkTreat sur Amazon",
+    "barter": "Échangez votre temps",
+    "findCare": "Trouver une garde",
+    "offerCare": "Proposer une garde",
+    "checking": "Vérification…",
+    "aiMatching": "Matching IA de gardiens",
+    "sitterMode": "Mode gardien"
+  },
+  "language": {
+    "title": "Choisir votre langue",
+    "subtitle": "Vous pouvez la modifier dans les paramètres.",
+    "proceed": "Continuer"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "general": "Général",
+    "about": "À propos",
+    "accountSetting": "Paramètres du compte",
+    "notification": "Notifications",
+    "language": "Langue",
+    "privacyChoices": "Choix de confidentialité",
+    "logout": "Déconnexion",
+    "privacyPolicy": "Politique de confidentialité",
+    "logoutConfirmTitle": "Déconnexion",
+    "logoutConfirmBody": "Voulez-vous vous déconnecter ?"
+  },
+  "preferences": {
+    "phoneLanguage": "Langue du téléphone",
+    "phoneRegion": "Région du téléphone",
+    "currency": "Devise préférée",
+    "saveError": "Enregistrement impossible. Veuillez réessayer."
+  },
+  "shop": {
+    "balance": "Solde total de TreatCoins",
+    "usdOnly": "Tous les paiements sont actuellement facturés en USD.",
+    "localPending": "Préférence {{currency}} enregistrée. Les prix locaux ne sont pas encore disponibles. Tous les paiements sont facturés en USD.",
+    "noPackages": "Aucun forfait disponible pour le moment.",
+    "bonus": "+{{amount}} en bonus",
+    "crediting": "Ajout des TreatCoins…",
+    "unavailable": "Paiements indisponibles",
+    "pay": "Continuer et payer {{amount}}",
+    "select": "Sélectionner un forfait"
+  },
+  "tabs": {
+    "Home": "Accueil",
+    "ReBookMain": "Réserver",
+    "Services": "Services",
+    "Pets": "Animaux",
+    "More": "Plus",
+    "SitterHome": "Accueil",
+    "SitterBookings": "Réservations",
+    "SitterCalendar": "Calendrier",
+    "SitterRequests": "Messages",
+    "SitterMore": "Profil"
+  }
+}

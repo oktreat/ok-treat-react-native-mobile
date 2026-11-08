@@ -8,3 +8,6 @@ export const registerForPushNotifications = async () => {
   console.log('Push notifications not supported on web');
   return null;
 };
+
+export const syncNotificationBadge = async () => {};
+export const clearPushTokenOnServer = async () => {};

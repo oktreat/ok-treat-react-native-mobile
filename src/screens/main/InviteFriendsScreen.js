@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -8,16 +9,19 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon } from '../../assets';
 import api from '../../config/api';
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
-
-const REFERRER_REWARD = 100;
-const REFERRED_REWARD = 50;
+import { useDispatch } from 'react-redux';
+import { loadRemoteConfig } from '../../store/slices/appSlice';
 
 export default function InviteFriendsScreen({ navigation }) {
+  useCopyUpdates();
   const { user } = useSelector((state) => state.auth);
   // Store links come from the admin-editable remote config so they can change
   // without an app update. Empty links are simply omitted from the message.
   const { playStoreUrl, appStoreUrl } = useRemoteConfig();
+  const dispatch = useDispatch();
   const [stats, setStats] = useState(null);
+  const referrerReward = stats?.rewardAmounts?.referrerReward ?? 100;
+  const referredReward = stats?.rewardAmounts?.referredReward ?? 100;
   const [copied, setCopied] = useState(false);
 
   const code = stats?.referralCode || user?.referralCode || '';
@@ -31,7 +35,10 @@ export default function InviteFriendsScreen({ navigation }) {
     }
   }, []);
 
-  useFocusEffect(useCallback(() => { fetchStats(); }, [fetchStats]));
+  useFocusEffect(useCallback(() => {
+    fetchStats();
+    dispatch(loadRemoteConfig());
+  }, [fetchStats, dispatch]));
 
   const handleCopy = async () => {
     if (!code) return;
@@ -53,7 +60,8 @@ export default function InviteFriendsScreen({ navigation }) {
       await Share.share({
         message:
           `Join me on OkTreat — the app for trusted pet sitters! 🐾\n\n` +
-          `Use my code ${code} when you sign up and you'll get ${REFERRED_REWARD} bonus coins.` +
+          `Use my referral code ${code}.` +
+          ` Verify your account and apply my code to get ${referredReward} bonus TreatCoins. I get ${referrerReward} TreatCoins too. Promotional TreatCoins cannot be withdrawn as cash.` +
           downloadBlock,
       });
     } catch (e) { /* dismissed */ }
@@ -78,9 +86,9 @@ export default function InviteFriendsScreen({ navigation }) {
           {/* Hero */}
           <View style={styles.hero}>
             <Icon name="gift" size={28} color="#32A6D8" />
-            <Text style={styles.heroTitle}>Give {REFERRED_REWARD}, get {REFERRER_REWARD}</Text>
+            <Text style={styles.heroTitle}>{copy('Give {{friend}}, get {{inviter}}', { friend: referredReward, inviter: referrerReward })}</Text>
             <Text style={styles.heroSubtitle}>
-              Share your code — your friend gets {REFERRED_REWARD} coins and you get {REFERRER_REWARD} when they join.
+              {copy("Your friend gets {{friend}} bonus TreatCoins and you get {{inviter}} TreatCoins when they verify their account and apply your referral code. One referral reward per account. Promotional TreatCoins cannot be withdrawn as cash.", { friend: referredReward, inviter: referrerReward })}
             </Text>
           </View>
 
@@ -110,7 +118,7 @@ export default function InviteFriendsScreen({ navigation }) {
             <View style={styles.statDivider} />
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{earned}</Text>
-              <Text style={styles.statLabel}>Coins earned</Text>
+              <Text style={styles.statLabel}>TreatCoins earned</Text>
             </View>
           </View>
         </ScrollView>

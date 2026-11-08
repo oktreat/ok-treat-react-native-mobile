@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -7,25 +7,19 @@ import { fetchSitters } from '../../store/slices/sitterSlice';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import ProfileVerifiedModal from '../../components/ProfileVerifiedModal';
 import Icon from '@expo/vector-icons/Ionicons';
-import { 
-  HomeIconSvg, 
-  ScanAltIcon, 
-  OrderApproveIcon, 
-  NotificationSolidIcon, 
-  InboxLightIcon,
-  ExploreOutlineIcon,
-  SplashIcon
-} from '../../assets';
+import { SplashIcon } from '../../assets';
 import { getSitterStatus, markSitterApprovalSeen } from '../../services/sitterService';
 import ReferralPromptModal from '../../components/ReferralPromptModal';
 import { getReferralPromptStatus } from '../../services/referralService';
 import { useWallet } from '../../context/WalletContext';
 import api from '../../config/api';
+import SitterModeSwitch from '../../components/SitterModeSwitch';
+import TreatCoinMark from '../../components/TreatCoinMark';
 
 // Show the referral prompt at most once per app session.
 let referralPromptCheckedThisSession = false;
 
-const { width, height } = Dimensions.get('window');
+
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -79,6 +73,7 @@ export default function HomeScreen({ navigation }) {
       };
       checkSitter();
       fetchUnread();
+      wallet.refresh();
     }, [])
   );
 
@@ -142,12 +137,22 @@ export default function HomeScreen({ navigation }) {
     setShowPendingModal(false);
   };
 
+  const shortcuts = [
+    { title: t('home.addPet'), detail: t('home.petDetail'), icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
+    { title: t('home.scanQr'), detail: t('home.qrDetail'), icon: 'scan-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
+    { title: t('home.bookings'), detail: t('home.bookingDetail'), icon: 'calendar-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('Bookings') },
+    { title: t('home.chat'), detail: t('home.chatDetail'), icon: 'chatbubbles-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('ChatList') },
+    { title: t('home.refer'), detail: t('home.referDetail'), icon: 'gift-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('InviteFriends') },
+    { title: t('home.tags'), detail: t('home.tagDetail'), icon: 'pricetag-outline', bg: '#EAF5FC', color: '#087EA4', press: () => openSmartTags() },
+  ];
+  const openSmartTags = () => Linking.openURL('https://www.amazon.com/stores/OKTreat/page/39C7FC72-20EB-4F6A-AE27-53D4958D9361').catch(() => {});
+
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.avatarContainer}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Your profile" onPress={() => navigation.navigate('ProfileView')} style={styles.avatarContainer}>
             {user?.avatarUrl ? (
               // key={url} forces remount when the avatar changes — RN <Image>
               // caches by URI and would otherwise keep showing the old photo.
@@ -159,11 +164,11 @@ export default function HomeScreen({ navigation }) {
             ) : (
               <Image source={SplashIcon} style={{ width: 30, height: 30 }} resizeMode="contain" />
             )}
-          </View>
+          </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text style={styles.welcomeText} numberOfLines={1}>{t('home.welcome')}</Text>
             <Text style={styles.emailText} numberOfLines={1} ellipsizeMode="tail">
-              {user?.email || t('home.noEmail')}
+              {(user?.fullName || user?.name || 'Friend').split(' ')[0]}
             </Text>
           </View>
           {/* Notification bell — top-right header button. Standard
@@ -184,119 +189,28 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Explore Section */}
-        {/* <View style={styles.exploreHeader}>
-          <ExploreOutlineIcon width={21.81} height={21.81} />
-          <Text style={styles.exploreText}>Explore</Text>
-        </View> */}
-
-        {/* Quick Actions Grid */}
-        <View style={styles.gridContainer}>
-          {/* Row 1 */}
-          <View style={styles.row}>
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('AddPet')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <Icon name="paw-outline" size={36} color="#32A6D8" />
-                </View>
-                <Text style={styles.actionLabel}>Add a Pet</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('PetQRScan', { fromScreen: 'Home' })}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <ScanAltIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Scan a QR</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Row 2 */}
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('Bookings')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <OrderApproveIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Bookings</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('OpenRequests')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <Icon name="send-outline" size={36} color="#32A6D8" />
-                </View>
-                <Text style={styles.actionLabel}>My Requests</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Row 3 */}
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('Notifications')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <NotificationSolidIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Notifications</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionCard}
-              onPress={() => navigation.navigate('ChatList')}
-            >
-              <View style={styles.cardContent}>
-                <View style={styles.iconWrapper}>
-                  <InboxLightIcon width={36} height={36} />
-                </View>
-                <Text style={styles.actionLabel}>Inbox</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Row 4 - Become a Sitter */}
-          {!isApprovedSitter && (
-            <View style={styles.row}>
-              <TouchableOpacity
-                style={[styles.actionCard, styles.halfCard]}
-                onPress={handleBecomeASitter}
-                disabled={checkingStatus}
-              >
-                <View style={styles.cardContent}>
-                  {checkingStatus ? (
-                    <ActivityIndicator size="small" color="#32A6D8" />
-                  ) : (
-                    <>
-                      <View style={styles.iconWrapper}>
-                        <Icon name="paw-outline" size={36} color="#32A6D8" />
-                      </View>
-                      <Text style={styles.actionLabel}>Become a Pet Sitter</Text>
-                    </>
-                  )}
-                </View>
+        <ScrollView contentContainerStyle={styles.homeContent} showsVerticalScrollIndicator={false}>
+          <SitterModeSwitch sitterMode={false} onChange={handleBecomeASitter} disabled={checkingStatus} />
+          <View style={styles.barterCard}>
+            <View style={styles.barterTitleRow}>
+              <Text style={styles.barterTitle}>{t('home.barter')}</Text>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open Wallet, TreatCoins balance" style={styles.balance} onPress={() => navigation.navigate('PaymentMethods')}>
+                <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()}</Text>
               </TouchableOpacity>
             </View>
-          )}
-        </View>
+            <View style={styles.careActions}>
+              <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Text style={styles.findCareText}>{t('home.findCare')}</Text></TouchableOpacity>
+              <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}><Text style={styles.offerCareText}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text></TouchableOpacity>
+            </View>
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Find care with AI sitter matching" style={styles.aiLine} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Icon name="sparkles" size={14} color="#285D6D" /><Text style={styles.aiText}>{t('home.aiMatching')}</Text></TouchableOpacity>
+          </View>
+          <View style={styles.shortcutGrid}>
+            {shortcuts.map(item => <TouchableOpacity key={item.title} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>
+              <Icon name={item.icon} size={26} color={item.color} /><View><Text style={styles.shortcutTitle}>{item.title}</Text><Text style={styles.shortcutDetail}>{item.detail}</Text></View>
+            </TouchableOpacity>)}
+          </View>
+
+        </ScrollView>
 
         {/* Approved Modal */}
         <ProfileVerifiedModal
@@ -339,6 +253,22 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  homeContent: { paddingHorizontal: 24, paddingBottom: 24 },
+  barterCard: { borderRadius: 22, padding: 16, backgroundColor: '#E9F5F5', borderWidth: 1, borderColor: '#D8EAEB', marginBottom: 20 },
+  barterTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 },
+  barterTitle: { fontSize: 22, fontWeight: '700', color: '#132F39' },
+  balance: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: '#FFF7DC', borderRadius: 22, padding: 10, minHeight: 44 },
+  balanceText: { color: '#624A10', fontSize: 14, fontWeight: '700' },
+  careActions: { flexDirection: 'row', gap: 10 },
+  findCare: { flex: 1, backgroundColor: '#087EA4', padding: 13, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
+  offerCare: { flex: 1, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#9BBFC6', padding: 12, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
+  findCareText: { fontSize: 13, color: '#FFF', fontWeight: '600' }, offerCareText: { fontSize: 13, color: '#14576A', fontWeight: '600' },
+  aiLine: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingTop: 10, minHeight: 40 }, aiText: { fontSize: 12, color: '#285D6D', fontWeight: '600' },
+  shortcutsTitle: { color: '#172E38', fontSize: 16, fontWeight: '700', marginBottom: 12 },
+  shortcutGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 },
+  shortcut: { width: '48%', minHeight: 116, borderRadius: 18, padding: 14, justifyContent: 'space-between', gap: 12 },
+  shortcutTitle: { fontSize: 14, fontWeight: '700', color: '#172E38' }, shortcutDetail: { fontSize: 11, color: '#3D5661', marginTop: 4, lineHeight: 16 },
+  smartTags: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 12, backgroundColor: '#EEF2FB', borderRadius: 18, padding: 18, minHeight: 80 },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -348,13 +278,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingTop: 20,
+    paddingBottom: 14,
     gap: 10,
   },
   avatarContainer: {
     width: 45,
     height: 45,
     borderRadius: 37.5,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#E2F3FB',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -368,7 +299,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#F38FB4',
+    backgroundColor: '#087EA4',
   },
   headerTextContainer: {
     flex: 1,
@@ -405,18 +336,18 @@ const styles = StyleSheet.create({
     lineHeight: 12,
   },
   welcomeText: {
-    color: '#F38FB4',
-    fontSize: 16,
+    color: '#344D58',
+    fontSize: 14,
     fontFamily: 'Poppins',
     fontWeight: '500',
     lineHeight: 24.8,
   },
   emailText: {
-    color: '#5D6165',
-    fontSize: 13,
+    color: '#142D38',
+    fontSize: 24,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
-    lineHeight: 22,
+    lineHeight: 32,
     letterSpacing: 0.65,
   },
   exploreHeader: {
@@ -457,7 +388,7 @@ const styles = StyleSheet.create({
   },
   halfCard: {
     flex: 0,
-    width: (width - 48 - 12) / 2,
+    width: '48%',
   },
   cardContent: {
     flex: 1,

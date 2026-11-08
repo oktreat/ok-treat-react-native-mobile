@@ -12,6 +12,7 @@ import { getSocket } from '../../config/socket';
 import { useAppAlert } from '../../context/AlertContext';
 import { blockUser, reportUser } from '../../services/moderationService';
 import { iosKeyboardDismissMode } from '../../utils/keyboard';
+import { chronologicalMessages } from '../../utils/chatMessages';
 
 const REPORT_REASONS = ['Spam', 'Harassment or bullying', 'Inappropriate content', 'Scam or fraud', 'Other'];
 
@@ -69,6 +70,7 @@ export default function ChatConversationScreen({ route, navigation }) {
   const [reportDetails, setReportDetails] = useState('');
   const [submittingReport, setSubmittingReport] = useState(false);
   const scrollViewRef = useRef(null);
+  const followLatestRef = useRef(true);
   const { user } = useSelector(state => state.auth);
   const currentUserId = user?.id || user?._id;
 
@@ -89,6 +91,7 @@ export default function ChatConversationScreen({ route, navigation }) {
   // from the DB instead of showing whatever was in memory last time.
   useFocusEffect(
     useCallback(() => {
+      followLatestRef.current = true;
       fetchMessages();
       markAsRead();
     }, [receiverId])
@@ -105,6 +108,7 @@ export default function ChatConversationScreen({ route, navigation }) {
         const formatted = {
           id: msg.id || msg._id,
           text: msg.content || '',
+          createdAt: msg.createdAt,
           sender: 'other',
           time: msg.createdAt
             ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -113,7 +117,9 @@ export default function ChatConversationScreen({ route, navigation }) {
             ? new Date(msg.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
             : undefined,
         };
-        setMessages(prev => [...prev, formatted]);
+        setMessages(prev => chronologicalMessages([
+          ...prev.filter(m => m.id !== formatted.id), formatted,
+        ]));
         // Mark as read since the user is viewing this conversation
         markAsRead();
       }
@@ -146,9 +152,10 @@ export default function ChatConversationScreen({ route, navigation }) {
         }
       }
 
-      const formatted = (Array.isArray(list) ? list : []).map(msg => ({
+      const formatted = chronologicalMessages(Array.isArray(list) ? list : []).map(msg => ({
         id: msg.id || msg._id,
         text: msg.content || msg.text || '',
+        createdAt: msg.createdAt,
         sender: (msg.senderId === currentUserId || msg.sender === currentUserId) ? 'me' : 'other',
         time: msg.createdAt
           ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -188,19 +195,22 @@ export default function ChatConversationScreen({ route, navigation }) {
       id: `temp-${Date.now()}`,
       text: content,
       sender: 'me',
+      createdAt: new Date().toISOString(),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
-    setMessages(prev => [...prev, tempMsg]);
+    followLatestRef.current = true;
+    setMessages(prev => chronologicalMessages([...prev, tempMsg]));
 
     setSending(true);
     try {
       const response = await api.post('/messages', { receiverId, content });
-      const newMsg = response.data?.data || response.data?.message || response.data;
+      const newMsg = response.data?.data?.message || response.data?.data || response.data;
       // Replace temp message with real one
       setMessages(prev => prev.map(m =>
         m.id === tempMsg.id ? {
           id: newMsg?.id || newMsg?._id || tempMsg.id,
           text: newMsg?.content || content,
+          createdAt: newMsg?.createdAt || tempMsg.createdAt,
           sender: 'me',
           time: newMsg?.createdAt
             ? new Date(newMsg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -311,7 +321,14 @@ export default function ChatConversationScreen({ route, navigation }) {
               style={styles.messagesContainer}
               contentContainerStyle={styles.messagesContent}
               showsVerticalScrollIndicator={false}
-              onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: false })}
+              onScroll={({ nativeEvent }) => {
+                const { contentOffset, contentSize, layoutMeasurement } = nativeEvent;
+                followLatestRef.current = contentSize.height - layoutMeasurement.height - contentOffset.y < 100;
+              }}
+              scrollEventThrottle={100}
+              onContentSizeChange={() => {
+                if (followLatestRef.current) scrollViewRef.current?.scrollToEnd({ animated: false });
+              }}
             >
               {messages.map((msg) => (
                 <MessageBubble key={msg.id} message={msg} otherAvatar={otherAvatar} myAvatar={myAvatar} />

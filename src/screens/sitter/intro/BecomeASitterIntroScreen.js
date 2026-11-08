@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../../i18n/copy';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import ScreenWrapper from '../../../components/ScreenWrapper';
@@ -6,6 +7,7 @@ import { BackArrowIcon, AngleDownIcon, BuildingsIcon, HomeIconSvg, SunIcon, PawI
 import { getVerificationStatus } from '../../../services/stripeService';
 
 export default function BecomeASitterIntroScreen({ navigation }) {
+  useCopyUpdates();
   const [expandedSections, setExpandedSections] = useState({
     mainCard: true,
     tools: false,
@@ -150,14 +152,6 @@ export default function BecomeASitterIntroScreen({ navigation }) {
           {expandedSections.tools && (
             <View style={styles.expandableContent}>
               <View style={styles.bulletList}>
-                {/* <View style={styles.bulletItem}>
-                  <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
-                  </View>
-                  <Text style={styles.bulletText}>
-                    The OkTreat Guarantee provides up to $18,000 in reimbursement for vet care.
-                  </Text>
-                </View> */}
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
                     <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
@@ -171,7 +165,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                     <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
                   </View>
                   <Text style={styles.bulletText}>
-                    24/7 help, including professional veterinary support
+                    {copy("Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.")}
                   </Text>
                 </View>
               </View>
@@ -320,7 +314,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                     <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
                   </View>
                   <Text style={styles.bulletText}>
-                    The OkTreat Guarantee backs every service you provide on the platform.
+                    {copy("During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.")}
                   </Text>
                 </View>
                 <View style={styles.bulletItem}>
@@ -336,7 +330,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                     <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
                   </View>
                   <Text style={styles.bulletText}>
-                    Background checks included for every pet sitter and walker.
+                    {copy("Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.")}
                   </Text>
                 </View>
                 <View style={styles.bulletItem}>
@@ -344,7 +338,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                     <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
                   </View>
                   <Text style={styles.bulletText}>
-                    24/7 access to our high-quality support team
+                    {copy("Support is not monitored continuously. Report a safety concern in the app.")}
                   </Text>
                 </View>
                 <View style={styles.bulletItem}>
@@ -352,7 +346,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                     <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
                   </View>
                   <Text style={styles.bulletText}>
-                    Ongoing training to help pet sitters provide the best care
+                    {copy("Discuss care instructions and emergency contacts before each booking.")}
                   </Text>
                 </View>
               </View>
@@ -366,6 +360,10 @@ export default function BecomeASitterIntroScreen({ navigation }) {
       </View>
     </ScrollView>
 
+    {/* Identity disclosure remains visible before registration. */}
+    <View style={{ paddingHorizontal: 24, paddingVertical: 10, backgroundColor: '#E2F3FB' }}>
+      <Text style={{ color: '#183944', fontSize: 13, lineHeight: 19 }}>{copy("During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.")}</Text>
+    </View>
     {/* Get Started Button - Fixed at Bottom */}
     <View style={styles.bottomButtonContainer}>
       <Button

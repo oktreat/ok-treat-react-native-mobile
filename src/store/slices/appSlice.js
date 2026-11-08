@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import i18n from '../../i18n';
+import i18n, { initI18n } from '../../i18n';
 import {
   saveLanguage,
   getLanguage,
@@ -30,7 +30,7 @@ export const loadAppSettings = createAsyncThunk(
     ]);
     
     return {
-      language: language || 'en-us', // Default to English (US)
+      language: language || 'system', // Follow phone unless explicitly overridden
       onboardingCompleted: onboardingCompleted || false,
     };
   }
@@ -39,11 +39,11 @@ export const loadAppSettings = createAsyncThunk(
 export const setLanguage = createAsyncThunk(
   'app/setLanguage',
   async (language) => {
-    await saveLanguage(language);
+    if (!await saveLanguage(language)) throw new Error('Could not save language preference');
     // Apply immediately so every t() call re-renders with the new copy.
     // i18n.changeLanguage is a no-op if already on this language.
     try {
-      await i18n.changeLanguage(language);
+      await initI18n(language);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn('i18n.changeLanguage failed:', e?.message);
@@ -61,7 +61,7 @@ export const completeOnboarding = createAsyncThunk(
 );
 
 const initialState = {
-  language: 'en-us',
+  language: 'system',
   onboardingCompleted: false,
   loading: false,
   error: null,

@@ -175,12 +175,12 @@ export default function SitterProfileScreen({ navigation }) {
               Mode" toggle on the More screen, for parity. */}
           <View style={styles.toggleRow}>
             <View style={styles.toggleLeft}>
-              <Text style={styles.toggleLabel}>Switch to Owner Mode</Text>
+              <Text style={styles.toggleLabel}>Sitter mode</Text>
             </View>
             <Switch
-              value={false}
+              value={true}
               onValueChange={() => navigation.navigate('MainTabs', { screen: 'Home' })}
-              trackColor={{ false: '#E5E5E5', true: '#FFC2EB' }}
+              trackColor={{ false: '#E5E5E5', true: '#126F82' }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#E5E5E5"
             />

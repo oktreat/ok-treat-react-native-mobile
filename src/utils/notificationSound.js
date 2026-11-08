@@ -7,6 +7,7 @@
 // and frontend App.js channel registration.
 
 import { Audio } from 'expo-av';
+import { PUSH_DIAGNOSTICS } from '../services/pushDiagnostics';
 
 let cachedSound = null;
 let isLoading = false;
@@ -53,6 +54,8 @@ async function ensureLoaded() {
  * subsequent calls rewind and replay without reloading the file.
  */
 export async function playNotificationSound() {
+  // Isolate the custom audio session from native push sound in TestFlight.
+  if (PUSH_DIAGNOSTICS) return;
   try {
     const sound = await ensureLoaded();
     if (!sound) return;

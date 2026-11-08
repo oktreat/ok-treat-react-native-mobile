@@ -1,0 +1,91 @@
+name: OkTreat TestFlight
+on:
+  push:
+    branches: [codex/app-polish-referrals-20261106]
+    paths: ['.github/workflows/testflight.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      EXPO_PUBLIC_PUSH_DIAGNOSTICS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Verify notification regressions
+        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs tests/translations.cjs tests/payment-country.cjs tests/chat-messages.cjs
+      - run: pod install --deployment
+        working-directory: ios
+      - name: Install signing identity and profile
+        env:
+          P12: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          set -eu
+          umask 077
+          cd "$RUNNER_TEMP"
+          printf %s "$P12" | base64 -D > signing.p12
+          printf %s "$PROFILE" | base64 -D > app.mobileprovision
+          security cms -D -i app.mobileprovision > profile.plist
+          uuid=$(/usr/libexec/PlistBuddy -c 'Print UUID' profile.plist)
+          test "$(/usr/libexec/PlistBuddy -c 'Print Entitlements:application-identifier' profile.plist)" = 2TC9W568PJ.com.mubbits.oktreat
+          for dest in "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles" "$HOME/Library/MobileDevice/Provisioning Profiles"; do
+            mkdir -p "$dest"
+            cp app.mobileprovision "$dest/$uuid.mobileprovision"
+          done
+          pass=$(openssl rand -hex 32)
+          kc="$RUNNER_TEMP/oktreat.keychain-db"
+          security create-keychain -p "$pass" "$kc"
+          security set-keychain-settings -lut 7200 "$kc"
+          security unlock-keychain -p "$pass" "$kc"
+          security import signing.p12 -k "$kc" -P "$PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$pass" "$kc"
+          security list-keychains -d user -s "$kc" "$HOME/Library/Keychains/login.keychain-db"
+          rm signing.p12
+      - name: Archive and verify OkTreat
+        env:
+          CI: '1'
+        run: |
+          set -eu
+          project=ios/OkTreat.xcodeproj/project.pbxproj
+          sed -i '' -e 's/FF5DD8442347060E69CE65056CA9D43289BA32B5/"Apple Distribution"/g' -e 's/AliUsmanProvisioningProfile/"OkTreat App Store 2026-11-06"/g' "$project"
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.0.0' ios/OkTreat/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}" ios/OkTreat/Info.plist
+          xcodebuild archive -workspace ios/OkTreat.xcworkspace -scheme OkTreat -configuration Release -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/OkTreat.xcarchive"
+          app="$RUNNER_TEMP/OkTreat.xcarchive/Products/Applications/OkTreat.app"
+          codesign --verify --deep --strict "$app"
+          test -s "$app/notification.wav"
+          cmp assets/sounds/notification.wav "$app/notification.wav"
+          codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
+      - name: Upload to TestFlight
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat 2.0.0 SMS verification to TestFlight'
+        env:
+          KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
+          KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: |
+          set -eu
+          : "${KEY:?Missing App Store Connect upload key}" "${KEY_ID:?Missing key ID}" "${ISSUER:?Missing issuer ID}"
+          umask 077
+          key="$RUNNER_TEMP/AuthKey.p8"
+          printf %s "$KEY" | base64 -D > "$key"
+          trap 'rm -f "$key"' EXIT
+          python3 - <<'PY'
+          import os, plistlib
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'ExportOptions.plist'),'wb') as f:
+              plistlib.dump(dict(method='app-store-connect',destination='upload',teamID='2TC9W568PJ',signingStyle='manual',signingCertificate='Apple Distribution',manageAppVersionAndBuildNumber=False,provisioningProfiles={'com.mubbits.oktreat':'OkTreat App Store 2026-11-06'}),f)
+          PY
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/OkTreat.xcarchive" -exportPath "$RUNNER_TEMP/export" -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" -authenticationKeyPath "$key" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER"
+
+# Release restores SMS verification alongside Email using the existing Twilio Verify integration.

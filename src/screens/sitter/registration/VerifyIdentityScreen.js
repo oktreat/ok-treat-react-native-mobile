@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
+import { copy, useCopyUpdates } from '../../../i18n/copy';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ActivityIndicator, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCredentials } from '../../../store/slices/authSlice';
@@ -14,6 +15,7 @@ const HORIZONTAL_PADDING = 24;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function VerifyIdentityScreen({ navigation }) {
+  useCopyUpdates();
   const { user, token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
@@ -110,7 +112,7 @@ export default function VerifyIdentityScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.content}>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.content}>
           <View style={styles.top}>
             <View style={styles.iconCircle}>
               <ShieldCheckIcon width={32} height={32} fill="#FFFFFF" />
@@ -118,14 +120,16 @@ export default function VerifyIdentityScreen({ navigation }) {
 
             <Text style={styles.title}>Verify your Identity</Text>
             <Text style={styles.desc}>
-              To keep the community safe, we verify every sitter with a government-issued
-              photo ID and a quick selfie. Verified sitters build trust and get more bookings.
+              {copy("During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.")}
+            </Text>
+            <Text style={styles.desc}>
+              {copy("Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.")}
             </Text>
 
             <View style={styles.badges}>
               {[
                 { icon: 'card-outline', text: 'Government ID + selfie match' },
-                { icon: 'lock-closed', text: 'Bank-level encryption' },
+                { icon: 'lock-closed', text: copy("ID submitted through Stripe") },
                 { icon: 'shield-checkmark', text: 'Powered by Stripe Identity' },
               ].map((item, i) => (
                 <View key={i} style={styles.badgeRow}>
@@ -151,7 +155,7 @@ export default function VerifyIdentityScreen({ navigation }) {
               Identity verification is required to become a sitter.
             </Text>
           </View>
-        </View>
+        </ScrollView>
 
         {/* Full-screen spinner while we open the session / poll */}
         {isVerifying && (
@@ -215,7 +219,7 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: HORIZONTAL_PADDING, paddingTop: 16, marginBottom: 20 },
   backButton: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
 
-  content: { flex: 1, paddingHorizontal: HORIZONTAL_PADDING, justifyContent: 'space-between', paddingBottom: 36 },
+  content: { flexGrow: 1, paddingHorizontal: HORIZONTAL_PADDING, justifyContent: 'space-between', paddingBottom: 36 },
   top: { alignItems: 'center', gap: 16, paddingTop: 8 },
   iconCircle: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#FFC2EB', justifyContent: 'center', alignItems: 'center' },
   title: { color: '#0D0D12', fontSize: 22, fontFamily: 'Poppins', fontWeight: '600', textAlign: 'center' },

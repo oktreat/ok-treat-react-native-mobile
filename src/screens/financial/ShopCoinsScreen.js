@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import {
   View,
   Text,
@@ -5,11 +6,18 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
+  Linking,
 } from 'react-native';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { formatUSD, formatCharge } from '../../i18n/preferences';
+import { useFocusEffect } from '@react-navigation/native';
+import { getPaymentMarket, countryName } from '../../services/paymentCountryService';
 import ScreenWrapper from '../../components/ScreenWrapper';
-import { BackArrowIcon, CoinIcon } from '../../assets';
+import { BackArrowIcon } from '../../assets';
 import { Button } from '../../components';
+import TreatCoinMark from '../../components/TreatCoinMark';
 import StripeCardSheet from '../../components/StripeCardSheet';
 import api from '../../config/api';
 import { useAppAlert } from '../../context/AlertContext';
@@ -17,9 +25,16 @@ import { usePaymentConfig } from '../../context/PaymentConfigContext';
 import { useWallet } from '../../context/WalletContext';
 
 // Format priceInCents → "$24.99"
-const formatPrice = (cents) => `$${(Number(cents || 0) / 100).toFixed(2)}`;
+const formatPrice = formatUSD;
 
 export default function ShopCoinsScreen({ navigation }) {
+  useCopyUpdates();
+  const { t, i18n } = useTranslation();
+  const [market, setMarket] = useState(null);
+  const [priceError, setPriceError] = useState('');
+  const [clock, setClock] = useState(Date.now());
+  const priceEpoch = useRef(0);
+  const displayPrice = pkg => formatCharge(pkg.amount, pkg.currency, i18n.language);
   const alert = useAppAlert();
   const { mode, publishableKey } = usePaymentConfig();
   const wallet = useWallet();
@@ -49,36 +64,37 @@ export default function ShopCoinsScreen({ navigation }) {
       const data = response.data?.data || response.data || {};
       setBalance(Number(data.coinBalance || 0));
     } catch (err) {
-      console.warn('Error fetching coin balance:', err?.message);
+      console.warn('Error fetching TreatCoin balance:', err?.message);
     } finally {
       setBalanceLoading(false);
     }
   }, []);
 
   const fetchPackages = useCallback(async () => {
+    const epoch = ++priceEpoch.current;
+    setPackagesLoading(true); setPriceError(''); setPackages([]); setSelectedPackageId(null); setMarket(null);
     try {
-      setPackagesLoading(true);
-      const response = await api.get('/coins/packages');
-      const data = response.data?.data || response.data || {};
-      const list = data.packages || [];
-      setPackages(list);
-      // Default-select the second package (a common "good middle option")
-      // unless there are fewer.
-      if (list.length > 0) {
-        setSelectedPackageId(list[Math.min(1, list.length - 1)].id);
-      }
-    } catch (err) {
-      console.warn('Error fetching packages:', err?.message);
-      setPackages([]);
-    } finally {
-      setPackagesLoading(false);
-    }
+      const currentMarket = await getPaymentMarket();
+      if (epoch !== priceEpoch.current) return;
+      setMarket(currentMarket);
+      if (!currentMarket.isConfirmed) return;
+      const response = await api.get('/coins/packages', { params: { localized: '1' }, timeout: 25000 });
+      if (epoch !== priceEpoch.current) return;
+      const data = response.data?.data;
+      const list = data?.packages || [];
+      if (!list.every(pkg => pkg.currency === data.market?.currency && Number.isSafeInteger(pkg.amount) && pkg.amount > 0 && pkg.quoteToken && Number.isFinite(pkg.expiresAt))) throw new Error('Invalid price response');
+      setMarket(data.market); setPackages(list); setClock(Date.now());
+      if (list.length) setSelectedPackageId(list[Math.min(1, list.length - 1)].id);
+    } catch {
+      if (epoch === priceEpoch.current) setPriceError(copy('Could not load local prices. Please try again.'));
+    } finally { if (epoch === priceEpoch.current) setPackagesLoading(false); }
   }, []);
 
-  useEffect(() => {
-    fetchBalance();
-    fetchPackages();
-  }, [fetchBalance, fetchPackages]);
+  useFocusEffect(useCallback(() => {
+    fetchBalance(); fetchPackages();
+    const timer = setInterval(() => setClock(Date.now()), 15000);
+    return () => { priceEpoch.current++; clearInterval(timer); };
+  }, [fetchBalance, fetchPackages]));
 
   const selectedPackage = packages.find((p) => p.id === selectedPackageId);
 
@@ -88,18 +104,21 @@ export default function ShopCoinsScreen({ navigation }) {
   // for the SDK's confirmPayment call.
   const requestPaymentIntent = async () => {
     if (!selectedPackage) {
-      return { message: 'Please select a package.' };
+      return { message: copy('Please select a package.') };
     }
     try {
-      const response = await api.post('/coins/purchase', { packageId: selectedPackage.id });
+      if (selectedPackage.expiresAt <= Date.now()) return { message: copy('This price has expired. Close payment and refresh prices before paying.') };
+      const response = await api.post('/coins/purchase', { packageId: selectedPackage.id, localized: true, quoteToken: selectedPackage.quoteToken });
       const data = response.data?.data || {};
       if (!data.clientSecret) {
         return { message: response.data?.message || 'Server did not return a clientSecret.' };
       }
+      if (data.amount !== selectedPackage.amount || data.currency !== selectedPackage.currency) return { message: copy('The payment total changed. Please close payment and refresh prices.') };
       return { clientSecret: data.clientSecret, paymentIntentId: data.paymentIntentId };
     } catch (err) {
-      console.error('Purchase error:', err);
-      return { message: err.response?.data?.message || 'Failed to start purchase.' };
+      if (err.response?.status === 409) { setShowCardSheet(false); setPriceError(copy('Prices changed. Please refresh and review the new total before paying.')); }
+      console.error('Purchase error:', err?.message);
+      return { message: err.response?.data?.message || copy('Failed to start purchase.') };
     }
   };
 
@@ -160,11 +179,11 @@ export default function ShopCoinsScreen({ navigation }) {
         if (!isMountedRef.current) return;
         try {
           if (credited) {
-            alert('Success', `${expectedDelta} coins added to your account.`, 'success');
+            alert(copy('Success'), copy('{{amount}} TreatCoins added to your account.', { amount: expectedDelta }), 'success');
           } else {
             alert(
-              'Payment received',
-              'Your payment was charged. Coins will appear in your balance shortly.',
+              copy('Payment received'),
+              copy('Your payment was charged. TreatCoins will appear in your balance shortly.'),
               'success',
             );
           }
@@ -183,17 +202,17 @@ export default function ShopCoinsScreen({ navigation }) {
   };
 
   const stripeReady = !!publishableKey;
-  const canPay = !!selectedPackage && stripeReady && !confirming;
+  const quoteExpired = !!selectedPackage && selectedPackage.expiresAt <= clock;
+  const canPay = !!selectedPackage && market?.isConfirmed && !packagesLoading && !quoteExpired && stripeReady && !confirming;
 
   return (
     <ScreenWrapper noBottomTabs>
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <TouchableOpacity onPress={handleBack} style={styles.backButton} accessibilityLabel="Go back">
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Shop Coins</Text>
-          <View style={styles.placeholder} />
+
         </View>
 
         <ScrollView
@@ -203,14 +222,25 @@ export default function ShopCoinsScreen({ navigation }) {
         >
           {/* Balance */}
           <View style={styles.totalCoinsSection}>
-            <View style={styles.coinIconWrapper}>
-              <CoinIcon width={70} height={70} />
-            </View>
+            <Image
+              source={require('../../assets/images/treatcoins-logo.png')}
+              style={styles.treatCoinsLogo}
+              resizeMode="contain"
+              accessibilityLabel="TreatCoins"
+            />
             <Text style={styles.totalCoinsAmount}>
               {balanceLoading ? '...' : balance.toLocaleString()}
             </Text>
-            <Text style={styles.totalCoinsLabel}>Total Coins</Text>
+            <Text style={styles.totalCoinsLabel}>{t('shop.balance')}</Text>
           </View>
+
+          {!!market && <Text style={styles.currencyNote}>{copy('Payment country: {{country}} · {{currency}}', { country: countryName(market.country, i18n.language), currency: market.currency })}</Text>}
+          {market && !market.isConfirmed && <Button title={copy('Confirm currency')} onPress={() => navigation.navigate('PaymentCountry')} fullWidth/>}
+          {!!priceError && <Text accessibilityRole="alert" style={styles.currencyNote}>{priceError}</Text>}
+          {(priceError || quoteExpired) && <Button title={copy('Refresh prices')} onPress={fetchPackages} fullWidth/>}
+          {quoteExpired && <Text style={styles.currencyNote}>{copy('This price has expired. Refresh prices before paying.')}</Text>}
+          {selectedPackage && !quoteExpired && <Text style={styles.currencyNote}>{copy('Converted from USD using daily reference rates. The displayed price is locked for 10 minutes.')}</Text>}
+          {selectedPackage && ['https://frankfurter.dev', 'https://www.exchangerate-api.com'].includes(selectedPackage.rateSource) && <TouchableOpacity accessibilityRole="link" onPress={() => Linking.openURL(selectedPackage.rateSource).catch(() => {})}><Text style={[styles.currencyNote, { color: '#087EA4', textDecorationLine: 'underline' }]}>{selectedPackage.rateSource === 'https://www.exchangerate-api.com' ? 'Rates By Exchange Rate API' : copy('Exchange-rate source')}</Text></TouchableOpacity>}
 
           {/* Test-mode banner */}
           {mode === 'test' && (
@@ -227,9 +257,9 @@ export default function ShopCoinsScreen({ navigation }) {
               <View style={styles.packagesLoading}>
                 <ActivityIndicator color="#32A6D8" />
               </View>
-            ) : packages.length === 0 ? (
+            ) : packages.length === 0 && market?.isConfirmed && !priceError ? (
               <View style={styles.packagesLoading}>
-                <Text style={styles.emptyText}>No packages available right now.</Text>
+                <Text style={styles.emptyText}>{t('shop.noPackages')}</Text>
               </View>
             ) : (
               packages.map((pkg) => {
@@ -242,15 +272,15 @@ export default function ShopCoinsScreen({ navigation }) {
                     onPress={() => setSelectedPackageId(pkg.id)}
                   >
                     <View style={styles.packageLeft}>
-                      <Text style={styles.packagePrice}>{formatPrice(pkg.priceInCents)}</Text>
+                      <Text style={styles.packagePrice}>{displayPrice(pkg)}</Text>
                       {pkg.bonusCoins > 0 && (
-                        <Text style={styles.bonusText}>+{pkg.bonusCoins} bonus</Text>
+                        <Text style={styles.bonusText}>{t('shop.bonus', { amount: pkg.bonusCoins })}</Text>
                       )}
                     </View>
                     <View style={styles.packageCoins}>
-                      <CoinIcon width={18} height={18} />
+                      <TreatCoinMark size={20} />
                       <Text style={styles.packageCoinsText}>
-                        {totalCoins.toLocaleString()} Coins
+                        {totalCoins.toLocaleString()} TreatCoins
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -264,16 +294,19 @@ export default function ShopCoinsScreen({ navigation }) {
           <Button
             title={
               confirming
-                ? 'Crediting coins...'
+                ? t('shop.crediting')
                 : !stripeReady
-                ? 'Payments unavailable'
+                ? t('shop.unavailable')
                 : selectedPackage
-                ? `Continue to Pay ${formatPrice(selectedPackage.priceInCents)}`
-                : 'Select a package'
+                ? t('shop.pay', { amount: displayPrice(selectedPackage) })
+                : t('shop.select')
             }
             onPress={() => setShowCardSheet(true)}
             fullWidth
             size="medium"
+            type="secondary"
+            style={styles.payButton}
+            textStyle={styles.payButtonText}
             disabled={!canPay}
           />
         </View>
@@ -281,7 +314,7 @@ export default function ShopCoinsScreen({ navigation }) {
         <StripeCardSheet
           visible={showCardSheet}
           onClose={() => setShowCardSheet(false)}
-          amountLabel={selectedPackage ? formatPrice(selectedPackage.priceInCents) : '$0'}
+          amountLabel={selectedPackage ? displayPrice(selectedPackage) : '—'}
           fetchClientSecret={requestPaymentIntent}
           onSuccess={handlePaymentConfirmed}
         />
@@ -312,31 +345,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle: {
-    color: 'black',
-    fontSize: 16,
-    fontFamily: 'Poppins',
-    fontWeight: '500',
-    lineHeight: 24.8,
-  },
-  placeholder: { width: 40 },
   scrollContent: {
     paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingTop: 0,
     paddingBottom: 100,
   },
   totalCoinsSection: { alignItems: 'center', marginBottom: 32 },
-  coinIconWrapper: {
-    width: 80,
-    height: 80,
-    paddingLeft: 5,
-    paddingTop: 5,
-    borderRadius: 39,
-    backgroundColor: '#FBCE04',
-    justifyContent: 'center',
-    alignItems: 'center',
+  treatCoinsLogo: {
+    width: 180,
+    height: 164,
     marginBottom: 8,
   },
+  payButton: { backgroundColor: '#087EA4', borderColor: '#087EA4' },
+  payButtonText: { color: '#FFFFFF', fontWeight: '700' },
   totalCoinsAmount: {
     color: 'black',
     fontSize: 24,
@@ -367,6 +388,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir LT Std',
     fontWeight: '500',
   },
+  currencyNote: { color: '#526571', fontSize: 12, lineHeight: 18, marginBottom: 16 },
   packagesSection: { gap: 10 },
   packagesLoading: {
     paddingVertical: 32,
@@ -391,7 +413,7 @@ const styles = StyleSheet.create({
   },
   packageCardSelected: {
     borderWidth: 2,
-    borderColor: '#32A6D8',
+    borderColor: '#087EA4',
   },
   packageLeft: { gap: 4 },
   packagePrice: {

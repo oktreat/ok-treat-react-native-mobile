@@ -28,7 +28,7 @@ const onboardingData = [
   {
     id: '3',
     title: 'Barter Your Time',
-    description: 'Exchange pet care services using our coin-based economy. Earn coins by sitting, spend them when you need care',
+    description: 'Exchange pet care services using our TreatCoin-based economy. Earn TreatCoins by sitting, spend them when you need care',
     image: OnboardingImage3
   }
 ];

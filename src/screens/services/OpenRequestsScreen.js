@@ -206,7 +206,7 @@ const SwipeableRequestCard = ({ request, onPress, onDelete }) => {
               <Text style={styles.amountValue}>
                 {request.totalAmount ? Math.round(request.totalAmount).toLocaleString() : '—'}
               </Text>
-              <Text style={styles.amountLabel}>coins</Text>
+              <Text style={styles.amountLabel}>TreatCoins</Text>
             </View>
             {(() => {
               const meta = STATUS_META[request.status] || STATUS_META.pending;
