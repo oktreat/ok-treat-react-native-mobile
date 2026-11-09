@@ -445,5 +445,14 @@
   "I enjoy showing visitors around public landmarks and meeting other pet lovers.": "公共の観光スポットを案内したり、動物好きの方と出会ったりするのが好きです。",
   "With or without pets": "ペット同伴でも、ひとりでも",
   "/5": "/5",
-  "·": "·"
+  "·": "·",
+  "Please enter the complete {{count}}-digit code": "{{count}}桁のコードをすべて入力してください。",
+  "Code digit {{number}} of {{count}}": "コードの{{number}}桁目（全{{count}}桁）",
+  "We sent a {{count}}-digit code to": "{{count}}桁のコードを次の宛先に送信しました",
+  "Enter Verification Code": "確認コードを入力",
+  "Verify": "確認する",
+  "Change verification method": "確認方法を変更",
+  "Sending...": "送信中…",
+  "Resend Code": "コードを再送信",
+  "Resend code in": "再送信まで"
 }

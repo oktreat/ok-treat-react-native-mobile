@@ -445,5 +445,14 @@
   "I enjoy showing visitors around public landmarks and meeting other pet lovers.": "J’aime faire découvrir les lieux publics aux visiteurs et rencontrer des personnes qui aiment les animaux.",
   "With or without pets": "Avec ou sans animaux",
   "/5": "/5",
-  "·": "·"
+  "·": "·",
+  "Please enter the complete {{count}}-digit code": "Veuillez saisir le code complet à {{count}} chiffres.",
+  "Code digit {{number}} of {{count}}": "Chiffre {{number}} sur {{count}}",
+  "We sent a {{count}}-digit code to": "Nous avons envoyé un code à {{count}} chiffres à",
+  "Enter Verification Code": "Saisir le code de vérification",
+  "Verify": "Vérifier",
+  "Change verification method": "Changer de méthode de vérification",
+  "Sending...": "Envoi en cours…",
+  "Resend Code": "Renvoyer le code",
+  "Resend code in": "Renvoyer le code dans"
 }

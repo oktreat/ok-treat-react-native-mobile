@@ -445,5 +445,14 @@
   "I enjoy showing visitors around public landmarks and meeting other pet lovers.": "I enjoy showing visitors around public landmarks and meeting other pet lovers.",
   "With or without pets": "With or without pets",
   "/5": "/5",
-  "·": "·"
+  "·": "·",
+  "Please enter the complete {{count}}-digit code": "Please enter the complete {{count}}-digit code",
+  "Code digit {{number}} of {{count}}": "Code digit {{number}} of {{count}}",
+  "We sent a {{count}}-digit code to": "We sent a {{count}}-digit code to",
+  "Enter Verification Code": "Enter Verification Code",
+  "Verify": "Verify",
+  "Change verification method": "Change verification method",
+  "Sending...": "Sending...",
+  "Resend Code": "Resend Code",
+  "Resend code in": "Resend code in"
 }

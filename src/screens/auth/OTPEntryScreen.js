@@ -1,3 +1,5 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
+import { PREFERRED_OTP_LENGTH, OTP_RESEND_SECONDS, receivedOtpLength, applyOtpInput, completeOtp } from '../../utils/otpInput';
 import { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -20,9 +22,10 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon, EnvelopeIcon, PhoneCallIcon } from '../../assets';
 import { API_ENDPOINTS } from '../../config/api';
 
-const CODE_LENGTH = 4;
 
 export default function OTPEntryScreen({ route, navigation }) {
+  useCopyUpdates();
+  const [CODE_LENGTH, setCodeLength] = useState(route.params?.codeLength === 4 ? 4 : PREFERRED_OTP_LENGTH);
   const alert = useAppAlert();
   const insets = useSafeAreaInsets();
   const { email, phoneNumber, userId, otpMethod = 'email', _devOtp } = route.params || {};
@@ -30,18 +33,19 @@ export default function OTPEntryScreen({ route, navigation }) {
 
   const [otp, setOtp] = useState(Array(CODE_LENGTH).fill(''));
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [timer, setTimer] = useState(180); // 3 minutes
+  const [timer, setTimer] = useState(OTP_RESEND_SECONDS); // Resend cooldown, not code expiry
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [devCode, setDevCode] = useState(_devOtp || null);
-  const inputRefs = Array.from({ length: CODE_LENGTH }, () => useRef(null));
+  const inputRefs = useRef([]);
 
   useEffect(() => {
     if (_devOtp) {
-      const digits = _devOtp.split('');
-      setOtp(digits);
+      const filled = applyOtpInput([], String(_devOtp), 0, CODE_LENGTH);
+      if (filled) setOtp(filled.digits);
     } else {
-      setTimeout(() => inputRefs[0].current?.focus(), 300);
+      const id = setTimeout(() => inputRefs.current[0]?.focus(), 300);
+      return () => clearTimeout(id);
     }
   }, []);
 
@@ -53,25 +57,24 @@ export default function OTPEntryScreen({ route, navigation }) {
   }, [timer]);
 
   const handleOtpChange = (value, index) => {
-    if (value && !/^\d+$/.test(value)) return;
-    const next = [...otp];
-    next[index] = value;
-    setOtp(next);
-    if (value && index < CODE_LENGTH - 1) inputRefs[index + 1].current?.focus();
+    const result = applyOtpInput(otp, value, index, CODE_LENGTH);
+    if (!result) return;
+    setOtp(result.digits);
+    inputRefs.current[result.focus]?.focus();
   };
 
   const handleKeyPress = (e, index) => {
     if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs[index - 1].current?.focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
-  const isComplete = otp.every(d => d !== '');
+  const isComplete = completeOtp(otp, CODE_LENGTH);
 
   const handleSubmit = async () => {
     const code = otp.join('');
-    if (code.length !== CODE_LENGTH) {
-      alert('Error', `Please enter the complete ${CODE_LENGTH}-digit code`, 'error');
+    if (!completeOtp(otp, CODE_LENGTH)) {
+      alert(copy('Error'), copy('Please enter the complete {{count}}-digit code', { count: CODE_LENGTH }), 'error');
       return;
     }
 
@@ -102,36 +105,42 @@ export default function OTPEntryScreen({ route, navigation }) {
   };
 
   const handleResend = async () => {
-    if (timer > 0) return;
+    if (timer > 0 || resending || loading) return;
     setResending(true);
 
     try {
       const response = await fetch(API_ENDPOINTS.RESEND_OTP, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: phoneNumber, otpMethod }),
+        body: JSON.stringify({ phone: phoneNumber, otpMethod, otpLength: PREFERRED_OTP_LENGTH }),
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to resend');
+      if (!response.ok) {
+        if (response.status === 429) setTimer(Math.max(OTP_RESEND_SECONDS, Number(data.retryAfter) || 0));
+        throw new Error(data.message || 'Failed to resend');
+      }
 
-      const emptyOtp = Array(CODE_LENGTH).fill('');
+      const nextLength = receivedOtpLength(data);
+      setCodeLength(nextLength);
+      const emptyOtp = Array(nextLength).fill('');
 
       if (data._devOtp) {
         setDevCode(data._devOtp);
-        setOtp(data._devOtp.split(''));
-        setTimer(180);
+        const filled = applyOtpInput([], String(data._devOtp), 0, nextLength);
+        setOtp(filled ? filled.digits : emptyOtp);
+        setTimer(OTP_RESEND_SECONDS);
       } else if (data.message?.includes('pending')) {
         alert('Note', 'OTP delivery may be delayed. Please wait a moment.', 'pending');
-        setTimer(180);
+        setTimer(OTP_RESEND_SECONDS);
         setOtp(emptyOtp);
-        inputRefs[0].current?.focus();
+        inputRefs.current[0]?.focus();
       } else {
         alert('Sent', 'A new code has been sent.', 'success');
-        setTimer(180);
+        setTimer(OTP_RESEND_SECONDS);
         setOtp(emptyOtp);
         setDevCode(null);
-        inputRefs[0].current?.focus();
+        inputRefs.current[0]?.focus();
       }
     } catch (error) {
       alert('Error', error.message || 'Failed to resend code', 'error');
@@ -163,9 +172,9 @@ export default function OTPEntryScreen({ route, navigation }) {
           <MethodIcon width={24} height={24} fill="#32A6D8" />
         </View>
 
-        <Text style={styles.title}>Enter Verification Code</Text>
+        <Text style={styles.title}>{copy('Enter Verification Code')}</Text>
         <Text style={styles.subtitle}>
-          We sent a {CODE_LENGTH}-digit code to{'\n'}
+          {copy('We sent a {{count}}-digit code to', { count: CODE_LENGTH })}{'\n'}
           <Text style={styles.destination}>{destination || ''}</Text>
         </Text>
         {otpMethod === 'email' && (
@@ -185,7 +194,7 @@ export default function OTPEntryScreen({ route, navigation }) {
           {otp.map((digit, i) => (
             <TextInput
               key={i}
-              ref={inputRefs[i]}
+              ref={node => { inputRefs.current[i] = node; }}
               style={[
                 styles.otpBox,
                 focusedIndex === i && styles.otpBoxFocused,
@@ -197,7 +206,10 @@ export default function OTPEntryScreen({ route, navigation }) {
               onFocus={() => setFocusedIndex(i)}
               onBlur={() => setFocusedIndex(-1)}
               keyboardType="number-pad"
-              maxLength={1}
+              maxLength={CODE_LENGTH}
+              textContentType={i === 0 ? 'oneTimeCode' : 'none'}
+              autoComplete={i === 0 ? 'one-time-code' : 'off'}
+              accessibilityLabel={copy('Code digit {{number}} of {{count}}', { number: i + 1, count: CODE_LENGTH })}
               selectTextOnFocus
               placeholder="·"
               placeholderTextColor="#CCC"
@@ -209,12 +221,12 @@ export default function OTPEntryScreen({ route, navigation }) {
         <View style={styles.timerRow}>
           {timer > 0 ? (
             <Text style={styles.timerText}>
-              Resend code in <Text style={styles.timerBold}>{Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}</Text>
+              {copy('Resend code in')} <Text style={styles.timerBold}>{Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}</Text>
             </Text>
           ) : (
             <TouchableOpacity onPress={handleResend} disabled={resending}>
               <Text style={styles.resendText}>
-                {resending ? 'Sending...' : 'Resend Code'}
+                {copy(resending ? 'Sending...' : 'Resend Code')}
               </Text>
             </TouchableOpacity>
           )}
@@ -234,12 +246,12 @@ export default function OTPEntryScreen({ route, navigation }) {
           {loading ? (
             <ActivityIndicator size="small" color="#FFF" />
           ) : (
-            <Text style={styles.verifyBtnText}>Verify</Text>
+            <Text style={styles.verifyBtnText}>{copy('Verify')}</Text>
           )}
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.changeMethod}>
-          <Text style={styles.changeMethodText}>Change verification method</Text>
+          <Text style={styles.changeMethodText}>{copy('Change verification method')}</Text>
         </TouchableOpacity>
       </View>
       </KeyboardStickyView>
@@ -307,17 +319,20 @@ const styles = StyleSheet.create({
   },
   otpRow: {
     flexDirection: 'row',
-    gap: 14,
+    gap: 8,
+    width: '100%',
+    maxWidth: 360,
     marginBottom: 28,
   },
   otpBox: {
-    width: 56,
-    height: 60,
+    flex: 1,
+    minWidth: 0,
+    height: 56,
     borderRadius: 14,
     borderWidth: 1.5,
     borderColor: '#E8E8E8',
     backgroundColor: '#FAFAFA',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '700',
     textAlign: 'center',
     color: '#1A1A1A',
@@ -379,3 +394,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+

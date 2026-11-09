@@ -1,3 +1,4 @@
+import { PREFERRED_OTP_LENGTH, receivedOtpLength } from '../../utils/otpInput';
 import { useState, useEffect } from 'react';
 import {
   View,
@@ -115,6 +116,7 @@ export default function LoginScreen({ navigation, route }) {
         body: JSON.stringify({
           email: email.toLowerCase().trim(),
           password,
+          otpLength: PREFERRED_OTP_LENGTH,
         }),
       });
 
@@ -127,6 +129,7 @@ export default function LoginScreen({ navigation, route }) {
           phoneNumber: data.data.phone,
           userId: data.data.userId,
           otpMethod: 'email',
+          codeLength: receivedOtpLength(data),
           _devOtp: data.data._devOtp || null,
         });
         return;
@@ -416,3 +419,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+

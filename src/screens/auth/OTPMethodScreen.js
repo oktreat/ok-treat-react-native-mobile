@@ -1,3 +1,4 @@
+import { PREFERRED_OTP_LENGTH, receivedOtpLength } from '../../utils/otpInput';
 import { useState } from 'react';
 import {
   View,
@@ -45,6 +46,7 @@ export default function OTPMethodScreen({ route, navigation }) {
           body: JSON.stringify({
             phone: phoneNumber,
             otpMethod: selectedMethod,
+            otpLength: PREFERRED_OTP_LENGTH,
           }),
         });
         data = await response.json();
@@ -62,6 +64,7 @@ export default function OTPMethodScreen({ route, navigation }) {
             yearsOfExperience,
             referredByCode: referralCode || undefined,
             otpMethod: selectedMethod,
+            otpLength: PREFERRED_OTP_LENGTH,
           }),
         });
         data = await response.json();
@@ -97,6 +100,7 @@ export default function OTPMethodScreen({ route, navigation }) {
         phoneNumber,
         userId: registeredUserId || data.data?.pendingId,
         otpMethod: selectedMethod,
+        codeLength: receivedOtpLength(data),
         _devOtp: data.data?._devOtp || data._devOtp || null,
       });
     } catch (error) {
@@ -281,3 +285,4 @@ const styles = StyleSheet.create({
   sendBtnDisabled: { opacity: 0.6 },
   sendBtnText: { color: '#FFF', fontSize: 16, fontWeight: '600' },
 });
+

@@ -32,3 +32,12 @@
 - German added; phone language remains default, manual selection wins, foreground refresh picks up device preference changes. No IP selection.
 - French/Japanese/German fixed copy for new Pals and release-notice screens; German core and existing registered-copy translations. Language and currency stay independent.
 - 13 targeted locale/translation/Pals checks passed. Device layout review and next signed build pending.
+
+## Six-digit verification update
+- Updated clients request six-digit email and SMS codes. Backend advertises the length; installed older clients retain four-digit behavior.
+- Twilio custom codes are enabled on the existing OkTreat service. New SMS sends use cryptographic six-digit custom codes without changing the shared service default.
+- New mobile input supports six responsive boxes, full-code paste/SMS autofill, leading zeros and a 60-second resend cooldown.
+- Backend adds database-backed send throttling (60 seconds, five per 15 minutes), preserves email attempt limits and Twilio verification, and aligns email expiry to three minutes. SMS expiry remains provider-controlled.
+- Eight backend and sixteen app/locale/Pals checks pass. Real SMS delivery and six-digit entry still require phone testing after the backend deploy and next TestFlight upload.
+- Deployment gate: backend change is prepared in a separate PR. Production main was not changed because automatic approval review requires explicit owner approval for deployment. Do not describe six-digit delivery as live until merged/deployed and tested.
+- Run tests/otp-input.cjs alongside the existing TestFlight regression list before the next upload.
