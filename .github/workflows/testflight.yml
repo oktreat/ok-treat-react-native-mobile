@@ -22,7 +22,7 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Verify notification regressions
-        run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs tests/translations.cjs tests/payment-country.cjs tests/chat-messages.cjs tests/bonding-preview.cjs
+        run: node --test tests/*.cjs tests/*.test.cjs
       - name: Verify iPhone JavaScript bundle
         run: npx expo export --platform ios --output-dir .ci/release-ios
       - run: pod install --deployment
