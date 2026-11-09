@@ -15,8 +15,8 @@ const id=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
 export default function PalsLiveScreen({navigation}) {
  useCopyUpdates();
  const userId=useSelector(state=>state.auth.user?.id);
- const [tab,setTab]=useState('Profile'),[me,setMe]=useState(null),[form,setForm]=useState(emptyProfile),[tripForm,setTripForm]=useState({destination:'',startsOn:'',endsOn:'',activities:['Dog walk']}),[selectedTrip,setSelectedTrip]=useState('');
- const [members,setMembers]=useState([]),[page,setPage]=useState(0),[more,setMore]=useState(false),[interest,setInterest]=useState(''),[language,setLanguage]=useState(''),[inviteActivity,setInviteActivity]=useState('Dog walk'),[inviteNote,setInviteNote]=useState('');
+ const [tab,setTab]=useState('Profile'),[me,setMe]=useState(null),[form,setForm]=useState(emptyProfile),[tripForm,setTripForm]=useState({destination:'',startsOn:'',endsOn:'',activities:['Coffee']}),[selectedTrip,setSelectedTrip]=useState('');
+ const [members,setMembers]=useState([]),[page,setPage]=useState(0),[more,setMore]=useState(false),[interest,setInterest]=useState(''),[language,setLanguage]=useState(''),[inviteActivity,setInviteActivity]=useState('Coffee'),[inviteNote,setInviteNote]=useState('');
  const [invitations,setInvitations]=useState([]),[chat,setChat]=useState(null),[messages,setMessages]=useState([]),[older,setOlder]=useState(false),[draft,setDraft]=useState(''),[detail,setDetail]=useState(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[ready,setReady]=useState(false);
  const accountRef=useRef(userId);accountRef.current=userId;
@@ -46,14 +46,14 @@ export default function PalsLiveScreen({navigation}) {
  {error?<Text accessibilityRole="alert" style={s.error}>{error}</Text>:null}{busy&&<ActivityIndicator color="#087EA4"/>}
  {!ready?<ActivityIndicator/>:!me?<View><Text style={s.body}>{copy('PALS could not load. Please check your connection and sign in again if needed.')}</Text>{button('Retry',()=>run(refresh))}</View>:<>
  {tab==='Profile'&&<>
- <Text style={s.heading}>{copy('Your PALS profile')}</Text><Text style={s.body}>{copy('For single dog owners travelling to meet new friends. Your PALS photos and introduction are separate from your pet-care profile.')}</Text>
- <Text style={s.notice}>{me.profile?.visible?copy('Your PALS profile is visible to signed-in dog owners.'):copy('Your PALS profile is private. Save it, add photos, then choose Show my profile.')}</Text>
+ <Text style={s.heading}>{copy('Your PALS profile')}</Text><Text style={s.body}>{copy('For single travellers meeting new friends. Your PALS photos and introduction are separate from your pet-care profile.')}</Text>
+ <Text style={s.notice}>{me.profile?.visible?copy('Your PALS profile is visible to signed-in members.'):copy('Your PALS profile is private. Save it, add photos, then choose Show my profile.')}</Text>
  {field('Display name',form.displayName,v=>patch('displayName',v))}{field('About me',form.bio,v=>patch('bio',v),true,'What would you enjoy doing together?')}{field('Interests, separated by commas',form.interests,v=>patch('interests',v))}{field('Languages, separated by commas',form.languages,v=>patch('languages',v))}
- <Text style={s.label}>{copy('Choose your dog')}</Text><View style={s.row}>{me.dogs.map(d=>button(d.name,()=>patch('dogId',d.id),false,form.dogId!==d.id))}</View>{!me.dogs.length&&<Text style={s.body}>{copy('Add your dog to OkTreat before joining PALS.')}</Text>}
+ <Text style={s.label}>{copy('Your dog (optional)')}</Text><View style={s.row}>{button('No dog / travelling without a dog',()=>patch('dogId',''),false,!!form.dogId)}{me.dogs.map(d=>button(d.name,()=>patch('dogId',d.id),false,form.dogId!==d.id))}</View>{!me.dogs.length&&<Text style={s.body}>{copy('You can join PALS without a dog.')}</Text>}
  {toggle('I am 18 or older',form.adult,v=>patch('adult',v))}{toggle('I am single',form.single,v=>patch('single',v))}{toggle('I agree to the PALS community rules',form.rules,v=>patch('rules',v))}
  <Text style={s.body}>{copy('Be respectful. No harassment or requests for money. Meet in public places. Share only information you want other members to see. Rules version: 2026-11-10.')}</Text>
  {toggle('Show my profile',form.visible,v=>patch('visible',v))}
- {button('Save PALS profile',()=>run(async()=>{await palsRequest('profile',{displayName:form.displayName,bio:form.bio,dogId:form.dogId,interests:split(form.interests),languages:split(form.languages),visible:form.visible,adult:form.adult,single:form.single,rulesVersion:form.rules?'2026-11-10':''});await refresh()}),!form.adult||!form.single||!form.rules||!form.dogId)}
+ {button('Save PALS profile',()=>run(async()=>{await palsRequest('profile',{displayName:form.displayName,bio:form.bio,dogId:form.dogId,interests:split(form.interests),languages:split(form.languages),visible:form.visible,adult:form.adult,single:form.single,rulesVersion:form.rules?'2026-11-10':''});await refresh()}),!form.adult||!form.single||!form.rules)}
  {me.profile&&<><Text style={s.heading}>{copy('Your photos')} · {me.profile.photos.length}/5</Text><View style={s.row}>{me.profile.photos.map((p,i)=><TouchableOpacity key={p.id} onPress={()=>photoActions(p)} accessibilityLabel={copy(i?'PALS photo':'Main photo')}><Image source={{uri:p.image}} style={s.photo}/><Text>{i?'':copy('Main photo')}</Text></TouchableOpacity>)}</View>{button('Add personal photo',upload,me.profile.photos.length>=5,true)}<Text style={s.body}>{copy('Choose recent photos of yourself. Gallery photos are not matched against your identity selfie.')}</Text>
  <PalsIdentityVerification liveRequired mode={me.identityMode}/>
  {button('Hide profile now',()=>run(async()=>{await palsRequest('profile/hide',{});await refresh()}),false,true)}
@@ -63,10 +63,10 @@ export default function PalsLiveScreen({navigation}) {
  {tab==='My trips'&&<><Text style={s.heading}>{copy('Where are you going?')}</Text><Text style={s.body}>{copy('Use City, Country consistently, for example Kyoto, Japan. Only your destination city and dates appear in discovery. Never add a home or hotel address.')}</Text>
  {field('Destination city and country',tripForm.destination,v=>setTripForm(p=>({...p,destination:v})),false,'Kyoto, Japan')}{field('Arrival date (YYYY-MM-DD)',tripForm.startsOn,v=>setTripForm(p=>({...p,startsOn:v})))}{field('Departure date (YYYY-MM-DD)',tripForm.endsOn,v=>setTripForm(p=>({...p,endsOn:v})))}
  <View style={s.row}>{ACTIVITIES.map(a=>button(a,()=>setTripForm(p=>({...p,activities:p.activities.includes(a)?p.activities.filter(x=>x!==a):[...p.activities,a]})),false,!tripForm.activities.includes(a)))}</View>
- {button('Add travel plan',()=>run(async()=>{await palsRequest('trips',tripForm);await refresh();setTripForm({destination:'',startsOn:'',endsOn:'',activities:['Dog walk']})}),!me.profile)}
+ {button('Add travel plan',()=>run(async()=>{await palsRequest('trips',tripForm);await refresh();setTripForm({destination:'',startsOn:'',endsOn:'',activities:['Coffee']})}),!me.profile)}
  {me.trips.map(t=><View key={t.id} style={s.card}><Text style={s.heading}>{t.destination}</Text><Text>{date(t.startsOn)} — {date(t.endsOn)}</Text><Text>{t.activities.map(a=>copy(a)).join(' · ')}</Text>{button('Cancel travel plan',()=>confirm('Cancel this travel plan?','Related invitations and PALS chats will close. Create a new plan if your destination or dates change.',async()=>{await palsRequest('trips/'+t.id+'/cancel',{});await refresh();await inbox()}),false,true)}</View>)}
  </>}
- {tab==='Find PALS'&&<><Text style={s.heading}>{copy('Meet dog owners at your destination')}</Text><Text style={s.body}>{copy('Select one of your travel plans. PALS shows published profiles visiting the same city during overlapping dates.')}</Text>
+ {tab==='Find PALS'&&<><Text style={s.heading}>{copy('Meet travellers at your destination')}</Text><Text style={s.body}>{copy('Select one of your travel plans. PALS shows published profiles visiting the same city during overlapping dates.')}</Text>
  {me.trips.map(t=>button(t.destination+' · '+date(t.startsOn),()=>{setSelectedTrip(t.id);setMembers([]);setPage(0)},false,t.id!==selectedTrip))}
  {field('Filter by interest (optional)',interest,setInterest)}{field('Filter by language (optional)',language,setLanguage)}
  {button('Find PALS',()=>discover(0),!selectedTrip||!me.profile?.visible)}<Text style={s.label}>{copy('Invite for')}</Text><View style={s.row}>{ACTIVITIES.map(a=>button(a,()=>setInviteActivity(a),false,inviteActivity!==a))}</View>{field('Invitation message (optional)',inviteNote,setInviteNote,true)}

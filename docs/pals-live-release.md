@@ -1,6 +1,8 @@
+PALS welcomes all single travellers aged 18+. Linking an optional owned dog is optional; dog walking remains an activity.
+
 # PALS stages 1–3 — 10 November 2026
 
-PALS keeps its original focus: single dog owners travelling to meet new friends.
+PALS keeps its original focus: single travellers travelling to meet new friends.
 
 The Bonding navigation entry now opens PalsLiveScreen. This uses the existing OkTreat authentication token with the new `/api/pals` service, rather than local sample profiles. Existing preview components remain available in source for regression reference; they are not the navigation destination.
 
