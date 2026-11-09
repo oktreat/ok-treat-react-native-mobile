@@ -1,0 +1,22 @@
+name: Learned matching checks
+on:
+  pull_request:
+  push:
+    branches: [codex/learned-matching-20261109]
+permissions:
+  contents: read
+jobs:
+  matching:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: node --test tests/fair-sitter-matching.cjs tests/learned-sitter-matching.cjs tests/bonding-preview.cjs
+      - name: Verify iPhone JavaScript bundle
+        run: npx expo export --platform ios --output-dir .ci/matching-ios

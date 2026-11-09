@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Modal, Image } from 'react-native';
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import Icon from '@expo/vector-icons/Ionicons';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import ProfileVerifiedModal from '../../components/ProfileVerifiedModal';
 import { BackArrowIcon, MapPinIcon, SliderIcon, StarIcon, ShieldCheckIcon, CalendarNewIcon, ImageHereIcon, CoinIcon, CoinBackgroundIcon, LocationPinIcon } from '../../assets';
 import SearchFilterModal from '../../components/SearchFilterModal';
-import { searchSitters } from '../../services/sitterService';
+import { searchSitters, getMatchingFeedback } from '../../services/sitterService';
 import { getUserPets } from '../../services/petService';
 import { rankSitters } from '../../services/sitterMatching';
 import { getServiceUnit } from '../../utils/serviceUnits';
@@ -17,6 +18,7 @@ const NEARBY_RADIUS_KM = 30;
 const ALL_RADIUS_KM = 100000;
 
 export default function SearchResultsScreen({ navigation, route }) {
+  const ownerId = useSelector(state => state.auth.user?.id);
   const { serviceType = 'Boarding', searchParams = {} } = route?.params || {};
   // Price-label unit follows the service (per hour vs per day) — never
   // hardcode "night". serviceType arrives as a display string ("House
@@ -30,6 +32,9 @@ export default function SearchResultsScreen({ navigation, route }) {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [statusModalConfig, setStatusModalConfig] = useState({});
   const [pets, setPets] = useState([]);
+  const [feedbackState, setFeedbackState] = useState(null);
+  const [learnFromReviews, setLearnFromReviews] = useState(true);
+  const [matchingBudget, setMatchingBudget] = useState(null);
   const [activePetIndex, setActivePetIndex] = useState(0);
   const rotationKey = useRef(Math.random().toString(36).slice(2));
   // Search radius — starts nearby; "Search all" widens it. isExpanded drives
@@ -38,21 +43,35 @@ export default function SearchResultsScreen({ navigation, route }) {
   const [showNoNearbyModal, setShowNoNearbyModal] = useState(false);
   const isExpanded = radiusKm > NEARBY_RADIUS_KM;
 
-  // Fetch user's pets once (used as ML context)
+  // Refresh the matching pet context when the signed-in owner changes.
   useEffect(() => {
+    let cancelled = false;
+    setPets([]);
+    setActivePetIndex(0);
     (async () => {
       try {
         const res = await getUserPets();
         const list = res?.data?.pets || res?.pets || [];
-        setPets(list);
+        if (!cancelled) setPets(list);
       } catch (e) {
         // Non-fatal — ranking will fall back to neutral pet context
         console.log('Could not fetch pets for matching context:', e?.message);
       }
     })();
-  }, []);
+    return () => { cancelled = true; };
+  }, [ownerId]);
 
   const activePet = pets[activePetIndex] || null;
+  useEffect(() => {
+    let cancelled = false;
+    setFeedbackState(null);
+    if (learnFromReviews && activePet?.id) {
+      getMatchingFeedback(activePet.id, serviceType.toUpperCase().replace(/ /g, '_'))
+        .then(model => { if (!cancelled) setFeedbackState({ petId: activePet.id, serviceType, ownerId, model }); })
+        .catch(() => {}); // An unavailable model leaves the ordinary ranking intact.
+    }
+    return () => { cancelled = true; };
+  }, [activePet?.id, serviceType, learnFromReviews, ownerId]);
 
   // (Search params include user location — not logged in production.)
 
@@ -119,12 +138,14 @@ export default function SearchResultsScreen({ navigation, route }) {
     if (!baseList || baseList.length === 0) return [];
     return rankSitters(baseList, {
       pet: activePet,
+      feedbackBySitter: learnFromReviews && feedbackState?.petId === activePet?.id && feedbackState?.serviceType === serviceType && feedbackState?.ownerId === ownerId ? feedbackState.model : {},
+      userBudget: matchingBudget,
       user: { firstTimeUser: false },
       serviceType: enumServiceType,
       maxDistance: radiusKm,
       rotationKey: rotationKey.current,
     });
-  }, [sitters, filteredSitters, activePet, serviceType, radiusKm]);
+  }, [sitters, filteredSitters, activePet, serviceType, radiusKm, feedbackState, learnFromReviews, matchingBudget, ownerId]);
 
   const cyclePet = () => {
     if (pets.length <= 1) return;
@@ -152,6 +173,8 @@ export default function SearchResultsScreen({ navigation, route }) {
 
   const handleApplyFilters = (filters) => {
     let result = [...sitters];
+    const budget = Number(filters.budget);
+    setMatchingBudget(Number.isFinite(budget) && budget > 0 ? budget : null);
 
     // Filter by property type
     if (filters.propertyType && filters.propertyType !== 'Any Type') {
@@ -370,17 +393,26 @@ export default function SearchResultsScreen({ navigation, route }) {
           <Icon name="sparkles" size={12} color="#32A6D8" style={{ marginRight: 4 }} />
           {activePet ? (
             <Text style={styles.matchingText}>
-              <Text style={{ color: '#32A6D8' }}>AI Matched</Text>
+              <Text style={{ color: '#087EA4' }}>Matched</Text>
               {' for '}
               <Text style={{ color: '#0D0D12', fontWeight: '600' }}>{activePet.name}</Text>
               {activePet.type ? ` · ${activePet.type}` : ''}
               {pets.length > 1 ? '  ⇄ tap to switch' : ''}
             </Text>
           ) : (
-            <Text style={styles.matchingText}>AI Enabled Matching</Text>
+            <Text style={styles.matchingText}>Pet matching</Text>
           )}
         </TouchableOpacity>
 
+        <TouchableOpacity accessibilityRole="switch" accessibilityState={{ checked: learnFromReviews }}
+          accessibilityLabel="Learn from completed-booking reviews"
+          onPress={() => setLearnFromReviews(value => !value)}
+          style={{ paddingHorizontal: 24, paddingVertical: 10, minHeight: 44 }}>
+          <Text style={{ color: '#14546B', fontSize: 12 }}>
+            Review-based learning: {learnFromReviews ? 'On' : 'Off'} · tap to change
+          </Text>
+          <Text style={{ color: '#486371', fontSize: 11 }}>Uses completed-booking ratings when enough feedback exists. Does not guarantee compatibility.</Text>
+        </TouchableOpacity>
         {/* Loading State */}
         {loading && (
           <View style={styles.loadingContainer}>
@@ -883,3 +915,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+

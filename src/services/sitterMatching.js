@@ -302,9 +302,17 @@ export function rankSitters(sitters, ctx = {}) {
 
   // Score everyone
   const scored = sitters.map((s) => {
-    const { score, breakdown, features } = scoreSitter(s, ctx, weights);
+    const { score: baseScore, breakdown, features } = scoreSitter(s, ctx, weights);
+    const learned = ctx.feedbackBySitter?.[s.id];
+    const validFeedback = learned?.version === 'booking-feedback-bayes-v1' &&
+      ['your-completed-booking-reviews', 'completed-booking-reviews'].includes(learned.source) &&
+      typeof learned.adjustment === 'number' && Number.isFinite(learned.adjustment);
+    const adjustment = validFeedback ? clamp(learned.adjustment, -0.04, 0.04) : 0;
+    const score = clamp(baseScore + adjustment);
     const reasons = buildReasons(s, ctx, breakdown, features);
-    return { sitter: s, score, breakdown, features, reasons };
+    if (adjustment > 0.005) reasons.unshift(learned.source === 'your-completed-booking-reviews'
+      ? 'Based on your completed-booking reviews' : 'Supported by completed-booking reviews');
+    return { sitter: s, score, breakdown, features, reasons: reasons.slice(0, 3) };
   });
 
   // Bookable sitters and known pet compatibility always take priority.
@@ -347,3 +355,4 @@ export function scoreOne(sitter, ctx) {
   const weights = deriveWeights(ctx.pet, ctx.user);
   return scoreSitter(sitter, ctx, weights);
 }
+

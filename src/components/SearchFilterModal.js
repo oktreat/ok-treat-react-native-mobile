@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useState } from 'react';
 import Icon from '@expo/vector-icons/Ionicons';
 import { CalendarNewIcon, LocationPinIcon, BuildingsIcon, HomeIconSvg, SliderIcon, Calendar2Icon, CalendarIcon, QuestionCircleIcom, BuildingsFilledIcon } from '../assets';
@@ -12,6 +12,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, onLocatio
   const [endDate, setEndDate] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState('Vancouver, BC, Canada');
   const [selectedType, setSelectedType] = useState('Any Type');
+  const [budget, setBudget] = useState('');
 
   // Filter states
   const [availabilityDay, setAvailabilityDay] = useState(false);
@@ -69,6 +70,7 @@ export default function SearchFilterModal({ visible, onClose, onApply, onLocatio
       endDate,
       location: selectedLocation,
       propertyType: selectedType,
+      budget,
       availabilityDay,
       fencedYard,
       furnitureAllowed,
@@ -141,6 +143,14 @@ export default function SearchFilterModal({ visible, onClose, onApply, onLocatio
               </TouchableOpacity>
             </View>
 
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>Preferred TreatCoins per service unit (optional)</Text>
+              <TextInput accessibilityLabel="Preferred TreatCoins budget" value={budget}
+                onChangeText={setBudget} keyboardType="numeric" maxLength={7}
+                placeholder="No preference" placeholderTextColor="#486371"
+                style={[styles.inputField, { color: '#173342', paddingVertical: 10 }]} />
+              <Text style={{ color: '#486371', fontSize: 11 }}>Used to rank suggestions, not a price limit. Rates are per hour or day as shown.</Text>
+            </View>
             {/* Property Type */}
             <View style={styles.propertyTypes}>
               {propertyTypes.map((type) => {
@@ -381,3 +391,4 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
