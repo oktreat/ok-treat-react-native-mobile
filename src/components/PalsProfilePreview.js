@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
+import PalsPhotosPreview from './PalsPhotosPreview';
 
 export default function PalsProfilePreview({ onClose }) {
   const user = useSelector(state => state.auth.user);
@@ -32,8 +33,9 @@ export default function PalsProfilePreview({ onClose }) {
   const button = (title, onPress, disabled = false) => <TouchableOpacity accessibilityRole="button" disabled={disabled} onPress={onPress} style={{ padding: 15, minHeight: 48, borderRadius: 14, backgroundColor: disabled ? '#B5C7CF' : '#087EA4', alignItems: 'center' }}><Text style={{ color: '#FFF', fontWeight: '700', fontSize: 16 }}>{title}</Text></TouchableOpacity>;
   const field = (name, label, placeholder, multiline = false) => <View style={{ gap: 7 }}><Text style={{ color: '#173342', fontWeight: '700', fontSize: 15 }}>{label}</Text><TextInput accessibilityLabel={label} editable={ready} value={form[name]} onChangeText={value => patch(name, value)} maxLength={multiline ? 400 : 100} multiline={multiline} placeholder={placeholder} placeholderTextColor="#617985" style={{ borderColor: '#BCD0DB', borderWidth: 1, borderRadius: 12, padding: 14, color: '#173342', fontSize: 15, minHeight: multiline ? 96 : 48, textAlignVertical: 'top' }} /></View>;
   return <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: 50, gap: 18 }}>
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>{!!user?.avatarUrl && <Image source={{ uri: user.avatarUrl }} style={{ width: 58, height: 58, borderRadius: 29 }} />}<View><Text style={{ color: '#173342', fontWeight: '800', fontSize: 24 }}>Join Pals</Text><Text style={{ color: '#486371', marginTop: 4 }}>Use your existing OkTreat account</Text></View></View>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}><View><Text style={{ color: '#173342', fontWeight: '800', fontSize: 24 }}>Join Pals</Text><Text style={{ color: '#486371', marginTop: 4 }}>Use your existing OkTreat account</Text></View></View>
     <Text style={{ backgroundColor: '#EAF7FB', padding: 14, borderRadius: 12, color: '#365463', lineHeight: 21 }}>TestFlight preview. Your details stay on this phone. Visibility and joining are not connected to real discovery yet.</Text>
+    <PalsPhotosPreview key={key} accountKey={key} />
     {field('bio', 'About me', 'What would you enjoy doing together?', true)}
     {field('languages', 'Languages', 'English, Japanese…')}
     {field('interests', 'Interests', 'Exploring, food, arts, pets—or your own interests')}
@@ -43,6 +45,6 @@ export default function PalsProfilePreview({ onClose }) {
     {[['visible', 'Show my profile', 'Preview preference only. Nothing is published.'], ['adult', 'I am 18 or older', 'Live eligibility checks will be required before meetups.'], ['rules', 'I agree to the Pals community rules', 'Be respectful. No harassment or requests for money. Meet in public places.']].map(([name, label, help]) => <View key={name} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}><View style={{ flex: 1 }}><Text style={{ color: '#173342', fontWeight: '700', fontSize: 15 }}>{label}</Text><Text style={{ color: '#486371', lineHeight: 20, marginTop: 4 }}>{help}</Text></View><Switch accessibilityLabel={label} value={form[name]} onValueChange={value => patch(name, value)} trackColor={{ false: '#CBD5DC', true: '#087EA4' }} /></View>)}
     <Text style={{ color: '#486371', lineHeight: 20 }}>Identity verification will be required before arranging real meetups. Verification cannot guarantee safety.</Text>
     {button(saving ? 'Saving…' : 'Save preview profile', save, !valid || saving)}
-    {button('Delete preview profile', async () => { try { await AsyncStorage.removeItem(key); setForm(empty); Alert.alert('Preview profile deleted'); } catch { Alert.alert('Could not delete', 'Please try again.'); } }, !ready || saving)}
+    {button('Delete preview profile', async () => { try { await AsyncStorage.removeItem(key); setForm(empty); Alert.alert('Preview details deleted', 'Your Pals photos are managed separately. Use Delete all Pals photos above to remove them.'); } catch { Alert.alert('Could not delete', 'Please try again.'); } }, !ready || saving)}
   </ScrollView>;
 }
