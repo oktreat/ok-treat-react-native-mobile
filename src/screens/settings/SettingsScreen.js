@@ -79,7 +79,6 @@ export default function SettingsScreen({ navigation }) {
     { title: t('settings.privacyPolicy'), action: () => openInAppBrowser(LEGAL_URLS.privacy) },
     { title: 'Terms of Service', action: () => openInAppBrowser(LEGAL_URLS.terms) },
     { title: 'About OkTreat', action: () => openInAppBrowser(LEGAL_URLS.about) },
-    { title: 'Contact Us', action: () => openInAppBrowser(LEGAL_URLS.contact) },
     { title: 'Delete Account', action: handleDeleteAccount, danger: true },
   ];
 
