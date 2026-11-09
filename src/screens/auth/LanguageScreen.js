@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Dimensions, ScrollView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -48,7 +48,7 @@ export default function LanguageScreen({ navigation, route }) {
       </View>
 
       {/* Language List */}
-      <View style={styles.languageList}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={[styles.languageList, { paddingBottom: 160 }]}>
         {[{ code: 'system', name: t('preferences.phoneLanguage') }, ...SUPPORTED_LANGUAGES].map((language) => (
           <TouchableOpacity
             key={language.code}
@@ -70,7 +70,7 @@ export default function LanguageScreen({ navigation, route }) {
             )}
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
 
       {/* Continue Button */}
       <View style={styles.footer}>
@@ -200,3 +200,4 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
 });
+

@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +23,7 @@ let referralPromptCheckedThisSession = false;
 
 
 export default function HomeScreen({ navigation }) {
+  useCopyUpdates();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { user } = useSelector(state => state.auth);
@@ -198,16 +200,16 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.barterTitleRow}><Text style={styles.barterTitle}>{t('home.barter')}</Text><TreatCoinMark size={24} /></View>
             <View style={styles.careActions}>
               <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}>
-                <Icon name="search-outline" size={27} color="#087EA4" /><Text style={styles.findCareText}>{t('home.findCare')}</Text><Text style={styles.actionDetail}>AI-assisted matching</Text>
+                <Icon name="search-outline" size={27} color="#087EA4" /><Text style={styles.findCareText}>{t('home.findCare')}</Text><Text style={styles.actionDetail}>{copy('AI-assisted matching')}</Text>
               </TouchableOpacity>
               <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}>
-                <Icon name="heart-outline" size={27} color="#087EA4" /><Text style={styles.offerCareText}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text><Text style={styles.actionDetail}>Earn TreatCoins</Text>
+                <Icon name="heart-outline" size={27} color="#087EA4" /><Text style={styles.offerCareText}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text><Text style={styles.actionDetail}>{copy('Earn TreatCoins')}</Text>
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.shortcutGrid}>
-            {shortcuts.map(item => <TouchableOpacity key={item.title} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>
-              <Icon name={item.icon} size={26} color={item.color} /><View><Text style={styles.shortcutTitle}>{item.title}</Text><Text style={styles.shortcutDetail}>{item.detail}</Text></View>
+            {shortcuts.map(item => <TouchableOpacity key={copy(item.title)} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>
+              <Icon name={item.icon} size={26} color={item.color} /><View><Text style={styles.shortcutTitle}>{copy(item.title)}</Text><Text style={styles.shortcutDetail}>{copy(item.detail)}</Text></View>
             </TouchableOpacity>)}
           </View>
 

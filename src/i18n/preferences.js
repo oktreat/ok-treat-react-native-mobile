@@ -1,10 +1,10 @@
 export const CURRENCIES = ['USD', 'CAD', 'JPY', 'AUD', 'GBP', 'EUR'];
 export function resolveLanguage(saved, locales = []) {
-  if (['en-us', 'en-uk', 'ja', 'zh', 'fr'].includes(saved)) return saved;
+  if (['en-us', 'en-uk', 'ja', 'zh', 'fr', 'de'].includes(saved)) return saved;
   for (const locale of locales) {
     const tag = (locale.languageTag || '').toLowerCase();
     const lang = (locale.languageCode || tag.split('-')[0]).toLowerCase();
-    if (lang === 'ja' || lang === 'zh' || lang === 'fr') return lang;
+    if (lang === 'ja' || lang === 'zh' || lang === 'fr' || lang === 'de') return lang;
     if (lang === 'en') return tag.startsWith('en-gb') ? 'en-uk' : 'en-us';
   }
   return 'en-us';
@@ -26,3 +26,4 @@ export function formatCharge(amount, currency, language = 'en-us') {
   const number = new Intl.NumberFormat(locale || 'en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(amount / (10 ** digits));
   return `${currency} ${number}`;
 }
+

@@ -29,10 +29,12 @@ import enUk from './locales/en-uk.json';
 import ja from './locales/ja.json';
 import zh from './locales/zh.json';
 import fr from './locales/fr.json';
+import de from './locales/de.json';
 import copyEn from './locales/copy-en-us.json';
 import copyEnUk from './locales/copy-en-uk.json';
 import copyJa from './locales/copy-ja.json';
 import copyFr from './locales/copy-fr.json';
+import copyDe from './locales/copy-de.json';
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'en-us', name: 'English (US)' },
@@ -40,6 +42,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'ja', name: '日本語' },
   { code: 'zh', name: '中文' },
   { code: 'fr', name: 'Français' },
+  { code: 'de', name: 'Deutsch' },
 ];
 
 const resources = {
@@ -48,6 +51,7 @@ const resources = {
   ja: { translation: ja, copy: copyJa },
   zh: { translation: zh },
   fr: { translation: fr, copy: copyFr },
+  de: { translation: de, copy: copyDe },
 };
 
 // Map a device locale ("en-US", "ja-JP", "zh-Hans-CN") to our supported codes.
@@ -57,7 +61,7 @@ export function deviceLanguageGuess() {
   catch { return 'en-us'; }
 }
 export function effectiveLanguage(saved) {
-  return ['en-us', 'en-uk', 'ja', 'zh', 'fr'].includes(saved) ? saved : deviceLanguageGuess();
+  return ['en-us', 'en-uk', 'ja', 'zh', 'fr', 'de'].includes(saved) ? saved : deviceLanguageGuess();
 }
 
 // Initialize i18next synchronously at module load. Doing this here (rather
@@ -78,7 +82,7 @@ i18n.use(initReactI18next).init({
   // key works but t() returns the raw key.
   lowerCaseLng: true,
   load: 'currentOnly',
-  supportedLngs: ['en-us', 'en-uk', 'ja', 'zh', 'fr'],
+  supportedLngs: ['en-us', 'en-uk', 'ja', 'zh', 'fr', 'de'],
   nonExplicitSupportedLngs: false,
   interpolation: {
     escapeValue: false, // React already escapes
@@ -133,3 +137,4 @@ export async function initI18n(savedLanguage) {
 }
 
 export default i18n;
+

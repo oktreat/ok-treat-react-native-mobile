@@ -1,48 +1,12 @@
-# Internationalization (i18n)
+# App language selection
 
-This app uses `react-i18next` for translations. Strings live in
-`src/i18n/locales/<code>.json`, are loaded on app startup from
-`src/i18n/index.js`, and applied immediately when the user changes
-language via the language picker (`src/screens/auth/LanguageScreen.js`).
+- Default `system` uses the phone's ordered preferred languages, never IP or location.
+- English (US/UK), Japanese, French, German and the existing Chinese core bundle are registered.
+- A saved supported language overrides the phone. Unsupported phone languages fall back to English.
+- App foregrounding reapplies saved/system language to pick up device preference changes.
+- Currency is independent of display language.
+- Core keys and registered fixed-copy strings have French, Japanese and German translations, including Pals profile/photos/identity preview, discovery and release notice.
+- Member-written introductions, custom interests, names and chat are never automatically translated.
+- Other hardcoded text may still fall back to English; registered-key coverage does not mean every screen is migrated. Native-device layout review is required.
 
-## Using in a component
-
-```js
-import { useTranslation } from 'react-i18next';
-
-function MyScreen() {
-  const { t } = useTranslation();
-  return <Text>{t('home.welcome')}</Text>;
-}
-```
-
-## Adding a new key
-
-1. Add the key + English source string to `locales/en-us.json` — this is
-   the source of truth. Missing keys in other locales fall back to en-us
-   automatically.
-2. Add a placeholder (or final translation) for the same key in every
-   other locale file (`en-uk.json`, `ja.json`, `zh.json`).
-3. Replace the hardcoded string in code with `t('namespace.key')`.
-
-## Adding a new language
-
-1. Drop a `<code>.json` file under `locales/`.
-2. Import it and add to `resources` in `src/i18n/index.js`.
-3. Add the language to `SUPPORTED_LANGUAGES` in the same file.
-4. (Optional) Update `deviceLanguageGuess()` to map the new device
-   locale to your code.
-
-## Migration status
-
-Only a handful of strings are wired so far as a demo (`home.welcome`,
-`language.*`, `settings.*`). The rest of the app is still hardcoded in
-English. Migrate screens incrementally as needed.
-
-## How the picker works
-
-- First-launch flow: shown before login as part of onboarding. On
-  Proceed, navigates to `Onboarding`.
-- Re-selection flow: opened from `Settings → Language` with
-  `route.params.fromSettings === true`. On Proceed, calls `goBack()`
-  and the new language applies app-wide instantly.
+Use `useTranslation()` with keyed resources or `copy()` with fixed natural-language copy and `useCopyUpdates()` for language updates. Never translate API enum values or member-written content. Keep interpolation placeholders identical in all language resources.

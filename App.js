@@ -114,6 +114,7 @@ export default function App() {
       });
       appStateSub = AppState.addEventListener('change', (state) => {
         if (state === 'active') {
+          getLanguage().then(saved => initI18n(saved)).catch(() => {});
           syncNotificationBadge();
           registerForPushNotifications();
         }

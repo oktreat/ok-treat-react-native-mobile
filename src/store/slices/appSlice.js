@@ -75,7 +75,7 @@ const appSlice = createSlice({
   reducers: {
     // Synchronous actions if needed
     resetAppSettings: (state) => {
-      state.language = 'en-us';
+      state.language = 'system';
       state.onboardingCompleted = false;
     },
   },
@@ -132,3 +132,4 @@ const appSlice = createSlice({
 
 export const { resetAppSettings } = appSlice.actions;
 export default appSlice.reducer;
+

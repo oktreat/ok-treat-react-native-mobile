@@ -39,3 +39,17 @@ test('Japanese and Chinese v2 texts resolve without English fallback or raw keys
     assert.notEqual(i.t('home.addPet'), 'Add a Pet');
   }
 });
+
+
+ test('German follows phone preference across regions; manual language wins and unsupported phones use English', () => {
+  for (const languageTag of ['de-DE', 'de-AT', 'de-CH']) {
+    const phone = [{languageTag, languageCode:'de', regionCode:'CA'}];
+    assert.equal(resolveLanguage('system', phone), 'de');
+    assert.equal(resolveCurrency('system', phone), 'CAD');
+    assert.equal(resolveLanguage('fr', phone), 'fr');
+  }
+  assert.equal(resolveLanguage('de', [{languageCode:'ja'}]), 'de');
+  assert.equal(resolveLanguage('system', [{languageTag:'de-AT'}]), 'de');
+  assert.equal(resolveLanguage('system', [{languageCode:'es'}]), 'en-us');
+  assert.equal(resolveLanguage('system', [{languageCode:'es'}, {languageCode:'de'}]), 'de');
+});

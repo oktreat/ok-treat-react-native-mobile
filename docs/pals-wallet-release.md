@@ -25,3 +25,10 @@
 ## Other priorities preserved
 - eSIM next; insurance requires partners; pet camera exploration; WhatsApp remains separate.
 - Broad real-member Pals map must not be advertised as live from this sample build.
+
+## Source changes after build 20.1 (not yet uploaded)
+- Separate local Pals gallery: up to five photos, camera/library, main-photo selection, replacement and removal.
+- Pals identity action reuses server-confirmed ID/selfie flow. Gallery photo matching remains unconnected and unverified.
+- German added; phone language remains default, manual selection wins, foreground refresh picks up device preference changes. No IP selection.
+- French/Japanese/German fixed copy for new Pals and release-notice screens; German core and existing registered-copy translations. Language and currency stay independent.
+- 13 targeted locale/translation/Pals checks passed. Device layout review and next signed build pending.
