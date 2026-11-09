@@ -16,6 +16,12 @@
 - Public venue reminders, trusted-contact plan sharing. Verification is not a safety guarantee.
 - Exact locations/booking addresses must never be published.
 
+## Next build agreed fixes
+- Release notice: replace visible literal newline escapes with real paragraphs and plain member-facing wording. Source fixed after build 19.1; not yet uploaded.
+- SMS verification: move from four to six digits, coordinating the app input and backend/provider configuration. Verify expiry, limited attempts, resend cooldown and successful real-device verification before marking complete. Pending implementation; do not claim the current build has six-digit verification.
+- Pals discovery: replace permanent sample-city shortcuts with Near me, search any city/area and recent searches; retain honest preview labels until real discovery is connected.
+- Pals registration remains pending: use the existing OkTreat account with an opt-in profile, interests/languages, approximate area and local/visitor status; eligibility and identity checks must be enforced before real meetup requests.
+
 ## Other priorities preserved
 - eSIM next; insurance requires partners; pet camera exploration; WhatsApp remains separate.
 - Broad real-member Pals map must not be advertised as live from this sample build.
