@@ -3,6 +3,7 @@ import { Alert, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } fr
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 import PalsPhotosPreview from './PalsPhotosPreview';
+import PalsIdentityVerification from './PalsIdentityVerification';
 
 export default function PalsProfilePreview({ onClose }) {
   const user = useSelector(state => state.auth.user);
@@ -36,6 +37,7 @@ export default function PalsProfilePreview({ onClose }) {
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}><View><Text style={{ color: '#173342', fontWeight: '800', fontSize: 24 }}>Join Pals</Text><Text style={{ color: '#486371', marginTop: 4 }}>Use your existing OkTreat account</Text></View></View>
     <Text style={{ backgroundColor: '#EAF7FB', padding: 14, borderRadius: 12, color: '#365463', lineHeight: 21 }}>TestFlight preview. Your details stay on this phone. Visibility and joining are not connected to real discovery yet.</Text>
     <PalsPhotosPreview key={key} accountKey={key} />
+    <PalsIdentityVerification key={`identity:${key}`} />
     {field('bio', 'About me', 'What would you enjoy doing together?', true)}
     {field('languages', 'Languages', 'English, Japanese…')}
     {field('interests', 'Interests', 'Exploring, food, arts, pets—or your own interests')}
