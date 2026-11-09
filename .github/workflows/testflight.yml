@@ -61,7 +61,7 @@ jobs:
           set -eu
           project=ios/OkTreat.xcodeproj/project.pbxproj
           sed -i '' -e 's/FF5DD8442347060E69CE65056CA9D43289BA32B5/"Apple Distribution"/g' -e 's/AliUsmanProvisioningProfile/"OkTreat App Store 2026-11-06"/g' "$project"
-          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.0.0' ios/OkTreat/Info.plist
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.1.0' ios/OkTreat/Info.plist
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}" ios/OkTreat/Info.plist
           xcodebuild archive -workspace ios/OkTreat.xcworkspace -scheme OkTreat -configuration Release -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/OkTreat.xcarchive"
           app="$RUNNER_TEMP/OkTreat.xcarchive/Products/Applications/OkTreat.app"

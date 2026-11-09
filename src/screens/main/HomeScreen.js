@@ -15,7 +15,6 @@ import { useWallet } from '../../context/WalletContext';
 import api from '../../config/api';
 import SitterModeSwitch from '../../components/SitterModeSwitch';
 import TreatCoinMark from '../../components/TreatCoinMark';
-import ReleaseNotice from '../../components/ReleaseNotice';
 
 // Show the referral prompt at most once per app session.
 let referralPromptCheckedThisSession = false;
@@ -214,7 +213,6 @@ export default function HomeScreen({ navigation }) {
 
         </ScrollView>
 
-        <ReleaseNotice />
         {/* Approved Modal */}
         <ProfileVerifiedModal
           visible={showApprovedModal}

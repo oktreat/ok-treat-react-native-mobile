@@ -1,3 +1,4 @@
+import ReleaseNotice from './src/components/ReleaseNotice';
 import React, { useEffect, useRef, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
@@ -221,6 +222,7 @@ export default function App() {
         <StripeWrapper>
           <WalletProvider>
             <Provider store={store}>
+              <ReleaseNotice />
               <NavigationContainer
                 ref={navigationRef}
                 onReady={() => {
@@ -364,3 +366,4 @@ const appStyles = StyleSheet.create({
     includeFontPadding: false,
   },
 });
+

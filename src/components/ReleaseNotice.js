@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 const STORE = 'https://apps.apple.com/app/id6479255523';
-const release = 'pals-wallet-preview-20261109';
+const release = '2.1.0';
 const newer = (a, b) => {
   const left = a.split('.').map(Number), right = b.split('.').map(Number);
   for (let i = 0; i < Math.max(left.length, right.length); i++) {
@@ -17,6 +17,7 @@ export default function ReleaseNotice() {
   const [show, setShow] = useState(false);
   const key = `whats-new:${user?.id || user?.email || 'member'}:${release}`;
   useEffect(() => {
+    if (!user) return;
     let live = true;
     (async () => {
       try {
@@ -38,6 +39,6 @@ export default function ReleaseNotice() {
       } catch { /* Offline: keep the app usable. */ }
     })();
     return () => { live = false; };
-  }, [key]);
-  return <Modal visible={show} transparent animationType="fade" onRequestClose={() => { setShow(false); AsyncStorage.setItem(key, '1').catch(() => {}); }}><View style={{ flex: 1, justifyContent: 'center', padding: 28, backgroundColor: '#102A4377' }}><View style={{ backgroundColor: 'white', padding: 24, borderRadius: 22, gap: 16 }}><Text style={{ fontSize: 23, color: '#173342', fontWeight: '700' }}>What’s new</Text><Text style={{ color: '#365463', lineHeight: 24 }}>A cleaner home page with six shortcuts.\n\nPals: explore nearby areas and broader interests with sample members.\n\nGold paw coins and a gentle wallet animation.\n\nPals is still a TestFlight preview. No real invitations or safety reports are sent.</Text><TouchableOpacity accessibilityRole="button" onPress={() => { setShow(false); AsyncStorage.setItem(key, '1').catch(() => {}); }} style={{ backgroundColor: '#087EA4', padding: 15, borderRadius: 14 }}><Text style={{ color: 'white', textAlign: 'center', fontWeight: '700' }}>Let’s explore</Text></TouchableOpacity></View></View></Modal>;
+  }, [key, !!user]);
+  return <Modal visible={!!user && show} transparent animationType="fade" onRequestClose={() => { setShow(false); AsyncStorage.setItem(key, '1').catch(() => {}); }}><View style={{ flex: 1, justifyContent: 'center', padding: 28, backgroundColor: '#102A4377' }}><View style={{ backgroundColor: 'white', padding: 24, borderRadius: 22, gap: 16 }}><Text style={{ fontSize: 23, color: '#173342', fontWeight: '700' }}>What’s new</Text><Text style={{ color: '#365463', lineHeight: 24 }}>A cleaner home page with six shortcuts.\n\nPals: explore nearby areas and broader interests with sample members.\n\nGold paw coins and a gentle wallet animation.\n\nPals is still a TestFlight preview. No real invitations or safety reports are sent.</Text><TouchableOpacity accessibilityRole="button" onPress={() => { setShow(false); AsyncStorage.setItem(key, '1').catch(() => {}); }} style={{ backgroundColor: '#087EA4', padding: 15, borderRadius: 14 }}><Text style={{ color: 'white', textAlign: 'center', fontWeight: '700' }}>Let’s explore</Text></TouchableOpacity></View></View></Modal>;
 }
