@@ -41,3 +41,10 @@
 - Eight backend and sixteen app/locale/Pals checks pass. Real SMS delivery and six-digit entry still require phone testing after the backend deploy and next TestFlight upload.
 - Deployment gate: backend change is prepared in a separate PR. Production main was not changed because automatic approval review requires explicit owner approval for deployment. Do not describe six-digit delivery as live until merged/deployed and tested.
 - Run tests/otp-input.cjs alongside the existing TestFlight regression list before the next upload.
+
+## Backend deployment confirmed — 9 November 2026
+- Owner explicitly approved production deployment. Backend PR #18 merged to main as f393dacf48080b8c0af97e74a9b882f172835d9d.
+- Live API restarted and /api/status returned HTTP 200 with database connected.
+- Five-digit verification probe returned the new format-validation response.
+- Synthetic, nonexistent-recipient email-resend probe returned 404, then HTTP 429 with Retry-After on immediate repeat, confirming the PostgreSQL-backed throttle executes. No SMS/email or real account was created by these probes.
+- Production deployment approval gate above is resolved. Actual six-digit delivery on a phone remains to be checked with the next TestFlight.
