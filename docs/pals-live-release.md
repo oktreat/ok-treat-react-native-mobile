@@ -1,4 +1,4 @@
-PALS welcomes all single travellers aged 18+. Linking an optional owned dog is optional; dog walking remains an activity.
+PALS welcomes all single travellers aged 18+. Linking an owned dog is optional; dog walking remains an activity.
 
 # PALS stages 1–3 — 10 November 2026
 
@@ -6,7 +6,7 @@ PALS keeps its original focus: single travellers travelling to meet new friends.
 
 The Bonding navigation entry now opens PalsLiveScreen. This uses the existing OkTreat authentication token with the new `/api/pals` service, rather than local sample profiles. Existing preview components remain available in source for regression reference; they are not the navigation destination.
 
-Implemented: separate opt-in profile and owned-dog selector; private-first consent; up to five personal photos resized and re-encoded on device; main-photo selection/removal; saved destination/date travel plans; overlapping travel discovery and optional interest/language filters; activity invitations and recipient acceptance/decline; persistent accepted-only conversations; block/report; hide/delete; closed connections and travel cancellation.
+Implemented: separate opt-in profile and optional owned-dog selector; private-first consent; up to five personal photos resized and re-encoded on device; main-photo selection/removal; saved destination/date travel plans; overlapping travel discovery and optional interest/language filters; activity invitations and recipient acceptance/decline; persistent accepted-only conversations; block/report; hide/delete; closed connections and travel cancellation.
 
 Identity remains server-authoritative. Both participants need live Stripe Identity verification before inviting, accepting or chatting. PALS does not claim that gallery photos match an identity selfie. The existing admin identity mode is preserved; test-mode checks do not count. Basic new copy is provided in French/Japanese/German, while server error text may remain English.
 
