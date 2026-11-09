@@ -15,6 +15,7 @@ import { useWallet } from '../../context/WalletContext';
 import api from '../../config/api';
 import SitterModeSwitch from '../../components/SitterModeSwitch';
 import TreatCoinMark from '../../components/TreatCoinMark';
+import ReleaseNotice from '../../components/ReleaseNotice';
 
 // Show the referral prompt at most once per app session.
 let referralPromptCheckedThisSession = false;
@@ -138,12 +139,11 @@ export default function HomeScreen({ navigation }) {
   };
 
   const shortcuts = [
-    { title: 'OkTreat Bonding', detail: 'Meet locals · Preview', icon: 'people-outline', bg: '#DDF4FA', color: '#087EA4', press: () => navigation.navigate('Bonding') },
     { title: t('home.addPet'), detail: t('home.petDetail'), icon: 'paw-outline', bg: '#EAF5FC', color: '#1D739F', press: () => navigation.navigate('AddPet') },
     { title: t('home.scanQr'), detail: t('home.qrDetail'), icon: 'scan-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('PetQRScan', { fromScreen: 'Home' }) },
     { title: t('home.bookings'), detail: t('home.bookingDetail'), icon: 'calendar-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('Bookings') },
     { title: t('home.chat'), detail: t('home.chatDetail'), icon: 'chatbubbles-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('ChatList') },
-    { title: t('home.refer'), detail: t('home.referDetail'), icon: 'gift-outline', bg: '#EAF5FC', color: '#087EA4', press: () => navigation.navigate('InviteFriends') },
+    { title: 'Pals', detail: 'Meet locals. Make friends.', icon: 'people-outline', bg: '#DDF4FA', color: '#087EA4', press: () => navigation.navigate('Bonding') },
     { title: t('home.tags'), detail: t('home.tagDetail'), icon: 'pricetag-outline', bg: '#EAF5FC', color: '#087EA4', press: () => openSmartTags() },
   ];
   const openSmartTags = () => Linking.openURL('https://www.amazon.com/stores/OKTreat/page/39C7FC72-20EB-4F6A-AE27-53D4958D9361').catch(() => {});
@@ -192,18 +192,19 @@ export default function HomeScreen({ navigation }) {
 
         <ScrollView contentContainerStyle={styles.homeContent} showsVerticalScrollIndicator={false}>
           <SitterModeSwitch sitterMode={false} onChange={handleBecomeASitter} disabled={checkingStatus} />
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open TreatCoins wallet" style={[styles.balance, { marginBottom: 18, alignSelf: 'flex-start' }]} onPress={() => navigation.navigate('PaymentMethods')}>
+            <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()} TreatCoins</Text>
+          </TouchableOpacity>
           <View style={styles.barterCard}>
-            <View style={styles.barterTitleRow}>
-              <Text style={styles.barterTitle}>{t('home.barter')}</Text>
-              <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open Wallet, TreatCoins balance" style={styles.balance} onPress={() => navigation.navigate('PaymentMethods')}>
-                <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()}</Text>
+            <View style={styles.barterTitleRow}><Text style={styles.barterTitle}>{t('home.barter')}</Text><TreatCoinMark size={24} /></View>
+            <View style={styles.careActions}>
+              <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}>
+                <Icon name="search-outline" size={27} color="#087EA4" /><Text style={styles.findCareText}>{t('home.findCare')}</Text><Text style={styles.actionDetail}>AI-assisted matching</Text>
+              </TouchableOpacity>
+              <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}>
+                <Icon name="heart-outline" size={27} color="#087EA4" /><Text style={styles.offerCareText}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text><Text style={styles.actionDetail}>Earn TreatCoins</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.careActions}>
-              <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Text style={styles.findCareText}>{t('home.findCare')}</Text></TouchableOpacity>
-              <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}><Text style={styles.offerCareText}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text></TouchableOpacity>
-            </View>
-            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Find care with AI sitter matching" style={styles.aiLine} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}><Icon name="sparkles" size={14} color="#285D6D" /><Text style={styles.aiText}>{t('home.aiMatching')}</Text></TouchableOpacity>
           </View>
           <View style={styles.shortcutGrid}>
             {shortcuts.map(item => <TouchableOpacity key={item.title} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>
@@ -213,6 +214,7 @@ export default function HomeScreen({ navigation }) {
 
         </ScrollView>
 
+        <ReleaseNotice />
         {/* Approved Modal */}
         <ProfileVerifiedModal
           visible={showApprovedModal}
@@ -255,15 +257,16 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   homeContent: { paddingHorizontal: 24, paddingBottom: 24 },
-  barterCard: { borderRadius: 22, padding: 16, backgroundColor: '#E9F5F5', borderWidth: 1, borderColor: '#D8EAEB', marginBottom: 20 },
-  barterTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 },
+  barterCard: { marginBottom: 20 },
+  barterTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 },
   barterTitle: { fontSize: 22, fontWeight: '700', color: '#132F39' },
   balance: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: '#FFF7DC', borderRadius: 22, padding: 10, minHeight: 44 },
   balanceText: { color: '#624A10', fontSize: 14, fontWeight: '700' },
   careActions: { flexDirection: 'row', gap: 10 },
-  findCare: { flex: 1, backgroundColor: '#087EA4', padding: 13, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
-  offerCare: { flex: 1, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#9BBFC6', padding: 12, borderRadius: 12, alignItems: 'center', justifyContent: 'center', minHeight: 46 },
-  findCareText: { fontSize: 13, color: '#FFF', fontWeight: '600' }, offerCareText: { fontSize: 13, color: '#14576A', fontWeight: '600' },
+  findCare: { flex: 1, backgroundColor: '#F0F8FC', borderWidth: 1, borderColor: '#CFDFE9', padding: 14, borderRadius: 16, gap: 8, minHeight: 125 },
+  offerCare: { flex: 1, backgroundColor: '#F0F8FC', borderWidth: 1, borderColor: '#CFDFE9', padding: 14, borderRadius: 16, gap: 8, minHeight: 125 },
+  actionDetail: { fontSize: 11, color: '#486371' },
+  findCareText: { fontSize: 15, color: '#173342', fontWeight: '600' }, offerCareText: { fontSize: 15, color: '#14576A', fontWeight: '600' },
   aiLine: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingTop: 10, minHeight: 40 }, aiText: { fontSize: 12, color: '#285D6D', fontWeight: '600' },
   shortcutsTitle: { color: '#172E38', fontSize: 16, fontWeight: '700', marginBottom: 12 },
   shortcutGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 },
@@ -412,4 +415,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
 

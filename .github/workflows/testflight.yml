@@ -1,7 +1,7 @@
 name: OkTreat TestFlight
 on:
   push:
-    branches: [codex/bonding-preview-20261108]
+    branches: [codex/pals-wallet-testflight-20261109]
     paths: ['.github/workflows/testflight.yml']
   workflow_dispatch:
 permissions:
@@ -23,6 +23,8 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Verify notification regressions
         run: node --test tests/notification-badge.cjs tests/notification-registration.test.cjs tests/push-diagnostics.cjs tests/bundled-chime.cjs tests/clear-tab-bar.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/fair-sitter-matching.cjs tests/regional-preferences.cjs tests/shop-currency.cjs tests/translations.cjs tests/payment-country.cjs tests/chat-messages.cjs tests/bonding-preview.cjs
+      - name: Verify iPhone JavaScript bundle
+        run: npx expo export --platform ios --output-dir .ci/release-ios
       - run: pod install --deployment
         working-directory: ios
       - name: Install signing identity and profile
@@ -69,7 +71,7 @@ jobs:
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat Bonding preview to TestFlight'
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload Pals and wallet update to TestFlight'
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
@@ -92,3 +94,4 @@ jobs:
 
 
 # Bonding preview uses fictional sample members and session-only interactions.
+

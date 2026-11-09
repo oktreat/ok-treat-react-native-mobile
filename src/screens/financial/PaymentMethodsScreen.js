@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, ActivityIndicator, Modal } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon, CoinIcon, CoinInIcon } from '../../assets';
@@ -6,6 +6,9 @@ import { Button } from '../../components';
 import api from '../../config/api';
 import { useFocusEffect } from '@react-navigation/native';
 import CashOutComingSoonDialog from '../../components/CashOutComingSoonDialog';
+import TreatCoinMotion from '../../components/TreatCoinMotion';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector } from 'react-redux';
 import { useWallet } from '../../context/WalletContext';
 
 // Map a CoinTransaction.type to which tab it belongs in. SPEND and ADJUST
@@ -25,6 +28,8 @@ const TAB_FOR_TYPE = {
 
 export default function PaymentMethodsScreen({ navigation }) {
   const wallet = useWallet();
+  const user = useSelector(state => state.auth.user);
+  const [earnedCelebration, setEarnedCelebration] = useState(null);
   const [selectedTab, setSelectedTab] = useState('Earning');
   const [earningsOverview, setEarningsOverview] = useState(false);
   const [withdrawalHistory, setWithdrawalHistory] = useState(false);
@@ -53,6 +58,17 @@ export default function PaymentMethodsScreen({ navigation }) {
       const txList = txRes.data?.data?.transactions || txRes.data?.transactions || [];
       const transactions = Array.isArray(txList) ? txList : [];
 
+      // Celebrate only a new server-issued EARN row; first visit establishes a baseline.
+      const member = user?.id || user?.email;
+      if (member && !txFetchFailed) {
+        const key = `wallet-earned-seen:${member}`;
+        const earns = transactions.filter(tx => tx.id && tx.type === 'EARN' && Number(tx.amount) > 0);
+        const stored = await AsyncStorage.getItem(key);
+        const seen = stored ? JSON.parse(stored) : [];
+        const fresh = earns.filter(tx => !seen.includes(tx.id));
+        if (stored && fresh.length) setEarnedCelebration(fresh.reduce((sum, tx) => sum + Number(tx.amount), 0));
+        await AsyncStorage.setItem(key, JSON.stringify([...new Set([...seen, ...earns.map(tx => tx.id)])].slice(-2000)));
+      }
       // Classify each ledger row by its `type` field (PURCHASE/EARN/SPEND
       // etc.) using the TAB_FOR_TYPE map. Earlier code classified by sign
       // which incorrectly bucketed owner SPEND rows into "Withdrawals".
@@ -128,7 +144,11 @@ export default function PaymentMethodsScreen({ navigation }) {
   if (loading) {
     return (
       <ScreenWrapper noBottomTabs>
-        <View style={styles.container}>
+        <Modal visible={earnedCelebration !== null} transparent animationType="fade" onRequestClose={() => setEarnedCelebration(null)}><View style={{ flex: 1, justifyContent: 'center', padding: 28, backgroundColor: '#102A4377' }}><View style={{ backgroundColor: 'white', padding: 24, borderRadius: 22, gap: 16 }}>
+        {earnedCelebration !== null && <TreatCoinMotion celebration />}
+        <Text style={{ color: '#173342', fontWeight: '700', fontSize: 23, textAlign: 'center' }}>TreatCoins earned!</Text><Text style={{ color: '#278B48', fontWeight: '700', fontSize: 25, textAlign: 'center' }}>+{Number(earnedCelebration).toLocaleString()} TreatCoins</Text><TouchableOpacity accessibilityRole="button" onPress={() => setEarnedCelebration(null)} style={{ padding: 15, backgroundColor: '#087EA4', borderRadius: 14 }}><Text style={{ color: 'white', textAlign: 'center' }}>Done</Text></TouchableOpacity>
+      </View></View></Modal>
+      <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
               <BackArrowIcon width={20} height={20} />
@@ -157,6 +177,7 @@ export default function PaymentMethodsScreen({ navigation }) {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <TreatCoinMotion />
           {/* Payment Info Cards */}
           <View style={styles.infoSection}>
             {/* Wallet — total balance */}
@@ -615,3 +636,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
