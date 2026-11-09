@@ -176,3 +176,14 @@ export const searchSitters = async (
     throw error;
   }
 };
+
+
+// Authenticated, aggregate-only model; no review text or private care notes.
+export const getMatchingFeedback = async (petId, serviceType) => {
+  const token = await getAuthToken();
+  const response = await axios.get(`${API_BASE_URL}/api/sitter/matching-feedback`, {
+    params: { petId, serviceType }, headers: { Authorization: `Bearer ${token}` },
+    timeout: 8000,
+  });
+  return response.data?.data?.feedbackBySitter || {};
+};
