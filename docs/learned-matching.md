@@ -10,7 +10,7 @@ A four-star prior is regularised with four observations for personal outcomes an
 
 ## Controls and fairness
 
-Users can turn review-based learning off. Empty/insufficient history and endpoint failures preserve the base suitability ranking. The app and website reject feedback for a previous pet/service/user context. Learning never overrides the existing eligibility groups; equally suitable sitters still rotate within five-point bands. An identity-check badge is separate from skill or compatibility.
+Review-based learning is automatic; there is no member-facing on/off switch. Empty/insufficient history and endpoint failures preserve the base suitability ranking. The app and website reject feedback for a previous pet/service/user context. Learning never overrides the existing eligibility groups; equally suitable sitters still rotate within five-point bands. An identity-check badge is separate from skill or compatibility.
 
 ## Connected gaps
 

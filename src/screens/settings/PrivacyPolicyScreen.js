@@ -37,6 +37,9 @@ export default function PrivacyPolicyScreen({ navigation }) {
               How we use your information: to operate the service (matching, bookings, messaging and payments), to keep the platform safe, to send you notifications you have enabled, and to improve the app. We do not sell your personal information.
             </Text>
             <Text style={styles.paragraph}>
+              Sitter recommendations automatically use star ratings linked to completed bookings to improve suggestions for the selected pet type and service. Review text and private care notes are not used by this learning model or sent to an external AI service. Recommendations do not guarantee compatibility or safety.
+            </Text>
+            <Text style={styles.paragraph}>
               Sharing: we share the minimum information needed to complete a booking (for example, a sitter sees the owner's name, pet details and, where relevant, address). Payment processing is handled by our payment provider. We may disclose information where required by law.
             </Text>
             <Text style={styles.paragraph}>
@@ -101,3 +104,4 @@ const styles = StyleSheet.create({
     lineHeight: 18.6,
   },
 });
+

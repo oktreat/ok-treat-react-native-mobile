@@ -33,7 +33,6 @@ export default function SearchResultsScreen({ navigation, route }) {
   const [statusModalConfig, setStatusModalConfig] = useState({});
   const [pets, setPets] = useState([]);
   const [feedbackState, setFeedbackState] = useState(null);
-  const [learnFromReviews, setLearnFromReviews] = useState(true);
   const [matchingBudget, setMatchingBudget] = useState(null);
   const [activePetIndex, setActivePetIndex] = useState(0);
   const rotationKey = useRef(Math.random().toString(36).slice(2));
@@ -65,13 +64,13 @@ export default function SearchResultsScreen({ navigation, route }) {
   useEffect(() => {
     let cancelled = false;
     setFeedbackState(null);
-    if (learnFromReviews && activePet?.id) {
+    if (activePet?.id) {
       getMatchingFeedback(activePet.id, serviceType.toUpperCase().replace(/ /g, '_'))
         .then(model => { if (!cancelled) setFeedbackState({ petId: activePet.id, serviceType, ownerId, model }); })
         .catch(() => {}); // An unavailable model leaves the ordinary ranking intact.
     }
     return () => { cancelled = true; };
-  }, [activePet?.id, serviceType, learnFromReviews, ownerId]);
+  }, [activePet?.id, serviceType, ownerId]);
 
   // (Search params include user location — not logged in production.)
 
@@ -138,14 +137,14 @@ export default function SearchResultsScreen({ navigation, route }) {
     if (!baseList || baseList.length === 0) return [];
     return rankSitters(baseList, {
       pet: activePet,
-      feedbackBySitter: learnFromReviews && feedbackState?.petId === activePet?.id && feedbackState?.serviceType === serviceType && feedbackState?.ownerId === ownerId ? feedbackState.model : {},
+      feedbackBySitter: feedbackState?.petId === activePet?.id && feedbackState?.serviceType === serviceType && feedbackState?.ownerId === ownerId ? feedbackState.model : {},
       userBudget: matchingBudget,
       user: { firstTimeUser: false },
       serviceType: enumServiceType,
       maxDistance: radiusKm,
       rotationKey: rotationKey.current,
     });
-  }, [sitters, filteredSitters, activePet, serviceType, radiusKm, feedbackState, learnFromReviews, matchingBudget, ownerId]);
+  }, [sitters, filteredSitters, activePet, serviceType, radiusKm, feedbackState, matchingBudget, ownerId]);
 
   const cyclePet = () => {
     if (pets.length <= 1) return;
@@ -404,15 +403,9 @@ export default function SearchResultsScreen({ navigation, route }) {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity accessibilityRole="switch" accessibilityState={{ checked: learnFromReviews }}
-          accessibilityLabel="Learn from completed-booking reviews"
-          onPress={() => setLearnFromReviews(value => !value)}
-          style={{ paddingHorizontal: 24, paddingVertical: 10, minHeight: 44 }}>
-          <Text style={{ color: '#14546B', fontSize: 12 }}>
-            Review-based learning: {learnFromReviews ? 'On' : 'Off'} · tap to change
-          </Text>
-          <Text style={{ color: '#486371', fontSize: 11 }}>Uses completed-booking ratings when enough feedback exists. Does not guarantee compatibility.</Text>
-        </TouchableOpacity>
+        <View style={{ paddingHorizontal: 24, paddingVertical: 8 }}>
+          <Text style={{ color: '#486371', fontSize: 11 }}>Recommendations automatically learn from completed-booking ratings when enough feedback exists. Compatibility is not guaranteed.</Text>
+        </View>
         {/* Loading State */}
         {loading && (
           <View style={styles.loadingContainer}>
