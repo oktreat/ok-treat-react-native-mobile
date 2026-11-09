@@ -4,7 +4,7 @@ import Icon from '@expo/vector-icons/Ionicons';
 import ClearTabBar from '../components/ClearTabBar';
 
 import HomeScreen from '../screens/main/HomeScreen';
-import BondingScreen from '../screens/community/BondingScreen';
+import BondingScreen from '../screens/community/PalsLiveScreen';
 import BookingsScreen from '../screens/main/BookingsScreen';
 import BookingDetailScreen from '../screens/main/BookingDetailScreen';
 import RebookScreen from '../screens/main/RebookScreen';

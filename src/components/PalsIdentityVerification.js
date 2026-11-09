@@ -14,7 +14,7 @@ export const stripeIdentityUrl = value => {
     return false;
   }
 };
-export default function PalsIdentityVerification() {
+export default function PalsIdentityVerification({liveRequired=false, mode=null}) {
   useCopyUpdates();
   const [status, setStatus] = useState('checking');
   const [busy, setBusy] = useState(false);
@@ -81,7 +81,8 @@ export default function PalsIdentityVerification() {
       if (mounted.current) setBusy(false);
     }
   };
-  const confirmed = status === 'verified';
+  const confirmed = status === 'verified' && (!liveRequired || mode === 'live');
+  const liveUnavailable = liveRequired && mode !== 'live';
   return <View style={{
     padding: 16,
     backgroundColor: '#EEF7FB',
@@ -96,8 +97,8 @@ export default function PalsIdentityVerification() {
     <Text accessibilityLiveRegion="polite" style={{
       color: '#365463',
       lineHeight: 21
-    }}>{status === 'checking' ? copy('Checking your existing identity verification…') : confirmed ? copy('Your existing identity check is confirmed by the server. You do not need to repeat it here.') : status === 'processing' ? copy('Your identity check is being reviewed.') : status === 'unavailable' ? copy('We could not confirm your identity status. Please check again.') : copy('Complete a government ID and selfie check on your phone through Stripe.')}</Text>
-    {!confirmed && <TouchableOpacity accessibilityRole="button" disabled={busy || status === 'checking'} onPress={status === 'processing' ? refresh : start} style={{
+    }}>{liveUnavailable ? copy('Live identity checks are not enabled yet. Invitations remain unavailable.') : status === 'checking' ? copy('Checking your existing identity verification…') : confirmed ? copy('Your existing identity check is confirmed by the server. You do not need to repeat it here.') : status === 'processing' ? copy('Your identity check is being reviewed.') : status === 'unavailable' ? copy('We could not confirm your identity status. Please check again.') : copy('Complete a government ID and selfie check on your phone through Stripe.')}</Text>
+    {!confirmed && <TouchableOpacity accessibilityRole="button" disabled={busy || status === 'checking' || liveUnavailable} onPress={status === 'processing' ? refresh : start} style={{
       minHeight: 48,
       padding: 14,
       borderRadius: 12,
@@ -118,6 +119,6 @@ export default function PalsIdentityVerification() {
       color: '#486371',
       fontSize: 13,
       lineHeight: 20
-    }}>{copy("Identity verification is separate from photo verification and is not a guarantee of safety. Pals invitations and real meetups are not enabled in this preview.")}</Text>
+    }}>{copy("Identity verification is separate from photo verification and is not a guarantee of safety. PALS invitations require both members to have live identity verification. Test verifications do not count.")}</Text>
   </View>;
 }
