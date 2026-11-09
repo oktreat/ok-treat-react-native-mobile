@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 const STORE = 'https://apps.apple.com/app/id6479255523';
-const release = '2.1.0';
+const release = '2.1.0-pals-profile-preview-2';
 const newer = (a, b) => {
   const left = a.split('.').map(Number), right = b.split('.').map(Number);
   for (let i = 0; i < Math.max(left.length, right.length); i++) {
@@ -42,8 +42,8 @@ export default function ReleaseNotice() {
   }, [key, !!user]);
   return <Modal visible={!!user && show} transparent animationType="fade" onRequestClose={() => { setShow(false); AsyncStorage.setItem(key, '1').catch(() => {}); }}><View style={{ flex: 1, justifyContent: 'center', padding: 28, backgroundColor: '#102A4377' }}><View style={{ backgroundColor: 'white', padding: 24, borderRadius: 22, gap: 16 }}><Text style={{ fontSize: 23, color: '#173342', fontWeight: '700' }}>What’s new</Text>{[
   'Find and offer pet care more easily from your refreshed home page.',
-  'Discover Pals: meet locals and share activities, at home or while travelling.',
+  'Try the Pals profile form and explore the sample discovery map.',
   'Enjoy a fresh TreatCoins look and gentle coin animations.',
 ].map(paragraph => <Text key={paragraph} style={{ color: '#365463', lineHeight: 24 }}>{paragraph}</Text>)}
-<Text style={{ color: '#486371', fontSize: 13, lineHeight: 20 }}>Pals is a preview with fictional profiles. Invitations and reports are not sent.</Text><TouchableOpacity accessibilityRole="button" onPress={() => { setShow(false); AsyncStorage.setItem(key, '1').catch(() => {}); }} style={{ backgroundColor: '#087EA4', padding: 15, borderRadius: 14 }}><Text style={{ color: 'white', textAlign: 'center', fontWeight: '700' }}>Let’s explore</Text></TouchableOpacity></View></View></Modal>;
+<Text style={{ color: '#486371', fontSize: 13, lineHeight: 20 }}>Pals is a preview with fictional members. Profile details stay on this phone. Invitations and reports are not sent.</Text><TouchableOpacity accessibilityRole="button" onPress={() => { setShow(false); AsyncStorage.setItem(key, '1').catch(() => {}); }} style={{ backgroundColor: '#087EA4', padding: 15, borderRadius: 14 }}><Text style={{ color: 'white', textAlign: 'center', fontWeight: '700' }}>Let’s explore</Text></TouchableOpacity></View></View></Modal>;
 }

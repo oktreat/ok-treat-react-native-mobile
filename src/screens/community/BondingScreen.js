@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import Icon from '@expo/vector-icons/Ionicons';
 import * as Location from 'expo-location';
 import ScreenWrapper from '../../components/ScreenWrapper';
+import PalsProfilePreview from '../../components/PalsProfilePreview';
 
 // A self-contained TestFlight prototype: no real people, location collection,
 // messages, verification claims or reports leave this screen.
@@ -52,13 +53,13 @@ export default function BondingScreen({ navigation }) {
     setSearching(true);
     try {
       const permission = await Location.requestForegroundPermissionsAsync();
-      if (permission.status !== 'granted') { Alert.alert('Location access unavailable', 'You can still browse the sample cities below.'); return; }
+      if (permission.status !== 'granted') { Alert.alert('Location access unavailable', 'You can still browse the default sample area. Location permission is optional.'); return; }
       const result = nearby ? (await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced })).coords : (await Location.geocodeAsync(search.trim()))[0];
       if (!result) { Alert.alert('Area not found', 'Try a city and country.'); return; }
       // Round to an approximate browsing area. Never persist or publish device coordinates.
       setArea({ latitude: Math.round(result.latitude * 100) / 100, longitude: Math.round(result.longitude * 100) / 100 });
       setCity(nearby ? 'Near me' : search.trim());
-    } catch { Alert.alert('Could not find this area', 'Try again or browse a sample city.'); }
+    } catch { Alert.alert('Could not find this area', 'Try again or keep browsing the default sample area.'); }
     finally { setSearching(false); }
   };
   const members = useMemo(() => PEOPLE.filter(p => !blocked.includes(p.id) && (activity === 'All' || p.interests.includes(activity)) && (role === 'Everyone' || p.role === role)), [activity, role, blocked]);
@@ -81,11 +82,12 @@ export default function BondingScreen({ navigation }) {
     <View style={s.header}><TouchableOpacity accessibilityRole="button" accessibilityLabel="Back" onPress={() => navigation.goBack()} style={s.back}><Icon name="chevron-back" size={26} color="#173342" /></TouchableOpacity><View style={{ flex: 1 }}><Text style={s.title}>Pals</Text><Text style={s.subtitle}>Good company. Anywhere.</Text></View><TouchableOpacity accessibilityRole="button" accessibilityLabel="Safety information" onPress={() => setPanel('safety')} style={s.back}><Icon name="shield-checkmark-outline" size={25} color="#087EA4" /></TouchableOpacity></View>
     <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
       <View style={s.notice}><Text style={s.noticeTitle}>TESTFLIGHT PREVIEW · SAMPLE PEOPLE</Text><Text style={s.small}>Explore the flow with fictional members. Requests, visibility and reports are simulations. Location is used only if you choose it, to centre your map. Sample people are fictional and changes reset when you leave.</Text></View>
+      <Button title="Join Pals / edit preview profile" onPress={() => setPanel('join')} />
       <Text style={s.label}>Explore an area</Text>
       <Button title={searching ? 'Finding area…' : 'Near me'} disabled={searching} onPress={() => findArea(true)} />
       <TextInput accessibilityLabel="Search city or area" value={search} onChangeText={setSearch} maxLength={100} placeholder="Search any city or area" placeholderTextColor="#647985" style={s.input} onSubmitEditing={() => findArea()} />
       <Button title="Explore this area" secondary disabled={searching || !search.trim()} onPress={() => findArea()} />
-      <Chips values={Object.keys(CITIES)} selected={city} onSelect={value => { setArea(null); setCity(value); }} />
+      <Text style={s.info}>Browsing: {city} · illustrative sample members</Text>
       <Chips values={['Anytime', 'Today', 'Tomorrow', 'Planning a trip']} selected={when} onSelect={setWhen} />
       {when === 'Planning a trip' && <Text style={s.info}>Browse before you travel. These sample results do not represent current members or availability.</Text>}
       <View style={s.visibility}><View style={{ flex: 1 }}><Text style={s.label}>Open to meeting</Text><Text style={s.small}>Preview switch only · hidden by default</Text></View><Switch accessibilityLabel="Preview availability" value={visible} onValueChange={setVisible} trackColor={{ false: '#CBD5DC', true: '#087EA4' }} /></View>
@@ -102,7 +104,8 @@ export default function BondingScreen({ navigation }) {
       <Button title={`Preview requests (${requests.length})`} secondary onPress={() => setPanel('requests')} />
       <View style={s.notice}><Text style={s.label}>With or without your pet</Text><Text style={s.body}>You can meet pet-loving locals while your own pet stays with a sitter. Your bookings and home details stay private.</Text></View>
     </ScrollView>
-    <Modal visible={!!panel} animationType="slide" onRequestClose={close} presentationStyle="pageSheet"><ScreenWrapper noBottomTabs><View style={s.header}><Text style={[s.section, { flex: 1 }]}>{panel === 'profile' ? 'Meet a member' : panel === 'create' ? 'Create a sample plan' : panel === 'requests' ? 'Preview requests' : 'Safety & privacy'}</Text><TouchableOpacity accessibilityRole="button" accessibilityLabel="Close" onPress={close} style={s.back}><Icon name="close" size={27} color="#173342" /></TouchableOpacity></View><ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+    <Modal visible={!!panel} animationType="slide" onRequestClose={close} presentationStyle="pageSheet"><ScreenWrapper noBottomTabs><View style={s.header}><Text style={[s.section, { flex: 1 }]}>{panel === 'join' ? 'Your Pals profile' : panel === 'profile' ? 'Meet a member' : panel === 'create' ? 'Create a sample plan' : panel === 'requests' ? 'Preview requests' : 'Safety & privacy'}</Text><TouchableOpacity accessibilityRole="button" accessibilityLabel="Close" onPress={close} style={s.back}><Icon name="close" size={27} color="#173342" /></TouchableOpacity></View><ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+      {panel === 'join' && <PalsProfilePreview onClose={close} />}
       {panel === 'profile' && selected && <><View style={[s.hero, { backgroundColor: selected.color }]}><Icon name="people-outline" size={64} color="#087EA4" /><Text style={s.title}>{selected.name}</Text><Text style={s.body}>Fictional {selected.role.toLowerCase()} · {city}</Text></View><Text style={s.info}>Sample profile — identity has not been checked</Text><Text style={s.body}>{selected.bio}</Text><Text style={s.label}>{selected.language}</Text><Text style={s.body}>{selected.pet}</Text><Text style={s.body}>Open to: {selected.interests.join(', ')}</Text><Text style={s.label}>Introduce yourself</Text><TextInput accessibilityLabel="Introduction" multiline maxLength={500} value={note} onChangeText={setNote} placeholder="A coffee and a walk would be lovely…" placeholderTextColor="#647985" style={[s.input, { minHeight: 100 }]} /><Button title={requests.some(r => r.id === selected.id) ? 'Sample request pending' : 'Try a connection request'} disabled={requests.some(r => r.id === selected.id)} onPress={request} /><Text style={s.small}>Real chat will require mutual acceptance. No message is sent in this preview.</Text><Button title="Block sample member" secondary onPress={() => { setBlocked(old => [...old, selected.id]); close(); }} /><Button title="Try reporting" secondary onPress={() => Alert.alert('Reporting preview', 'No report has been submitted. Live reporting and the admin moderation queue must be connected before launch.')} /></>}
       {panel === 'create' && <><Text style={s.body}>{city} · This plan is visible only in this preview session.</Text><Text style={s.label}>Activity</Text><TextInput accessibilityLabel="Activity title" maxLength={80} value={planTitle} onChangeText={setPlanTitle} placeholder="Coffee and a harbour walk" placeholderTextColor="#647985" style={s.input} /><Text style={s.label}>Public venue</Text><TextInput accessibilityLabel="Public venue" maxLength={120} value={venue} onChangeText={setVenue} placeholder="A café or public landmark—not a home address" placeholderTextColor="#647985" style={s.input} /><Text style={s.label}>Date and time</Text><TextInput accessibilityLabel="Date and time" maxLength={80} value={planTime} onChangeText={setPlanTime} placeholder="Saturday, 2 PM" placeholderTextColor="#647985" style={s.input} /><Button title="Save sample plan" disabled={!planTitle.trim() || !venue.trim() || !planTime.trim()} onPress={createPlan} /><Text style={s.info}>Each person pays their own costs. Bringing a pet should be agreed in advance.</Text></>}
       {panel === 'requests' && <>{requests.length === 0 && <Text style={s.body}>No sample requests yet. Open a member profile to try one.</Text>}{requests.map(r => <View key={r.id} style={s.card}><Text style={s.name}>{r.name} · Sample pending request</Text><Text style={s.body}>{r.city} · {r.when}</Text>{!!r.note && <Text style={s.body}>{r.note}</Text>}<Button title="Withdraw sample request" secondary onPress={() => setRequests(old => old.filter(x => x.id !== r.id))} /></View>)}</>}
