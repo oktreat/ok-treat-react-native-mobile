@@ -108,12 +108,12 @@ export default function SupportScreen({ route, navigation }) {
         {category === 'safety' && <Text style={styles.warning}>{copy("OkTreat Support is not an emergency service. For urgent pet injury or illness, contact a veterinarian immediately. For immediate danger to a person, contact local emergency services. OkTreat Support is not monitored continuously.")}</Text>}
         <Text style={styles.text}>{copy("Subject")}</Text><TextInput accessibilityLabel={copy("Support subject")} value={subject} onChangeText={setSubject} maxLength={120} placeholder={copy("What do you need help with?")} placeholderTextColor="#697888" style={styles.input} />
         <Text style={styles.text}>{copy("Details")}</Text><TextInput accessibilityLabel={copy("Support details")} value={message} onChangeText={setMessage} maxLength={5000} multiline textAlignVertical="top" placeholder={copy("Describe the issue and include a booking reference if relevant.")} placeholderTextColor="#697888" style={[styles.input, { minHeight: 150 }]} />
-        <Text style={styles.small}>{copy("Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.")}</Text>
+        <Text style={styles.small}>{copy("Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.")}</Text>
         <Action title={busy ? copy("Sending…") : copy("Send request")} disabled={busy || !subject.trim() || !message.trim()} onPress={submit} />
       </View>}
       {mode === 'thread' && <>
         {!thread ? <ActivityIndicator accessibilityLabel={copy("Loading support conversation")} color="#08779D" /> : <>
-          <Text style={styles.heading}>{thread.subject}</Text><Text style={styles.small}>{copy('Case #{{id}} · {{status}}', { id: thread.conversationId, status: copy(thread.status === 'resolved' ? 'Resolved' : 'Open') })}</Text>
+          <Text style={styles.heading}>{thread.subject}</Text><Text style={styles.small}>{copy('Case #{{id}} · {{status}}', { id: thread.conversationId || thread.id.slice(0, 8), status: copy(thread.status === 'resolved' ? 'Resolved' : 'Open') })}</Text>
           {!!cursor.current && <Action title={copy("Load older messages")} secondary onPress={() => load(true)} />}
           {thread.messages.map(m => <View key={m.id} style={[styles.bubble, !m.fromSupport && styles.mine]}><Text style={styles.small}>{m.fromSupport ? copy("OkTreat Support") : copy("You")}</Text><Text selectable style={styles.text}>{m.content}</Text>{m.attachments?.map(a => <TouchableOpacity key={a.id} accessibilityRole="link" onPress={() => Linking.openURL(a.url).catch(() => setError(copy("Could not open attachment.")))}><Text style={styles.link}>{copy("Open attachment")}</Text></TouchableOpacity>)}</View>)}
         </>}
