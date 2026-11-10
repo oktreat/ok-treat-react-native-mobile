@@ -9,7 +9,7 @@ function harness(params = {}, request = async () => ({ data: { data: [] } })) {
   const source = fs.readFileSync('src/screens/profile/SupportScreen.js', 'utf8').replace(/^import .*;\n/gm, '').replace('export default function', 'function');
   const transformed = babel.transformSync(source, { configFile: false, babelrc: false, plugins: ['@babel/plugin-transform-react-jsx'] }).code;
   const context = {
-    copy: text => text, useCopyUpdates() {},
+    copy: (text, values = {}) => text.replace(/\{\{(\w+)\}\}/g, (_, key) => values[key] ?? ''), useCopyUpdates() {},
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat(Infinity).filter(Boolean) }), Fragment: 'Fragment' },
     useState: initial => { const i = si++; if (!(i in states)) states[i] = initial; return [states[i], value => states[i] = typeof value === 'function' ? value(states[i]) : value]; },
     useRef: initial => { const i = ri++; return refs[i] ||= { current: initial }; },
@@ -66,3 +66,11 @@ test('push deep links load the case through the authenticated app API', async ()
   h.render(); h.focus(); await new Promise(resolve => setImmediate(resolve));
   assert.deepEqual(paths, ['/support/cases/my-case/messages']);
 });
+
+for (const [label, conversationId, expected] of [['internal', null, 'Case #internal · Open'], ['legacy Chatwoot', 12, 'Case #12 · Open']]) {
+  test(label + ' support threads display a usable case reference', async () => {
+    const h = harness({ supportCaseId: 'internal-case-123' }, async () => ({ data: { data: { id: 'internal-case-123', conversationId, subject: 'Help', status: 'open', messages: [] } } }));
+    h.render(); h.focus(); await new Promise(resolve => setImmediate(resolve));
+    assert.ok(h.find(n => n.type === 'Text' && n.children.includes(expected)));
+  });
+}
