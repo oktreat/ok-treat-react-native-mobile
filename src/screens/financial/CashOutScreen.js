@@ -118,7 +118,7 @@ export default function CashOutScreen({ navigation }) {
     try {
       await createWithdrawal({ amountCoins: coins, documents: docs });
       setAmount(''); setDocs({}); setTouched(false);
-      alert(copy("Request submitted"), settings?.processingText || copy("Your withdrawal is under review."), 'success', 'OK', load);
+      alert(copy("Request submitted"), copy(settings?.processingText) || copy("Your withdrawal is under review."), 'success', copy('OK'), load);
     } catch (e) {
       alert(copy("Could not submit"), e?.response?.data?.message || copy("Please try again."), 'error');
     } finally { setBusy(false); }
@@ -128,7 +128,7 @@ export default function CashOutScreen({ navigation }) {
     setBusy(true);
     try {
       const res = await proceedWithdrawal(id);
-      alert(copy("Payout sent!"), res?.message || copy("Your payout is on its way."), 'success', 'OK', load);
+      alert(copy("Payout sent!"), res?.message || copy("Your payout is on its way."), 'success', copy('OK'), load);
     } catch (e) {
       alert(copy("Payout failed"), e?.response?.data?.message || copy("Please try again."), 'error');
     } finally { setBusy(false); }

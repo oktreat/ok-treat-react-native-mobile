@@ -50,7 +50,7 @@ export default function SettingsScreen({ navigation }) {
               await clearPushTokenOnServer().catch(() => {});
               dispatch(logout());
             } catch (e) {
-              Alert.alert(copy("Error"), e?.response?.data?.message || 'Failed to delete account. Please try again.');
+              Alert.alert(copy("Error"), e?.response?.data?.message || copy('Failed to delete account. Please try again.'));
             }
           },
         },

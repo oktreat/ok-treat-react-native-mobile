@@ -12,10 +12,11 @@ const paths = [
   'src/screens/settings/SettingsScreen.js','src/screens/settings/BlockedUsersScreen.js','src/screens/notifications/NotificationsScreen.js',
   'src/screens/financial/CashOutScreen.js','src/screens/financial/PaymentMethodsScreen.js','src/screens/financial/TransactionHistoryScreen.js',
   'src/screens/main/InviteFriendsScreen.js','src/screens/scans/ScansScreen.js','src/screens/scans/ScanMapDetailScreen.js',
-  'src/screens/services/OpenRequestsScreen.js','src/screens/sitter/home/SitterProfileScreen.js','src/components/ImagePickerButton.js','src/utils/localizedDisplay.js'
+  'src/screens/services/OpenRequestsScreen.js','src/screens/sitter/home/SitterProfileScreen.js','src/components/ImagePickerButton.js','src/utils/localizedDisplay.js','src/screens/profile/SupportScreen.js'
 ];
-test('audited More screens cover fixed Japanese copy and preserve every interpolation token',()=>{
-  const verify=key=>{assert.ok(ja[key], 'Missing Japanese: '+key);assert.deepEqual((key.match(/\{\{\w+\}\}/g)||[]).sort(),(ja[key].match(/\{\{\w+\}\}/g)||[]).sort(),key);};
+for (const lang of ['ja','fr','de','zh']) test('audited More screens cover fixed '+lang+' copy and preserve every interpolation token',()=>{
+  const dictionary=JSON.parse(fs.readFileSync('src/i18n/locales/copy-'+lang+'.json','utf8'));
+  const verify=key=>{assert.ok(dictionary[key], 'Missing '+lang+': '+key);assert.deepEqual((key.match(/\{\{\w+\}\}/g)||[]).sort(),(dictionary[key].match(/\{\{\w+\}\}/g)||[]).sort(),key);};
   for(const file of paths){const ast=parser.parse(fs.readFileSync(file,'utf8'),{sourceType:'module',plugins:['jsx']});traverse(ast,{
     CallExpression(p){if(p.node.callee.name==='copy'&&p.node.arguments[0]?.type==='StringLiteral')verify(p.node.arguments[0].value);},
     ObjectProperty(p){if(['title','label','description'].includes(p.node.key.name)&&p.node.value.type==='StringLiteral')verify(p.node.value.value);}
@@ -61,16 +62,18 @@ test('Japanese preference labels save the original backend keys and roll back on
   assert.equal(h.nodes(h.render(props)).find(n=>n.props.accessibilityLabel==='メッセージ').props.value,false);
   language='fr';assert.ok(h.text(h.render(props)).includes('Préférences de notification'));assert.equal(prefs.messages,false);
 });
-test('translated dropdown labels retain raw gender and transaction-filter values',()=>{
+for(const lang of ['ja','fr','de','zh']) test(lang+' dropdown labels retain raw gender and transaction-filter values',()=>{
+  const dict=JSON.parse(fs.readFileSync('src/i18n/locales/copy-'+lang+'.json'));
+  const translate=key=>dict[key]||key;
   const selected=[];function Value(v){this.current=v}
   const h=renderHarness('src/components/Dropdown.js','Dropdown',{
     screenHeight:844,Dimensions:{get:()=>({height:844})},Animated:{Value,spring:()=>({start(){}}),timing:()=>({start:f=>f?.()}),View:'AnimatedView'}
   });
-  const props={value:'Male',placeholder:'性別',options:['Male','Female','Other'],formatLabel:interpolate,onSelect:x=>selected.push(x)};
-  let tree=h.render(props);assert.ok(h.text(tree).includes('男性'));assert.ok(h.text(tree).includes('女性'));
-  h.nodes(tree).find(n=>n.type==='TouchableOpacity'&&h.text(n)==='女性').props.onPress();assert.equal(selected[0],'Female');
+  const props={value:'Male',placeholder:'性別',options:['Male','Female','Other'],formatLabel:translate,onSelect:x=>selected.push(x)};
+  let tree=h.render(props);assert.ok(h.text(tree).includes(translate('Male')));assert.ok(h.text(tree).includes(translate('Female')));
+  h.nodes(tree).find(n=>n.type==='TouchableOpacity'&&h.text(n)===translate('Female')).props.onPress();assert.equal(selected[0],'Female');
   tree=h.render({...props,value:'This Month',options:['This Month','This Week']});
-  assert.ok(h.text(tree).includes('今月'));h.nodes(tree).find(n=>n.type==='TouchableOpacity'&&h.text(n)==='今週').props.onPress();assert.equal(selected[1],'This Week');
+  assert.ok(h.text(tree).includes(translate('This Month')));h.nodes(tree).find(n=>n.type==='TouchableOpacity'&&h.text(n)===translate('This Week')).props.onPress();assert.equal(selected[1],'This Week');
 });
 test('Japanese relative dates preserve counts and never translate member names or codes',()=>{
   const context={i18n:{language:'ja'},copy:interpolate,Date};
@@ -82,4 +85,17 @@ test('Japanese relative dates preserve counts and never translate member names o
   assert.equal(context.f.displayLocale(),'ja');
   assert.ok(interpolate('Use my referral code {{code}}.',{code:'9WN18S5F'}).includes('9WN18S5F'));
   assert.ok(interpolate('{{name}} Scanned',{name:'Toto <pet>'}).includes('Toto <pet>'));
+});
+
+test('each More display enum is translated without changing its stored value',()=>{
+  const keys=['Male','Female','Other','This Week','This Month','Last 3 Months','Last 6 Months','This Year','Earning','Pending Earnings','Withdrawals','Payments','PURCHASE','EARN','SPEND','REFUND','HOLD','ADJUST','BONUS','CASHOUT','CASHOUT_FEE','COMPLETED','PENDING','CONFIRMED','PROCESSING','FAILED','REJECTED','APPROVED','Booking','TreatCoins / payment','Account','App problem','Safety concern','Open','Resolved'];
+  for(const lang of ['ja','fr','de','zh']) {
+    const dict=JSON.parse(fs.readFileSync('src/i18n/locales/copy-'+lang+'.json'));
+    for(const key of keys)assert.ok(dict[key],lang+': '+key);
+  }
+});
+test('Chinese copy namespace is registered alongside existing Chinese resources',()=>{
+  const source=fs.readFileSync('src/i18n/index.js','utf8');
+  assert.match(source,/import copyZh from '.\/locales\/copy-zh.json'/);
+  assert.match(source,/zh: \{ translation: zh, copy: copyZh \}/);
 });
