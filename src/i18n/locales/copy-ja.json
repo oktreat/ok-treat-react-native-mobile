@@ -525,5 +525,10 @@
   "Previous page": "前のページ",
   "Next page": "次のページ",
   "Add up to 5 recent photos of yourself.": "最近のご自身の写真を5枚まで追加できます。",
-  "Save your profile to add photos.": "写真を追加するには、プロフィールを保存してください。"
+  "Save your profile to add photos.": "写真を追加するには、プロフィールを保存してください。",
+  "Choose photos, then save your PALS profile to upload them.": "写真を選んでからPALSプロフィールを保存すると、写真がアップロードされます。",
+  "Selected · not saved yet": "選択済み・未保存",
+  "Choose at least one personal photo before publishing.": "公開する前に、ご自身の写真を1枚以上選んでください。",
+  "You can add up to 5 photos.": "写真は5枚まで追加できます。",
+  "Your PALS profile is private. Choose photos and save your profile. Turn on Show my profile when you are ready to publish.": "PALSプロフィールは非公開です。写真を選んでプロフィールを保存し、公開の準備ができたら「プロフィールを公開」をオンにしてください。"
 }

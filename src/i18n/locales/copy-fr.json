@@ -525,5 +525,10 @@
   "Previous page": "Page précédente",
   "Next page": "Page suivante",
   "Add up to 5 recent photos of yourself.": "Ajoutez jusqu’à 5 photos récentes de vous.",
-  "Save your profile to add photos.": "Enregistrez votre profil pour ajouter des photos."
+  "Save your profile to add photos.": "Enregistrez votre profil pour ajouter des photos.",
+  "Choose photos, then save your PALS profile to upload them.": "Choisissez des photos, puis enregistrez votre profil PALS pour les envoyer.",
+  "Selected · not saved yet": "Sélectionnée · pas encore enregistrée",
+  "Choose at least one personal photo before publishing.": "Choisissez au moins une photo personnelle avant de publier.",
+  "You can add up to 5 photos.": "Vous pouvez ajouter jusqu’à 5 photos.",
+  "Your PALS profile is private. Choose photos and save your profile. Turn on Show my profile when you are ready to publish.": "Votre profil PALS est privé. Choisissez vos photos et enregistrez votre profil. Activez Afficher mon profil lorsque vous souhaitez le publier."
 }
