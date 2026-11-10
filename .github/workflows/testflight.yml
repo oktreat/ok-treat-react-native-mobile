@@ -92,3 +92,5 @@ jobs:
 
 # Real PALS stages 1-3: compile and sign with the existing release credentials.
 # TestFlight upload only; this does not submit the app for App Store review.
+
+# PALS photo previews appear before the profile Save action.

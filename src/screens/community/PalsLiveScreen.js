@@ -55,9 +55,10 @@ export default function PalsLiveScreen({navigation}) {
  {toggle('I am 18 or older',form.adult,v=>patch('adult',v))}{toggle('I am single',form.single,v=>patch('single',v))}{toggle('I agree to the PALS community rules',form.rules,v=>patch('rules',v))}
  <Text style={s.body}>{copy('Be respectful. No harassment or requests for money. Meet in public places. Share only information you want other members to see. Rules version: 2026-11-10.')}</Text>
  {toggle('Show my profile',form.visible,v=>patch('visible',v))}
- {button('Save PALS profile',()=>run(saveProfile),!form.adult||!form.single||!form.rules)}
+
  <View style={s.card}><Text style={s.heading}>{copy('Your photos')} · {(me.profile?.photos.length||0)+pendingPhotos.length}/5</Text><Text style={s.body}>{copy('Add up to 5 recent photos of yourself.')}</Text><Text style={s.notice}>{copy('Choose photos, then save your PALS profile to upload them.')}</Text><View style={s.row}>{(me.profile?.photos||[]).map((p,i)=><TouchableOpacity key={p.id} onPress={()=>photoActions(p)} accessibilityLabel={copy(i?'PALS photo':'Main photo')}><Image source={{uri:p.image}} style={s.photo}/><Text>{i?'':copy('Main photo')}</Text></TouchableOpacity>)}{pendingPhotos.map(p=><View key={p.id}><Image source={{uri:p.thumbnail}} style={s.photo}/><Text>{copy('Selected · not saved yet')}</Text>{button('Remove photo',()=>setPendingPhotos(old=>old.filter(photo=>photo.id!==p.id)),false,true)}</View>)}</View>{button('Add personal photo',upload,(me.profile?.photos.length||0)+pendingPhotos.length>=5,true)}<Text style={s.body}>{copy('Choose recent photos of yourself. Gallery photos are not matched against your identity selfie.')}</Text>
  </View>
+ {button('Save PALS profile',()=>run(saveProfile),!form.adult||!form.single||!form.rules)}
  {me.profile&&<><PalsIdentityVerification liveRequired mode={me.identityMode}/>
  {button('Hide profile now',()=>run(async()=>{await palsRequest('profile/hide',{});await refresh()}),false,true)}
  {button('Delete PALS profile',()=>confirm('Delete PALS profile?','This removes your PALS photos, travel plans, invitations and PALS conversations. Your OkTreat pet-care account stays.',async()=>{await palsRequest('profile/delete',{});setInvitations([]);setMembers([]);await refresh()}),false,true)}</>}
