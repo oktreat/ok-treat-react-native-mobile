@@ -7,7 +7,7 @@ function harness(params = {}, request = async () => ({ data: { data: [] } })) {
   let si = 0, ri = 0, focus;
   const states = [], refs = [], navigations = [];
   const source = fs.readFileSync('src/screens/profile/SupportScreen.js', 'utf8').replace(/^import .*;\n/gm, '').replace('export default function', 'function');
-  const transformed = babel.transformSync(source, { configFile: false, babelrc: false, plugins: ['@babel/plugin-transform-react-jsx'] }).code;
+  const transformed = babel.transformSync(source, { configFile: false, babelrc: false, plugins: [['@babel/plugin-transform-react-jsx', { runtime: 'classic' }]] }).code;
   const context = {
     copy: (text, values = {}) => text.replace(/\{\{(\w+)\}\}/g, (_, key) => values[key] ?? ''), useCopyUpdates() {},
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat(Infinity).filter(Boolean) }), Fragment: 'Fragment' },
