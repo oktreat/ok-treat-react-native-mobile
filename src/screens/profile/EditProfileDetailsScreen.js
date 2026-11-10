@@ -237,7 +237,7 @@ export default function EditProfileDetailsScreen({ navigation }) {
       // Update AsyncStorage
       await AsyncStorage.setItem('user', JSON.stringify(data.data.user));
 
-      alert(copy("Success"), copy("Profile updated successfully!"), 'success', 'OK', () => navigation.goBack());
+      alert(copy("Success"), copy("Profile updated successfully!"), 'success', copy('OK'), () => navigation.goBack());
     } catch (error) {
       console.error('Save profile error:', error);
       alert(copy("Error"), error.message || copy("Failed to update profile. Please try again."), 'error');
