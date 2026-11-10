@@ -97,7 +97,6 @@
   "You can manage your pets": "You can manage your pets",
   "You can manage your preferences": "You can manage your preferences",
   "Your Pets": "Your Pets",
-  "Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.": "Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.",
   "Your requests will appear here.": "Your requests will appear here.",
   "Your sitter application is currently under review. We'll notify you once it's been processed.": "Your sitter application is currently under review. We'll notify you once it's been processed.",
   "Your sitter marked this complete — confirm to release their TreatCoins.": "Your sitter marked this complete — confirm to release their TreatCoins.",
@@ -454,5 +453,6 @@
   "Change verification method": "Change verification method",
   "Sending...": "Sending...",
   "Resend Code": "Resend Code",
-  "Resend code in": "Resend code in"
+  "Resend code in": "Resend code in",
+  "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.": "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details."
 }

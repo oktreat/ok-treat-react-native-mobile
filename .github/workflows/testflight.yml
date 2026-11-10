@@ -94,3 +94,5 @@ jobs:
 # TestFlight upload only; this does not submit the app for App Store review.
 
 # PALS photo previews appear before the profile Save action.
+
+# Native information/support release: align English support dictionaries before upload.
