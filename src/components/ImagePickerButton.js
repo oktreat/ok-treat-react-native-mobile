@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../i18n/copy';
 import { useState } from 'react';
 import { TouchableOpacity, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,6 +23,7 @@ export default function ImagePickerButton({
   quality = 0.8,
   aspect = [4, 3],
 }) {
+  useCopyUpdates();
   const [loading, setLoading] = useState(false);
 
   const pickImage = async (useCamera = false) => {
@@ -36,8 +38,8 @@ export default function ImagePickerButton({
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
         if (!permissionResult.granted) {
           Alert.alert(
-            'Permission Required',
-            'Please allow access to your camera to take a photo.'
+            copy("Permission Required"),
+            copy("Please allow access to your camera to take a photo.")
           );
           return;
         }
@@ -63,7 +65,7 @@ export default function ImagePickerButton({
       }
     } catch (error) {
       console.error('Image picker error:', error);
-      Alert.alert('Error', 'Failed to pick image. Please try again.');
+      Alert.alert(copy("Error"), copy("Failed to pick image. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -71,19 +73,19 @@ export default function ImagePickerButton({
 
   const showOptions = () => {
     Alert.alert(
-      'Upload Photo',
-      'Choose an option',
+      copy("Upload Photo"),
+      copy("Choose an option"),
       [
         {
-          text: 'Take Photo',
+          text: copy("Take Photo"),
           onPress: () => pickImage(true),
         },
         {
-          text: 'Choose from Library',
+          text: copy("Choose from Library"),
           onPress: () => pickImage(false),
         },
         {
-          text: 'Cancel',
+          text: copy("Cancel"),
           style: 'cancel',
         },
       ],
@@ -101,3 +103,4 @@ export default function ImagePickerButton({
     </TouchableOpacity>
   );
 }
+

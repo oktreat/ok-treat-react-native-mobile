@@ -1,3 +1,5 @@
+import { displayLocale } from '../../utils/localizedDisplay';
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, ActivityIndicator, Modal } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -27,6 +29,7 @@ const TAB_FOR_TYPE = {
 };
 
 export default function PaymentMethodsScreen({ navigation }) {
+  useCopyUpdates();
   const wallet = useWallet();
   const user = useSelector(state => state.auth.user);
   const [earnedCelebration, setEarnedCelebration] = useState(null);
@@ -85,9 +88,9 @@ export default function PaymentMethodsScreen({ navigation }) {
           id: rawId,
           displayId,
           date: tx.createdAt
-            ? new Date(tx.createdAt).toLocaleDateString('en-US') +
+            ? new Date(tx.createdAt).toLocaleDateString(displayLocale()) +
               ' @ ' +
-              new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              new Date(tx.createdAt).toLocaleTimeString(displayLocale(), { hour: '2-digit', minute: '2-digit' })
             : '',
           type: tx.description || tx.type || 'Transaction',
           source: tx.source || 'PURCHASED',
@@ -107,7 +110,7 @@ export default function PaymentMethodsScreen({ navigation }) {
         ) {
           buckets['Pending Earnings'].push({
             ...formatted,
-            status: 'Cashable ' + new Date(tx.cashableAt).toLocaleDateString('en-US'),
+            status: 'Cashable ' + new Date(tx.cashableAt).toLocaleDateString(displayLocale()),
             statusColor: '#F59E0B',
           });
           return;
@@ -146,14 +149,14 @@ export default function PaymentMethodsScreen({ navigation }) {
       <ScreenWrapper noBottomTabs>
         <Modal visible={earnedCelebration !== null} transparent animationType="fade" onRequestClose={() => setEarnedCelebration(null)}><View style={{ flex: 1, justifyContent: 'center', padding: 28, backgroundColor: '#102A4377' }}><View style={{ backgroundColor: 'white', padding: 24, borderRadius: 22, gap: 16 }}>
         {earnedCelebration !== null && <TreatCoinMotion celebration />}
-        <Text style={{ color: '#173342', fontWeight: '700', fontSize: 23, textAlign: 'center' }}>TreatCoins earned!</Text><Text style={{ color: '#278B48', fontWeight: '700', fontSize: 25, textAlign: 'center' }}>+{Number(earnedCelebration).toLocaleString()} TreatCoins</Text><TouchableOpacity accessibilityRole="button" onPress={() => setEarnedCelebration(null)} style={{ padding: 15, backgroundColor: '#087EA4', borderRadius: 14 }}><Text style={{ color: 'white', textAlign: 'center' }}>Done</Text></TouchableOpacity>
+        <Text style={{ color: '#173342', fontWeight: '700', fontSize: 23, textAlign: 'center' }}>{copy("TreatCoins earned!")}</Text><Text style={{ color: '#278B48', fontWeight: '700', fontSize: 25, textAlign: 'center' }}>+{Number(earnedCelebration).toLocaleString()} TreatCoins</Text><TouchableOpacity accessibilityRole="button" onPress={() => setEarnedCelebration(null)} style={{ padding: 15, backgroundColor: '#087EA4', borderRadius: 14 }}><Text style={{ color: 'white', textAlign: 'center' }}>{copy("Done")}</Text></TouchableOpacity>
       </View></View></Modal>
       <View style={styles.container}>
           <View style={styles.header}>
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
               <BackArrowIcon width={20} height={20} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Wallet</Text>
+            <Text style={styles.headerTitle}>{copy("Wallet")}</Text>
             <View style={styles.placeholder} />
           </View>
           <View style={styles.loadingContainer}>
@@ -172,7 +175,7 @@ export default function PaymentMethodsScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Wallet</Text>
+          <Text style={styles.headerTitle}>{copy("Wallet")}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -183,10 +186,9 @@ export default function PaymentMethodsScreen({ navigation }) {
             {/* Wallet — total balance */}
             <View style={styles.infoCard}>
               <View style={styles.infoLeft}>
-                <Text style={styles.infoTitle}>Wallet</Text>
+                <Text style={styles.infoTitle}>{copy("Wallet")}</Text>
                 <Text style={styles.promoText}>
-                  {wallet.purchasedCoinBalance.toLocaleString()} purchased + {wallet.earnedCoinBalance.toLocaleString()} earned
-                </Text>
+                  {wallet.purchasedCoinBalance.toLocaleString()}{" " + copy("purchased +") + " "}{wallet.earnedCoinBalance.toLocaleString()}{" " + copy("earned")}</Text>
               </View>
               <View style={styles.coinsDisplay}>
                 <CoinIcon width={18} height={18} />
@@ -198,8 +200,8 @@ export default function PaymentMethodsScreen({ navigation }) {
             {isSitter && (
               <View style={styles.infoCard}>
                 <View style={styles.infoLeft}>
-                  <Text style={styles.infoTitle}>Upcoming Earnings</Text>
-                  <Text style={styles.promoText}>In 30-day hold before cash-out</Text>
+                  <Text style={styles.infoTitle}>{copy("Upcoming Earnings")}</Text>
+                  <Text style={styles.promoText}>{copy("In 30-day hold before cash-out")}</Text>
                 </View>
                 <View style={styles.coinsDisplay}>
                   <CoinIcon width={18} height={18} />
@@ -211,11 +213,11 @@ export default function PaymentMethodsScreen({ navigation }) {
             {/* Processing Payments — role-dependent meaning. */}
             <View style={styles.infoCard}>
               <View style={styles.infoLeft}>
-                <Text style={styles.infoTitle}>Processing Payments</Text>
+                <Text style={styles.infoTitle}>{copy("Processing Payments")}</Text>
                 <Text style={styles.promoText}>
                   {isSitter
-                    ? 'TreatCoins arriving from CONFIRMED bookings'
-                    : 'TreatCoins held for your active bookings'}
+                    ? copy("TreatCoins arriving from CONFIRMED bookings")
+                    : copy("TreatCoins held for your active bookings")}
                 </Text>
               </View>
               <View style={styles.coinsDisplay}>
@@ -226,7 +228,7 @@ export default function PaymentMethodsScreen({ navigation }) {
 
             {/* Cash Out — Phase 2. Shows the coming-soon dialog for now. */}
             <Button
-              title="Cash Out"
+              title={copy("Cash Out")}
               onPress={() => navigation.navigate('CashOut')}
               fullWidth
               size="medium"
@@ -255,7 +257,7 @@ export default function PaymentMethodsScreen({ navigation }) {
                     styles.tabText,
                     selectedTab === tab && styles.tabTextActive
                   ]}>
-                    {tab}
+                    {copy(tab)}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -268,14 +270,12 @@ export default function PaymentMethodsScreen({ navigation }) {
             // not live yet. Show a coming-soon CTA instead of an empty list
             // so the user understands why it's empty.
             <View style={styles.withdrawalsEmpty}>
-              <Text style={styles.emptyText}>
-                Withdrawals will be available once cash-out launches.
-              </Text>
+              <Text style={styles.emptyText}>{copy("Withdrawals will be available once cash-out launches.")}</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('CashOut')}
                 style={styles.learnMoreBtn}
               >
-                <Text style={styles.learnMoreText}>Learn more</Text>
+                <Text style={styles.learnMoreText}>{copy("Learn more")}</Text>
               </TouchableOpacity>
             </View>
           ) : tabData[selectedTab] && tabData[selectedTab].length > 0 ? (
@@ -301,10 +301,10 @@ export default function PaymentMethodsScreen({ navigation }) {
                       </View>
                       <View style={styles.transactionInfo}>
                         <Text style={styles.transactionType} numberOfLines={1}>
-                          {transaction.type}
+                          {copy(transaction.type)}
                         </Text>
                         <Text style={styles.transactionPhone} numberOfLines={1}>
-                          {transaction.source === 'EARNED' ? 'Earned TreatCoins' : 'Purchased TreatCoins'}
+                          {transaction.source === 'EARNED' ? copy("Earned TreatCoins") : copy("Purchased TreatCoins")}
                         </Text>
                       </View>
                     </View>
@@ -321,7 +321,7 @@ export default function PaymentMethodsScreen({ navigation }) {
                         styles.statusBadge,
                         { backgroundColor: transaction.statusColor }
                       ]}>
-                        <Text style={styles.statusText}>{transaction.status}</Text>
+                        <Text style={styles.statusText}>{transaction.status.startsWith('Cashable ') ? copy('Cashable {{date}}', { date: new Date(transaction.cashableAt).toLocaleDateString(displayLocale()) }) : copy(transaction.status)}</Text>
                       </View>
                     </View>
                   </View>
@@ -331,12 +331,12 @@ export default function PaymentMethodsScreen({ navigation }) {
           ) : (
             <Text style={styles.emptyText}>
               {selectedTab === 'Earning'
-                ? 'No earning activity yet. TreatCoin purchases and refunds will show up here.'
+                ? copy("No earning activity yet. TreatCoin purchases and refunds will show up here.")
                 : selectedTab === 'Pending Earnings'
-                ? "Sitters earn TreatCoins on completed bookings, held 30 days before becoming cashable. You'll see pending earnings here once you complete a booking as a sitter."
+                ? copy("Sitters earn TreatCoins on completed bookings, held 30 days before becoming cashable. You'll see pending earnings here once you complete a booking as a sitter.")
                 : selectedTab === 'Payments'
-                ? "No payments yet. When you book a service, the TreatCoins spent will appear here."
-                : 'No transactions in this tab yet.'}
+                ? copy("No payments yet. When you book a service, the TreatCoins spent will appear here.")
+                : copy("No transactions in this tab yet.")}
             </Text>
           )}
         </ScrollView>
@@ -636,4 +636,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 

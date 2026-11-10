@@ -1,3 +1,5 @@
+import { displayLocale } from '../../utils/localizedDisplay';
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Image,
@@ -36,6 +38,7 @@ const STATUS_META = {
 };
 
 export default function CashOutScreen({ navigation }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   const [cfg, setCfg] = useState(null);
   const [history, setHistory] = useState([]);
@@ -53,7 +56,7 @@ export default function CashOutScreen({ navigation }) {
       setCfg(c);
       setHistory(h);
     } catch (e) {
-      alert('Error', 'Could not load cash-out. Please try again.', 'error');
+      alert(copy("Error"), copy("Could not load cash-out. Please try again."), 'error');
     } finally {
       setLoading(false);
     }
@@ -74,10 +77,10 @@ export default function CashOutScreen({ navigation }) {
 
   // ---- strong, explicit validation ----
   let amountError = '';
-  if (amount && !Number.isFinite(coins)) amountError = 'Enter a whole number of TreatCoins.';
-  else if (coins > 0 && coins > cashable) amountError = `You only have ${cashable} TreatCoins available.`;
-  else if (coins > 0 && bd && bd.grossCents < settings.minWithdrawalCents) amountError = `Minimum withdrawal is ${money(settings.minWithdrawalCents)} (${minCoins} TreatCoins).`;
-  else if (coins > 0 && bd && bd.netCents <= 0) amountError = 'Amount is too low after fees.';
+  if (amount && !Number.isFinite(coins)) amountError = copy("Enter a whole number of TreatCoins.");
+  else if (coins > 0 && coins > cashable) amountError = copy("You only have {{value0}} TreatCoins available.", {value0: cashable});
+  else if (coins > 0 && bd && bd.grossCents < settings.minWithdrawalCents) amountError = copy("Minimum withdrawal is {{value0}} ({{value1}} TreatCoins).", {value0: money(settings.minWithdrawalCents), value1: minCoins});
+  else if (coins > 0 && bd && bd.netCents <= 0) amountError = copy("Amount is too low after fees.");
 
   const amountValid = coins > 0 && !amountError;
   const canSubmit = amountValid && docsComplete && !busy;
@@ -89,9 +92,9 @@ export default function CashOutScreen({ navigation }) {
       setUploading((u) => ({ ...u, [slot]: true }));
       const up = await uploadToCloudinary(res.assets[0].uri, CLOUDINARY_FOLDERS.USERS);
       if (up?.url) setDocs((d) => ({ ...d, [slot]: up.url }));
-      else alert('Upload failed', 'Could not upload that image. Try again.', 'error');
+      else alert(copy("Upload failed"), copy("Could not upload that image. Try again."), 'error');
     } catch (e) {
-      alert('Upload failed', 'Could not upload that image. Try again.', 'error');
+      alert(copy("Upload failed"), copy("Could not upload that image. Try again."), 'error');
     } finally {
       setUploading((u) => ({ ...u, [slot]: false }));
     }
@@ -103,21 +106,21 @@ export default function CashOutScreen({ navigation }) {
       const url = await startConnectOnboarding();
       if (url) { await WebBrowser.openBrowserAsync(url); await load(); }
     } catch (e) {
-      alert('Error', 'Could not start payout setup.', 'error');
+      alert(copy("Error"), copy("Could not start payout setup."), 'error');
     } finally { setBusy(false); }
   };
 
   const handleSubmit = async () => {
     setTouched(true);
-    if (!amountValid) { alert('Check the amount', amountError || 'Enter an amount to withdraw.', 'pending'); return; }
-    if (!docsComplete) { alert('Documents required', `Please upload all ${slots.length} documents.`, 'pending'); return; }
+    if (!amountValid) { alert(copy("Check the amount"), amountError || copy("Enter an amount to withdraw."), 'pending'); return; }
+    if (!docsComplete) { alert(copy("Documents required"), copy("Please upload all {{value0}} documents.", {value0: slots.length}), 'pending'); return; }
     setBusy(true);
     try {
       await createWithdrawal({ amountCoins: coins, documents: docs });
       setAmount(''); setDocs({}); setTouched(false);
-      alert('Request submitted', settings?.processingText || 'Your withdrawal is under review.', 'success', 'OK', load);
+      alert(copy("Request submitted"), settings?.processingText || copy("Your withdrawal is under review."), 'success', 'OK', load);
     } catch (e) {
-      alert('Could not submit', e?.response?.data?.message || 'Please try again.', 'error');
+      alert(copy("Could not submit"), e?.response?.data?.message || copy("Please try again."), 'error');
     } finally { setBusy(false); }
   };
 
@@ -125,9 +128,9 @@ export default function CashOutScreen({ navigation }) {
     setBusy(true);
     try {
       const res = await proceedWithdrawal(id);
-      alert('Payout sent!', res?.message || 'Your payout is on its way.', 'success', 'OK', load);
+      alert(copy("Payout sent!"), res?.message || copy("Your payout is on its way."), 'success', 'OK', load);
     } catch (e) {
-      alert('Payout failed', e?.response?.data?.message || 'Please try again.', 'error');
+      alert(copy("Payout failed"), e?.response?.data?.message || copy("Please try again."), 'error');
     } finally { setBusy(false); }
   };
 
@@ -136,7 +139,7 @@ export default function CashOutScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <BackArrowIcon width={20} height={20} />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>Cash Out</Text>
+      <Text style={styles.headerTitle}>{copy("Cash Out")}</Text>
       <View style={styles.backButton} />
     </View>
   );
@@ -145,7 +148,7 @@ export default function CashOutScreen({ navigation }) {
     return <ScreenWrapper noBottomTabs><View style={styles.container}><Header /><View style={styles.center}><ActivityIndicator size="large" color="#32A6D8" /></View></View></ScreenWrapper>;
   }
   if (!settings?.enabled) {
-    return <ScreenWrapper noBottomTabs><View style={styles.container}><Header /><View style={styles.center}><Icon name="lock-closed-outline" size={40} color="#CBD5E0" /><Text style={styles.muted}>Cash-out is currently unavailable.</Text></View></View></ScreenWrapper>;
+    return <ScreenWrapper noBottomTabs><View style={styles.container}><Header /><View style={styles.center}><Icon name="lock-closed-outline" size={40} color="#CBD5E0" /><Text style={styles.muted}>{copy("Cash-out is currently unavailable.")}</Text></View></View></ScreenWrapper>;
   }
 
   const pending = cfg?.pendingWithdrawal;
@@ -158,11 +161,11 @@ export default function CashOutScreen({ navigation }) {
         <KeyboardAwareScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode={iosKeyboardDismissMode} bottomOffset={24}>
           {/* Balance */}
           <View style={styles.balanceCard}>
-            <Text style={styles.balanceLabel}>Available to withdraw</Text>
+            <Text style={styles.balanceLabel}>{copy("Available to withdraw")}</Text>
             <Text style={styles.balanceValue}>{money(balCents)}</Text>
             <View style={styles.balancePill}>
               <Icon name="server-outline" size={12} color="#FFFFFF" />
-              <Text style={styles.balancePillText}>{cashable} TreatCoins · {settings.coinsPerDollar} TreatCoins = $1</Text>
+              <Text style={styles.balancePillText}>{cashable}{" " + copy("TreatCoins ·") + " "}{settings.coinsPerDollar}{" " + copy("TreatCoins = $1")}</Text>
             </View>
           </View>
 
@@ -170,29 +173,29 @@ export default function CashOutScreen({ navigation }) {
             /* ===== Existing request ===== */
             <View style={styles.card}>
               <View style={styles.rowBetween}>
-                <Text style={styles.cardTitle}>Your withdrawal</Text>
+                <Text style={styles.cardTitle}>{copy("Your withdrawal")}</Text>
                 <StatusBadge status={pending.status} />
               </View>
               <View style={styles.hr} />
               <Breakdown bd={pending} feePercent={settings.feePercent} />
-              {pending.status === 'PENDING' && <Text style={styles.processing}>{settings.processingText}</Text>}
+              {pending.status === 'PENDING' && <Text style={styles.processing}>{copy(settings.processingText)}</Text>}
               {pending.status === 'APPROVED' && (
-                <PrimaryButton icon="cash-outline" label={`Withdraw ${money(pending.netCents)} now`} onPress={() => handleProceed(pending.id)} busy={busy} />
+                <PrimaryButton icon="cash-outline" label={copy("Withdraw {{value0}} now", {value0: money(pending.netCents)})} onPress={() => handleProceed(pending.id)} busy={busy} />
               )}
             </View>
           ) : !cfg.connect?.payoutsEnabled ? (
             /* ===== Payout setup ===== */
             <View style={styles.card}>
               <View style={styles.setupIcon}><Icon name="business-outline" size={26} color="#32A6D8" /></View>
-              <Text style={styles.setupTitle}>Set up payouts first</Text>
-              <Text style={styles.setupText}>Link your bank securely through Stripe. Stripe verifies your identity and bank details — it only takes a minute.</Text>
-              <PrimaryButton label="Set up payouts" onPress={handleSetupPayouts} busy={busy} />
+              <Text style={styles.setupTitle}>{copy("Set up payouts first")}</Text>
+              <Text style={styles.setupText}>{copy("Link your bank securely through Stripe. Stripe verifies your identity and bank details — it only takes a minute.")}</Text>
+              <PrimaryButton label={copy("Set up payouts")} onPress={handleSetupPayouts} busy={busy} />
             </View>
           ) : (
             /* ===== New request ===== */
             <>
               <View style={styles.card}>
-                <Text style={styles.cardTitle}>Withdraw amount</Text>
+                <Text style={styles.cardTitle}>{copy("Withdraw amount")}</Text>
                 <View style={[styles.amountRow, (touched && amountError) && styles.amountRowError]}>
                   <TextInput
                     style={styles.amountInput}
@@ -206,13 +209,13 @@ export default function CashOutScreen({ navigation }) {
                   />
                   <Text style={styles.coinsSuffix}>TreatCoins</Text>
                   <TouchableOpacity onPress={() => { setAmount(String(cashable)); }} style={styles.maxBtn}>
-                    <Text style={styles.maxText}>MAX</Text>
+                    <Text style={styles.maxText}>{copy('MAX')}</Text>
                   </TouchableOpacity>
                 </View>
                 {amountValid
                   ? <Text style={styles.amountSub}>= {money(bd.grossCents)}</Text>
                   : (amountError ? <Text style={styles.errText}><Icon name="alert-circle" size={13} color="#E53D3D" /> {amountError}</Text>
-                    : <Text style={styles.amountSub}>Min {money(settings.minWithdrawalCents)} · {minCoins} TreatCoins</Text>)}
+                    : <Text style={styles.amountSub}>{copy("Min") + " "}{money(settings.minWithdrawalCents)} · {minCoins} TreatCoins</Text>)}
 
                 {amountValid && (
                   <>
@@ -225,38 +228,38 @@ export default function CashOutScreen({ navigation }) {
               {/* Documents */}
               <View style={styles.card}>
                 <View style={styles.rowBetween}>
-                  <Text style={styles.cardTitle}>Identity documents</Text>
+                  <Text style={styles.cardTitle}>{copy("Identity documents")}</Text>
                   <Text style={[styles.docCount, docsComplete && { color: '#2E9E5B' }]}>{docsDone}/{slots.length}</Text>
                 </View>
-                <Text style={styles.hint}>Required for every withdrawal.</Text>
+                <Text style={styles.hint}>{copy("Required for every withdrawal.")}</Text>
                 <View style={styles.docsRow}>
                   {slots.map((s) => (
                     <TouchableOpacity key={s.key} style={[styles.docSlot, docs[s.key] && styles.docSlotDone]} onPress={() => pickDoc(s.key)} disabled={uploading[s.key]} activeOpacity={0.8}>
                       {uploading[s.key] ? <ActivityIndicator size="small" color="#32A6D8" />
                         : docs[s.key] ? <Image source={{ uri: docs[s.key] }} style={styles.docThumb} />
                         : <Icon name="camera-outline" size={22} color="#32A6D8" />}
-                      {!docs[s.key] && !uploading[s.key] && <Text style={styles.docLabel}>{s.label}</Text>}
+                      {!docs[s.key] && !uploading[s.key] && <Text style={styles.docLabel}>{copy(s.label)}</Text>}
                       {docs[s.key] && <View style={styles.docCheck}><Icon name="checkmark" size={12} color="#FFF" /></View>}
                     </TouchableOpacity>
                   ))}
                 </View>
-                {touched && !docsComplete && <Text style={styles.errText}><Icon name="alert-circle" size={13} color="#E53D3D" /> Upload all {slots.length} documents.</Text>}
+                {touched && !docsComplete && <Text style={styles.errText}><Icon name="alert-circle" size={13} color="#E53D3D" />{" " + copy("Upload all") + " "}{slots.length}{" " + copy("documents.")}</Text>}
               </View>
 
-              <PrimaryButton label="Submit request" onPress={handleSubmit} busy={busy} disabled={!canSubmit} />
-              <Text style={styles.processing}>{settings.processingText}</Text>
+              <PrimaryButton label={copy("Submit request")} onPress={handleSubmit} busy={busy} disabled={!canSubmit} />
+              <Text style={styles.processing}>{copy(settings.processingText)}</Text>
             </>
           )}
 
           {/* History */}
           {history.length > 0 && (
             <View style={{ marginTop: 22 }}>
-              <Text style={styles.sectionTitle}>History</Text>
+              <Text style={styles.sectionTitle}>{copy("History")}</Text>
               {history.map((h) => (
                 <View key={h.id} style={styles.histRow}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.histAmount}>{money(h.netCents)}</Text>
-                    <Text style={styles.histSub}>{h.amountCoins} TreatCoins · {new Date(h.createdAt).toLocaleDateString('en-US')}</Text>
+                    <Text style={styles.histSub}>{h.amountCoins}{" " + copy("TreatCoins ·") + " "}{new Date(h.createdAt).toLocaleDateString(displayLocale())}</Text>
                   </View>
                   <StatusBadge status={h.status} />
                 </View>
@@ -271,7 +274,7 @@ export default function CashOutScreen({ navigation }) {
 
 const StatusBadge = ({ status }) => {
   const m = STATUS_META[status] || STATUS_META.PENDING;
-  return <View style={[styles.badge, { backgroundColor: m.bg }]}><Text style={[styles.badgeText, { color: m.color }]}>{m.label}</Text></View>;
+  return <View style={[styles.badge, { backgroundColor: m.bg }]}><Text style={[styles.badgeText, { color: m.color }]}>{copy(m.label)}</Text></View>;
 };
 
 const PrimaryButton = ({ label, icon, onPress, busy, disabled }) => (
@@ -283,11 +286,11 @@ const PrimaryButton = ({ label, icon, onPress, busy, disabled }) => (
 
 const Breakdown = ({ bd, feePercent }) => (
   <View>
-    <Row label="Withdrawal amount" value={money(bd.grossCents)} />
-    <Row label="Flat fee" value={`− ${money(bd.flatFeeCents)}`} red />
-    <Row label={`Service fee${feePercent != null ? ` (${feePercent}%)` : ''}`} value={`− ${money(bd.percentFeeCents)}`} red />
+    <Row label={copy("Withdrawal amount")} value={money(bd.grossCents)} />
+    <Row label={copy("Flat fee")} value={`− ${money(bd.flatFeeCents)}`} red />
+    <Row label={copy("Service fee{{value0}}", {value0: feePercent != null ? ` (${feePercent}%)` : ''})} value={`− ${money(bd.percentFeeCents)}`} red />
     <View style={styles.hr} />
-    <Row label="You'll receive" value={money(bd.netCents)} bold />
+    <Row label={copy("You'll receive")} value={money(bd.netCents)} bold />
   </View>
 );
 
@@ -359,3 +362,4 @@ const styles = StyleSheet.create({
   histAmount: { color: '#0D0D12', fontSize: 15, fontFamily: 'Poppins', fontWeight: '600' },
   histSub: { color: '#818898', fontSize: 11, fontFamily: 'Poppins', marginTop: 2 },
 });
+

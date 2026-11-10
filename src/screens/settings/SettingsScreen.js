@@ -42,7 +42,7 @@ export default function SettingsScreen({ navigation }) {
       [
         { text: copy("Cancel"), style: 'cancel' },
         {
-          text: 'Delete',
+          text: copy('Delete'),
           style: 'destructive',
           onPress: async () => {
             try {
