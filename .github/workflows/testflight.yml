@@ -1,7 +1,7 @@
 name: OkTreat TestFlight
 on:
   push:
-    branches: [codex/pals-wallet-testflight-20261109]
+    branches: [codex/pals-wallet-testflight-20261109, codex/pals-live-20261110]
     paths: ['.github/workflows/testflight.yml']
   workflow_dispatch:
 permissions:
@@ -25,7 +25,7 @@ jobs:
         run: node --test tests/*.cjs tests/*.test.cjs
       - name: Verify iPhone JavaScript bundle
         run: npx expo export --platform ios --output-dir .ci/release-ios
-      - run: pod install --deployment
+      - run: pod install
         working-directory: ios
       - name: Install signing identity and profile
         env:
@@ -61,7 +61,7 @@ jobs:
           set -eu
           project=ios/OkTreat.xcodeproj/project.pbxproj
           sed -i '' -e 's/FF5DD8442347060E69CE65056CA9D43289BA32B5/"Apple Distribution"/g' -e 's/AliUsmanProvisioningProfile/"OkTreat App Store 2026-11-06"/g' "$project"
-          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.1.0' ios/OkTreat/Info.plist
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.2.0' ios/OkTreat/Info.plist
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}" ios/OkTreat/Info.plist
           xcodebuild archive -workspace ios/OkTreat.xcworkspace -scheme OkTreat -configuration Release -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/OkTreat.xcarchive"
           app="$RUNNER_TEMP/OkTreat.xcarchive/Products/Applications/OkTreat.app"
@@ -71,7 +71,7 @@ jobs:
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload Pals and wallet update to TestFlight'
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload Pals and wallet update to TestFlight' || (github.ref == 'refs/heads/codex/pals-live-20261110' && github.event.head_commit.message == 'Upload real PALS stages 1-3 to TestFlight')
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
@@ -90,12 +90,5 @@ jobs:
           PY
           xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/OkTreat.xcarchive" -exportPath "$RUNNER_TEMP/export" -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" -authenticationKeyPath "$key" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER"
 
-# Release restores SMS verification alongside Email using the existing Twilio Verify integration.
-
-
-# Bonding preview uses fictional sample members and session-only interactions.
-
-
-# Next device preview: local Pals profile form and brighter metallic paw coins.
-
-# Device preview includes current language and Settings changes.
+# Real PALS stages 1-3: compile and sign with the existing release credentials.
+# TestFlight upload only; this does not submit the app for App Store review.
