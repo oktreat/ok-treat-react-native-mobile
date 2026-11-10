@@ -97,7 +97,6 @@
   "You can manage your pets": "ペットを管理できます",
   "You can manage your preferences": "設定を管理できます",
   "Your Pets": "あなたのペット",
-  "Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.": "お名前、メールアドレス、メッセージはChatwootで運営するOkTreatサポートの受信箱に共有されます。パスワードやカード情報は送信しないでください。",
   "Your requests will appear here.": "お問い合わせがここに表示されます。",
   "Your sitter application is currently under review. We'll notify you once it's been processed.": "シッター申請を審査中です。結果が出ましたらお知らせします。",
   "Your sitter marked this complete — confirm to release their TreatCoins.": "シッターが完了を報告しました。確認するとTreatCoinsが渡されます。",
@@ -533,5 +532,6 @@
   "Your PALS profile is private. Choose photos and save your profile. Turn on Show my profile when you are ready to publish.": "PALSプロフィールは非公開です。写真を選んでプロフィールを保存し、公開の準備ができたら「プロフィールを公開」をオンにしてください。",
   "I am travelling solo": "一人で旅行しています",
   "Solo travellers. New friends. Wherever you travel.": "一人旅で、旅先に新しい友達を。",
-  "For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.": "交際・婚姻状況に関係なく、一人旅で新しい友達に出会うためのPALSです。犬がいなくても参加できます。PALSの写真と自己紹介はペットケア用プロフィールとは別です。"
+  "For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.": "交際・婚姻状況に関係なく、一人旅で新しい友達に出会うためのPALSです。犬がいなくても参加できます。PALSの写真と自己紹介はペットケア用プロフィールとは別です。",
+  "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.": "お名前、メールアドレス、メッセージはOkTreatサポートチームに共有されます。パスワードやカード情報は送信しないでください。"
 }

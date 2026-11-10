@@ -97,7 +97,6 @@
   "You can manage your pets": "Gérez vos animaux",
   "You can manage your preferences": "Gérez vos préférences",
   "Your Pets": "Vos animaux",
-  "Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.": "Votre nom, votre adresse courriel et votre message seront partagés avec l’assistance OkTreat, hébergée par Chatwoot. N’envoyez pas de mots de passe ni de données de carte.",
   "Your requests will appear here.": "Vos demandes apparaîtront ici.",
   "Your sitter application is currently under review. We'll notify you once it's been processed.": "Votre candidature de gardien est en cours d’examen. Nous vous informerons du résultat.",
   "Your sitter marked this complete — confirm to release their TreatCoins.": "Votre gardien a indiqué que la prestation est terminée. Confirmez pour lui verser ses TreatCoins.",
@@ -533,5 +532,6 @@
   "Your PALS profile is private. Choose photos and save your profile. Turn on Show my profile when you are ready to publish.": "Votre profil PALS est privé. Choisissez vos photos et enregistrez votre profil. Activez Afficher mon profil lorsque vous souhaitez le publier.",
   "I am travelling solo": "Je voyage en solo",
   "Solo travellers. New friends. Wherever you travel.": "Voyageurs en solo. De nouveaux amis, partout où vous voyagez.",
-  "For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.": "Pour les voyageurs en solo qui souhaitent rencontrer de nouveaux amis, quelle que soit leur situation amoureuse. Un chien est facultatif. Vos photos et votre présentation PALS sont distinctes de votre profil de garde d’animaux."
+  "For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.": "Pour les voyageurs en solo qui souhaitent rencontrer de nouveaux amis, quelle que soit leur situation amoureuse. Un chien est facultatif. Vos photos et votre présentation PALS sont distinctes de votre profil de garde d’animaux.",
+  "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.": "Votre nom, votre adresse courriel et votre message seront partagés avec l’équipe d’assistance OkTreat. N’envoyez pas de mots de passe ni de données de carte."
 }

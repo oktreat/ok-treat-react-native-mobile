@@ -97,7 +97,6 @@
   "You can manage your pets": "Deine Tiere verwalten",
   "You can manage your preferences": "Deine Einstellungen verwalten",
   "Your Pets": "Deine Tiere",
-  "Your name, email and message will be shared with OkTreat’s support inbox, hosted by Chatwoot. Do not send passwords or payment card details.": "Dein Name, deine E-Mail-Adresse und deine Nachricht werden an das bei Chatwoot gehostete Support-Postfach von OkTreat übermittelt. Sende keine Passwörter oder Kartendaten.",
   "Your requests will appear here.": "Deine Anfragen erscheinen hier.",
   "Your sitter application is currently under review. We'll notify you once it's been processed.": "Deine Sitter-Bewerbung wird geprüft. Wir benachrichtigen dich, sobald die Prüfung abgeschlossen ist.",
   "Your sitter marked this complete — confirm to release their TreatCoins.": "Dein Sitter hat die Betreuung als abgeschlossen markiert. Bestätige den Abschluss, um die TreatCoins freizugeben.",
@@ -533,5 +532,6 @@
   "Your PALS profile is private. Choose photos and save your profile. Turn on Show my profile when you are ready to publish.": "Dein PALS-Profil ist privat. Wähle Fotos aus und speichere dein Profil. Aktiviere „Mein Profil anzeigen“, wenn du es veröffentlichen möchtest.",
   "I am travelling solo": "Ich reise allein",
   "Solo travellers. New friends. Wherever you travel.": "Allein reisen. Neue Freunde. Überall auf deiner Reise.",
-  "For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.": "Für Alleinreisende, die neue Freunde treffen möchten, unabhängig vom Beziehungsstatus. Ein Hund ist optional. Deine PALS-Fotos und Vorstellung sind von deinem Tierbetreuungsprofil getrennt."
+  "For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.": "Für Alleinreisende, die neue Freunde treffen möchten, unabhängig vom Beziehungsstatus. Ein Hund ist optional. Deine PALS-Fotos und Vorstellung sind von deinem Tierbetreuungsprofil getrennt.",
+  "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.": "Dein Name, deine E-Mail-Adresse und deine Nachricht werden an das Support-Team von OkTreat übermittelt. Sende keine Passwörter oder Kartendaten."
 }
