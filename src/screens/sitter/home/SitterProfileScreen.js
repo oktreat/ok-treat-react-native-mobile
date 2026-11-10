@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../../i18n/copy';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Image, Switch } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,6 +21,7 @@ import {
 } from '../../../assets';
 
 export default function SitterProfileScreen({ navigation }) {
+  useCopyUpdates();
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const [sitter, setSitter] = useState(null);
@@ -106,7 +108,7 @@ export default function SitterProfileScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} fill="#090E12" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Profile</Text>
+          <Text style={styles.headerTitle}>{copy("Profile")}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -131,13 +133,13 @@ export default function SitterProfileScreen({ navigation }) {
 
             {/* Profile Info */}
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{user?.fullName || 'Sitter'}</Text>
+              <Text style={styles.profileName}>{user?.fullName || copy("Sitter")}</Text>
               
               {/* Verified Badge — only when actually approved */}
               {sitter?.approvalStatus === 'APPROVED' && (
                 <View style={styles.verifiedBadge}>
                   <Icon name="checkmark-circle" size={17} color="#00B100" />
-                  <Text style={styles.verifiedText}>Verified</Text>
+                  <Text style={styles.verifiedText}>{copy("Verified")}</Text>
                 </View>
               )}
 
@@ -145,11 +147,11 @@ export default function SitterProfileScreen({ navigation }) {
               <View style={styles.statsRow}>
                 <View style={styles.statItem}>
                   <Icon name="star" size={16} color="#FBBC04" />
-                  <Text style={styles.statText}>{sitter?.averageRating || '0.0'} ({sitter?.totalReviews || 0} reviews)</Text>
+                  <Text style={styles.statText}>{sitter?.averageRating || '0.0'} ({sitter?.totalReviews || 0}{" " + copy("reviews)")}</Text>
                 </View>
                 <View style={styles.statItem}>
                   <Icon name="people" size={16} color="#32A6D8" />
-                  <Text style={styles.statText}>{sitter?.repeatClients || 0} repeat clients</Text>
+                  <Text style={styles.statText}>{sitter?.repeatClients || 0}{" " + copy("repeat clients")}</Text>
                 </View>
               </View>
 
@@ -158,7 +160,7 @@ export default function SitterProfileScreen({ navigation }) {
                 <View style={styles.statItem}>
                   <Icon name="briefcase" size={14} color="#32A6D8" />
                   <Text style={styles.statTextGray}>
-                    {user?.yearsOfExperience ? `${user.yearsOfExperience} yrs experience` : 'Pet sitter & walker'}
+                    {user?.yearsOfExperience ? copy("{{value0}} yrs experience", {value0: user.yearsOfExperience}) : copy("Pet sitter & walker")}
                   </Text>
                 </View>
                 {!!user?.address && (
@@ -175,7 +177,7 @@ export default function SitterProfileScreen({ navigation }) {
               Mode" toggle on the More screen, for parity. */}
           <View style={styles.toggleRow}>
             <View style={styles.toggleLeft}>
-              <Text style={styles.toggleLabel}>Sitter mode</Text>
+              <Text style={styles.toggleLabel}>{copy("Sitter mode")}</Text>
             </View>
             <Switch
               value={true}
@@ -201,7 +203,7 @@ export default function SitterProfileScreen({ navigation }) {
                     <View style={styles.iconCircle}>
                       <IconComponent width={20} height={20} fill={item.color} />
                     </View>
-                    <Text style={styles.menuTitle}>{item.title}</Text>
+                    <Text style={styles.menuTitle}>{copy(item.title)}</Text>
                   </View>
                   <Icon name="chevron-forward" size={20} color="#040404" />
                 </TouchableOpacity>
@@ -382,3 +384,4 @@ const styles = StyleSheet.create({
     lineHeight: 16.8,
   },
 });
+

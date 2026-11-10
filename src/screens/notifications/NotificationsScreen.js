@@ -1,3 +1,5 @@
+import { displayLocale, relativeTime } from '../../utils/localizedDisplay';
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Linking } from 'react-native';
 import { BackArrowIcon, MoneySendIcon, Calendar2Icon, Setting2Icon } from '../../assets';
@@ -8,21 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
-const getRelativeTime = (dateString) => {
-  if (!dateString) return '';
-  const now = new Date();
-  const date = new Date(dateString);
-  const diffMs = now - date;
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return 'Just Now';
-  if (diffMins < 60) return `${diffMins} min ago`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
-  return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`;
-};
+const getRelativeTime = relativeTime;
 
 const NotificationItem = ({ notification, onPress }) => {
   const IconComp = notification.iconType === 'payment' ? MoneySendIcon : Calendar2Icon;
@@ -40,7 +28,7 @@ const NotificationItem = ({ notification, onPress }) => {
         <Text style={styles.notificationText}>{notification.message}</Text>
       </View>
       <View style={styles.notificationRight}>
-        <Text style={styles.timeText}>{notification.time}</Text>
+        <Text style={styles.timeText}>{getRelativeTime(notification.createdAt)}</Text>
         {notification.isNew && <View style={styles.newDot} />}
       </View>
     </TouchableOpacity>
@@ -48,6 +36,7 @@ const NotificationItem = ({ notification, onPress }) => {
 };
 
 export default function NotificationsScreen({ navigation }) {
+  useCopyUpdates();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -83,6 +72,7 @@ export default function NotificationsScreen({ navigation }) {
           title: n.title || '',
           message: n.message || n.title || '',
           time: getRelativeTime(n.createdAt || n.created_at),
+          createdAt: n.createdAt || n.created_at,
           isNew: !n.read && !n.isRead,
           section: createdAt > oneDayAgo ? 'newest' : 'oldest',
           read: n.read || n.isRead || false,
@@ -93,7 +83,7 @@ export default function NotificationsScreen({ navigation }) {
       syncNotificationBadge();
     } catch (err) {
       console.error('Error fetching notifications:', err);
-      setError('Failed to load notifications');
+      setError(copy("Failed to load notifications"));
       setNotifications([]);
     } finally {
       setLoading(false);
@@ -272,7 +262,7 @@ export default function NotificationsScreen({ navigation }) {
           >
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Notifications</Text>
+          <Text style={styles.headerTitle}>{copy("Notifications")}</Text>
           <TouchableOpacity
             style={styles.settingsButton}
             onPress={() => navigation.navigate('NotificationPreferences')}
@@ -287,19 +277,19 @@ export default function NotificationsScreen({ navigation }) {
           {loading ? (
             <View style={styles.centerContainer}>
               <ActivityIndicator size="large" color="#32A6D8" />
-              <Text style={styles.loadingText}>Loading notifications...</Text>
+              <Text style={styles.loadingText}>{copy("Loading notifications...")}</Text>
             </View>
           ) : error ? (
             <View style={styles.centerContainer}>
               <Text style={styles.errorText}>{error}</Text>
               <TouchableOpacity onPress={() => { setLoading(true); fetchNotifications(); }}>
-                <Text style={styles.retryText}>Tap to retry</Text>
+                <Text style={styles.retryText}>{copy("Tap to retry")}</Text>
               </TouchableOpacity>
             </View>
           ) : notifications.length === 0 ? (
             <View style={styles.centerContainer}>
-              <Text style={styles.emptyTitle}>No Notifications</Text>
-              <Text style={styles.emptySubtitle}>You're all caught up!</Text>
+              <Text style={styles.emptyTitle}>{copy("No Notifications")}</Text>
+              <Text style={styles.emptySubtitle}>{copy("You're all caught up!")}</Text>
             </View>
           ) : (
             <ScrollView
@@ -309,7 +299,7 @@ export default function NotificationsScreen({ navigation }) {
               {/* Newest Section */}
               {newestNotifications.length > 0 && (
                 <>
-                  <Text style={styles.sectionTitle}>Newest</Text>
+                  <Text style={styles.sectionTitle}>{copy("Newest")}</Text>
                   <View style={styles.section}>
                     <View style={styles.divider} />
                     {newestNotifications.map((notification, index) => (
@@ -325,7 +315,7 @@ export default function NotificationsScreen({ navigation }) {
               {/* Oldest Section */}
               {oldestNotifications.length > 0 && (
                 <>
-                  <Text style={styles.sectionTitle}>Oldest</Text>
+                  <Text style={styles.sectionTitle}>{copy("Oldest")}</Text>
                   <View style={styles.section}>
                     {oldestNotifications.map((notification, index) => (
                       <View key={notification.id}>
@@ -508,4 +498,5 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
 });
+
 

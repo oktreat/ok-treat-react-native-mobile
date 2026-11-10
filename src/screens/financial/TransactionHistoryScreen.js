@@ -1,3 +1,5 @@
+import { displayLocale } from '../../utils/localizedDisplay';
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -8,6 +10,7 @@ import api from '../../config/api';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function TransactionHistoryScreen({ navigation }) {
+  useCopyUpdates();
   const [selectedPeriod, setSelectedPeriod] = useState('This Month');
   const [transactions, setTransactions] = useState([]);
   const [totalCoins, setTotalCoins] = useState(0);
@@ -54,7 +57,7 @@ export default function TransactionHistoryScreen({ navigation }) {
           id: rawId || String(Math.random()).slice(2, 12),
           shortId: rawId ? rawId.slice(0, 8).toUpperCase() : '—',
           date: tx.createdAt
-            ? new Date(tx.createdAt).toLocaleDateString('en-US') + ' · ' + new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            ? new Date(tx.createdAt).toLocaleDateString(displayLocale()) + ' · ' + new Date(tx.createdAt).toLocaleTimeString(displayLocale(), { hour: '2-digit', minute: '2-digit' })
             : '',
           // Prefer the human description; fall back to a humanized type code.
           label: tx.description || humanize(tx.type),
@@ -67,7 +70,7 @@ export default function TransactionHistoryScreen({ navigation }) {
       setTransactions(formatted);
     } catch (err) {
       console.error('Error fetching transaction history:', err);
-      setError('Failed to load transactions');
+      setError(copy("Failed to load transactions"));
       setTransactions([]);
     } finally {
       setLoading(false);
@@ -124,7 +127,7 @@ export default function TransactionHistoryScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Transaction History</Text>
+          <Text style={styles.headerTitle}>{copy("Transaction History")}</Text>
           <View style={styles.backButton} />
         </View>
 
@@ -136,7 +139,7 @@ export default function TransactionHistoryScreen({ navigation }) {
           <View style={styles.loadingContainer}>
             <Text style={styles.errorText}>{error}</Text>
             <TouchableOpacity onPress={() => { setLoading(true); fetchData(); }}>
-              <Text style={styles.retryText}>Tap to retry</Text>
+              <Text style={styles.retryText}>{copy("Tap to retry")}</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -145,7 +148,7 @@ export default function TransactionHistoryScreen({ navigation }) {
             <View style={styles.totalCoinsSection}>
               <View style={styles.totalCoinsHeader}>
                 <CoinIcon width={18} height={18} />
-                <Text style={styles.totalCoinsLabel}>Total TreatCoins</Text>
+                <Text style={styles.totalCoinsLabel}>{copy("Total TreatCoins")}</Text>
               </View>
               <Text style={styles.totalCoinsAmount}>{totalCoins}</Text>
             </View>
@@ -153,11 +156,12 @@ export default function TransactionHistoryScreen({ navigation }) {
             {/* Recent Transactions Section */}
             <View style={styles.transactionsSection}>
               <View style={styles.transactionsHeader}>
-                <Text style={styles.transactionsTitle}>Recent Transactions</Text>
+                <Text style={styles.transactionsTitle}>{copy("Recent Transactions")}</Text>
                 <View style={styles.filterWrapper}>
                   <Dropdown
-                    placeholder="Select period"
+                    placeholder={copy("Select period")}
                     value={selectedPeriod}
+                    formatLabel={copy}
                     onSelect={setSelectedPeriod}
                     options={['This Week', 'This Month', 'Last 3 Months', 'Last 6 Months', 'This Year']}
                     rightIcon={<Icon name="chevron-down" size={14} color="#3FA477" />}
@@ -169,7 +173,7 @@ export default function TransactionHistoryScreen({ navigation }) {
 
               {/* Transaction List */}
               {filteredTransactions.length === 0 ? (
-                <Text style={styles.emptyText}>No transactions found for this period.</Text>
+                <Text style={styles.emptyText}>{copy("No transactions found for this period.")}</Text>
               ) : (
                 <View style={styles.transactionList}>
                   {filteredTransactions.map((transaction, index) => (
@@ -184,13 +188,13 @@ export default function TransactionHistoryScreen({ navigation }) {
                             <CoinInIcon width={16} height={16} />
                           </View>
                           <View style={styles.transactionInfo}>
-                            <Text style={styles.transactionType} numberOfLines={2}>{transaction.label}</Text>
+                            <Text style={styles.transactionType} numberOfLines={2}>{copy(transaction.label)}</Text>
                           </View>
                         </View>
                         <View style={styles.transactionRight}>
                           <Text style={[styles.transactionAmount, { color: transaction.isCredit ? '#3FA477' : '#FF0000' }]} numberOfLines={1}>{transaction.amount}</Text>
                           <View style={[styles.statusBadge, { backgroundColor: transaction.status === 'Pending' ? '#FFA500' : '#3FA477' }]}>
-                            <Text style={styles.statusText}>{transaction.status}</Text>
+                            <Text style={styles.statusText}>{copy(transaction.status)}</Text>
                           </View>
                         </View>
                       </View>
@@ -433,3 +437,4 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+

@@ -55,13 +55,13 @@ export default function InviteFriendsScreen({ navigation }) {
       (appStoreUrl || '').trim() && `iOS: ${appStoreUrl.trim()}`,
       (playStoreUrl || '').trim() && `Android: ${playStoreUrl.trim()}`,
     ].filter(Boolean);
-    const downloadBlock = links.length ? `\n\nDownload OkTreat:\n${links.join('\n')}` : '';
+    const downloadBlock = links.length ? `\n\n${copy('Download OkTreat:')}\n${links.join('\n')}` : '';
     try {
       await Share.share({
         message:
-          `Join me on OkTreat — the app for trusted pet sitters! 🐾\n\n` +
-          `Use my referral code ${code}.` +
-          ` Verify your account and apply my code to get ${referredReward} bonus TreatCoins. I get ${referrerReward} TreatCoins too. Promotional TreatCoins cannot be withdrawn as cash.` +
+          copy('Join me on OkTreat — the app for trusted pet sitters! 🐾') + '\n\n' +
+          copy('Use my referral code {{code}}.', {code}) + ' ' +
+          copy('Verify your account and apply my code to get {{friend}} bonus TreatCoins. I get {{inviter}} TreatCoins too. Promotional TreatCoins cannot be withdrawn as cash.', {friend:referredReward, inviter:referrerReward}) +
           downloadBlock,
       });
     } catch (e) { /* dismissed */ }
@@ -78,7 +78,7 @@ export default function InviteFriendsScreen({ navigation }) {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Invite Friends</Text>
+          <Text style={styles.headerTitle}>{copy("Invite Friends")}</Text>
           <View style={styles.backButton} />
         </View>
 
@@ -94,31 +94,31 @@ export default function InviteFriendsScreen({ navigation }) {
 
           {/* Code + actions */}
           <View style={styles.codeCard}>
-            <Text style={styles.codeLabel}>YOUR CODE</Text>
+            <Text style={styles.codeLabel}>{copy("YOUR CODE")}</Text>
             <View style={styles.codeRow}>
               <Text style={styles.code} numberOfLines={1} selectable>{code || '—'}</Text>
               <TouchableOpacity style={styles.copyBtn} onPress={handleCopy} disabled={!code} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                 <Icon name={copied ? 'checkmark' : 'copy-outline'} size={20} color="#32A6D8" />
               </TouchableOpacity>
             </View>
-            {copied && <Text style={styles.copiedText}>Copied!</Text>}
+            {copied && <Text style={styles.copiedText}>{copy("Copied!")}</Text>}
           </View>
 
           <TouchableOpacity style={styles.shareBtn} onPress={handleShare} disabled={!code}>
             <Icon name="share-social" size={18} color="#FFFFFF" />
-            <Text style={styles.shareText}>Share invite</Text>
+            <Text style={styles.shareText}>{copy("Share invite")}</Text>
           </TouchableOpacity>
 
           {/* Stats */}
           <View style={styles.statsRow}>
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{invited}</Text>
-              <Text style={styles.statLabel}>Invited</Text>
+              <Text style={styles.statLabel}>{copy("Invited")}</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{earned}</Text>
-              <Text style={styles.statLabel}>TreatCoins earned</Text>
+              <Text style={styles.statLabel}>{copy("TreatCoins earned")}</Text>
             </View>
           </View>
         </ScrollView>
@@ -168,3 +168,4 @@ const styles = StyleSheet.create({
   statValue: { color: '#0D0D12', fontSize: 22, fontFamily: 'Poppins', fontWeight: '700' },
   statLabel: { color: '#818898', fontSize: 12, fontFamily: 'Poppins', fontWeight: '400', marginTop: 2 },
 });
+

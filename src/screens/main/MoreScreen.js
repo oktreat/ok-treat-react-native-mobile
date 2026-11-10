@@ -332,7 +332,7 @@ export default function MoreScreen({ navigation }) {
         visible={showRejectedModal}
         onNext={handleRejectedModalNext}
         title={copy("Application Rejected")}
-        description={rejectionReason}
+        description={copy(rejectionReason)}
         buttonText={copy("Update Profile")}
         iconType="error"
       />
@@ -474,3 +474,4 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 });
+
