@@ -188,7 +188,7 @@ export default function PaymentMethodsScreen({ navigation }) {
               <View style={styles.infoLeft}>
                 <Text style={styles.infoTitle}>{copy("Wallet")}</Text>
                 <Text style={styles.promoText}>
-                  {wallet.purchasedCoinBalance.toLocaleString()}{" " + copy("purchased +") + " "}{wallet.earnedCoinBalance.toLocaleString()}{copy("earned")}</Text>
+                  {wallet.purchasedCoinBalance.toLocaleString()}{" " + copy("purchased +") + " "}{wallet.earnedCoinBalance.toLocaleString()}{" " + copy("earned")}</Text>
               </View>
               <View style={styles.coinsDisplay}>
                 <CoinIcon width={18} height={18} />
