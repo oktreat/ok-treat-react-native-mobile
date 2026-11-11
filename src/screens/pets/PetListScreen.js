@@ -83,8 +83,8 @@ const SwipeablePetCard = ({ pet, onPress, onDelete }) => {
   };
 
   const getWeightDisplay = () => {
-    if (!pet.weight) return 'Weight not specified';
-    return `${pet.weight} lbs`;
+    if (!pet.weight) return copy('Weight not specified');
+    return copy('{{weight}} lbs', { weight: pet.weight });
   };
 
   return (

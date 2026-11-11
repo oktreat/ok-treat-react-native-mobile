@@ -454,5 +454,7 @@
   "Sending...": "Sending...",
   "Resend Code": "Resend Code",
   "Resend code in": "Resend code in",
-  "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.": "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details."
+  "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.": "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.",
+  "Weight not specified": "Weight not specified",
+  "{{weight}} lbs": "{{weight}} lbs"
 }
