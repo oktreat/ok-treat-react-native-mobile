@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
-  Linking,
   Alert,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -132,17 +131,6 @@ export default function BookingDetailScreen({ navigation, route }) {
     });
   };
 
-  const handleCall = () => {
-    const phone = booking?.sitter?.user?.phone || booking?.sitter?.phone;
-    if (!phone) {
-      alert(copy("No phone on file"), copy("This sitter hasn't shared a phone number."), 'info');
-      return;
-    }
-    Linking.openURL(`tel:${phone}`).catch(() => {
-      alert(copy("Could not place call"), copy("Tap and hold the number to copy it."), 'error');
-    });
-  };
-
   const handleLeaveReview = () => {
     navigation.navigate('SubmitReview', {
       bookingId: booking.id,
@@ -236,10 +224,6 @@ export default function BookingDetailScreen({ navigation, route }) {
                 <TouchableOpacity style={[styles.iconBtn, styles.iconBtnPrimary]} onPress={handleMessage}>
                   <Icon name="chatbubble-ellipses" size={18} color="#FFFFFF" />
                   <Text style={styles.iconBtnText}>{copy("Message")}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.iconBtn, styles.iconBtnSecondary]} onPress={handleCall}>
-                  <Icon name="call" size={18} color="#32A6D8" />
-                  <Text style={[styles.iconBtnText, { color: '#32A6D8' }]}>{copy("Call")}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -416,7 +400,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   iconBtnPrimary: { backgroundColor: '#32A6D8' },
-  iconBtnSecondary: { borderWidth: 1, borderColor: '#32A6D8', backgroundColor: '#FFFFFF' },
   iconBtnText: { color: '#FFFFFF', fontSize: 13, fontFamily: 'Avenir LT Std', fontWeight: '700' },
 
   petRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
