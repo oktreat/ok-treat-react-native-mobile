@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   Text,
@@ -14,6 +15,7 @@ import { BackArrowIcon } from '../../assets';
 import { useAppAlert } from '../../context/AlertContext';
 import api from '../../config/api';
 import PushSoundDiagnostics from '../../components/PushSoundDiagnostics';
+import { getNotificationPreferencesCopy } from './notificationPreferencesCopy';
 
 const CATEGORIES = [
   {
@@ -72,6 +74,8 @@ const CATEGORIES = [
 ];
 
 export default function NotificationPreferencesScreen({ navigation }) {
+  const { i18n } = useTranslation();
+  const copy = getNotificationPreferencesCopy(i18n.resolvedLanguage || i18n.language);
   const alert = useAppAlert();
   const [prefs, setPrefs] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -84,8 +88,8 @@ export default function NotificationPreferencesScreen({ navigation }) {
         setPrefs(res.data?.data?.preferences || null);
       } catch (e) {
         alert(
-          'Could not load preferences',
-          e?.response?.data?.message || 'Try again in a moment.',
+          copy('Could not load preferences'),
+          e?.response?.data?.message || copy('Try again in a moment.'),
           'error'
         );
       } finally {
@@ -105,7 +109,7 @@ export default function NotificationPreferencesScreen({ navigation }) {
     } catch (e) {
       // Roll back optimistic update
       setPrefs((p) => ({ ...p, [key]: !next }));
-      alert('Failed to update', e?.response?.data?.message || 'Try again.', 'error');
+      alert(copy('Failed to update'), e?.response?.data?.message || copy('Try again.'), 'error');
     } finally {
       setSaving((s) => ({ ...s, [key]: false }));
     }
@@ -115,10 +119,10 @@ export default function NotificationPreferencesScreen({ navigation }) {
     <ScreenWrapper noBottomTabs>
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel={copy('Back')} onPress={() => navigation.goBack()} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Notification Preferences</Text>
+          <Text style={styles.headerTitle}>{copy('Notification Preferences')}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -130,7 +134,7 @@ export default function NotificationPreferencesScreen({ navigation }) {
           </View>
         ) : !prefs ? (
           <View style={styles.center}>
-            <Text style={styles.errorText}>Could not load preferences.</Text>
+            <Text style={styles.errorText}>{copy('Could not load preferences.')}</Text>
           </View>
         ) : (
           <ScrollView
@@ -139,7 +143,7 @@ export default function NotificationPreferencesScreen({ navigation }) {
             showsVerticalScrollIndicator={false}
           >
             <Text style={styles.intro}>
-              Choose what you want to be notified about. Changes take effect immediately.
+              {copy('Choose what you want to be notified about. Changes take effect immediately.')}
             </Text>
 
             {CATEGORIES.map((cat) => (
@@ -148,15 +152,16 @@ export default function NotificationPreferencesScreen({ navigation }) {
                   <Icon name={cat.icon} size={20} color={cat.color} />
                 </View>
                 <View style={styles.rowBody}>
-                  <Text style={styles.rowTitle}>{cat.title}</Text>
-                  <Text style={styles.rowDesc}>{cat.description}</Text>
-                  {cat.note && <Text style={styles.rowNote}>{cat.note}</Text>}
+                  <Text style={styles.rowTitle}>{copy(cat.title)}</Text>
+                  <Text style={styles.rowDesc}>{copy(cat.description)}</Text>
+                  {cat.note && <Text style={styles.rowNote}>{copy(cat.note)}</Text>}
                 </View>
                 <View style={styles.switchWrap}>
                   {saving[cat.key] ? (
                     <ActivityIndicator size="small" color="#32A6D8" />
                   ) : (
                     <Switch
+                      accessibilityLabel={copy(cat.title)}
                       value={Boolean(prefs[cat.key])}
                       onValueChange={() => toggle(cat.key)}
                       trackColor={{ false: '#D1D5DB', true: cat.color }}
@@ -170,8 +175,7 @@ export default function NotificationPreferencesScreen({ navigation }) {
             <View style={styles.footer}>
               <Icon name="shield-checkmark-outline" size={16} color="#818898" />
               <Text style={styles.footerText}>
-                Safety-critical notifications (missing-pet scan alerts, password changes) are always
-                delivered.
+                {copy('Safety alerts for missing-pet scans and password changes stay enabled. Delivery and sound still depend on your device settings and connectivity.')}
               </Text>
             </View>
           </ScrollView>
@@ -273,3 +277,4 @@ const styles = StyleSheet.create({
     lineHeight: 15,
   },
 });
+

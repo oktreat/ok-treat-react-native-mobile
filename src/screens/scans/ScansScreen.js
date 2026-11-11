@@ -1,3 +1,5 @@
+import { displayLocale } from '../../utils/localizedDisplay';
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Image } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
@@ -9,6 +11,7 @@ import { getUserScans } from '../../services/scanService';
 const dogImage = require('../../assets/images/dog_image.png');
 
 export default function ScansScreen({ navigation }) {
+  useCopyUpdates();
   const [scans, setScans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -35,7 +38,7 @@ export default function ScansScreen({ navigation }) {
       }
     } catch (err) {
       console.error('Error fetching scans:', err);
-      setError('Failed to load scans');
+      setError(copy("Failed to load scans"));
       setScans([]);
     } finally {
       setLoading(false);
@@ -59,13 +62,13 @@ export default function ScansScreen({ navigation }) {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString(displayLocale(), options);
   };
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     const options = { hour: 'numeric', minute: '2-digit', hour12: true };
-    return date.toLocaleTimeString('en-US', options);
+    return date.toLocaleTimeString(displayLocale(), options);
   };
 
   const renderScanCard = useCallback(({ item: scan }) => {
@@ -113,7 +116,7 @@ export default function ScansScreen({ navigation }) {
           {/* Info */}
           <View style={styles.infoContainer}>
             <Text style={styles.scanTitle}>
-              {scan.pet?.name ? `${scan.pet.name} Scanned` : 'Tag Scanned'}
+              {scan.pet?.name ? copy("{{value0}} Scanned", {value0: scan.pet.name}) : copy("Tag Scanned")}
             </Text>
             <Text style={styles.scanDateTime}>
               {formatDate(scan.scannedAt)}  |  {formatTime(scan.scannedAt)}
@@ -138,7 +141,7 @@ export default function ScansScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Scans</Text>
+          <Text style={styles.headerTitle}>{copy("Scans")}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -146,19 +149,19 @@ export default function ScansScreen({ navigation }) {
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#32A6D8" />
-            <Text style={styles.loadingText}>Loading scans...</Text>
+            <Text style={styles.loadingText}>{copy("Loading scans...")}</Text>
           </View>
         ) : error ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyTitle}>{error}</Text>
             <TouchableOpacity onPress={() => { setLoading(true); fetchScans(); }}>
-              <Text style={styles.retryText}>Tap to retry</Text>
+              <Text style={styles.retryText}>{copy("Tap to retry")}</Text>
             </TouchableOpacity>
           </View>
         ) : scans.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>No Scans Yet</Text>
-            <Text style={styles.emptyText}>Scans of your pet's QR codes will appear here.</Text>
+            <Text style={styles.emptyTitle}>{copy("No Scans Yet")}</Text>
+            <Text style={styles.emptyText}>{copy("Scans of your pet's QR codes will appear here.")}</Text>
           </View>
         ) : (
           <FlatList
@@ -318,3 +321,4 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
+

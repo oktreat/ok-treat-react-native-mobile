@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.mubbits.oktreat",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan QR codes and take pet photos.",
-        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to upload pet photos.",
+        "NSPhotoLibraryUsageDescription": "Choose photos for your pet or your personal PALS profile.",
         "NSLocationWhenInUseUsageDescription": "This app uses your location to alert you about missing pets near you and to find nearby pet sitters.",
         "ITSAppUsesNonExemptEncryption": false
       },

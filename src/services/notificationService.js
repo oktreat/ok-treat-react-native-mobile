@@ -3,8 +3,21 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 import { API_BASE_URL } from '../config/api';
 import { getAuthToken } from '../utils/storage';
+import i18n from '../i18n';
 
 let badgeRevision = 0;
+
+// Language-only changes must not overwrite a newer device token or request
+// notification permission again. The server uses this while the app is closed.
+export const syncPushLanguage = async () => {
+  try {
+    const authToken = await getAuthToken();
+    if (!authToken) return;
+    await axios.put(`${API_BASE_URL}/api/auth/push-token`,
+      { notificationLanguage: i18n.resolvedLanguage || i18n.language || 'en-us' },
+      { headers: { Authorization: `Bearer ${authToken}` } });
+  } catch { /* Retry on the next foreground or language change. */ }
+};
 
 // Always use the server total, not the first page of the notification list.
 // Ignore old requests after logout or a newer refresh.
@@ -97,7 +110,7 @@ export const registerForPushNotifications = async () => {
       if (authToken) {
         await axios.put(
           `${API_BASE_URL}/api/auth/push-token`,
-          { pushToken: token },
+          { pushToken: token, notificationLanguage: i18n.resolvedLanguage || i18n.language || 'en-us' },
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
       }

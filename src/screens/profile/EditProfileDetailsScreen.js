@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Image } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,6 +21,7 @@ import { iosKeyboardDismissMode } from '../../utils/keyboard';
 const { width } = Dimensions.get('window');
 
 export default function EditProfileDetailsScreen({ navigation }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   const insets = useSafeAreaInsets();
   const { user, token } = useSelector(state => state.auth);
@@ -168,10 +170,10 @@ export default function EditProfileDetailsScreen({ navigation }) {
         dispatch(setCredentials({ user: { ...user, avatarUrl: result.url }, token }));
       }
 
-      alert('Success', 'Profile photo updated successfully!', 'success');
+      alert(copy("Success"), copy("Profile photo updated successfully!"), 'success');
     } catch (error) {
       console.error('Upload failed:', error);
-      alert('Upload Failed', error.message || 'Failed to upload image. Please try again.', 'error');
+      alert(copy("Upload Failed"), error.message || copy("Failed to upload image. Please try again."), 'error');
     } finally {
       setUploading(false);
     }
@@ -192,7 +194,7 @@ export default function EditProfileDetailsScreen({ navigation }) {
       <ScreenWrapper noBottomTabs>
         <View style={[styles.container, styles.loadingContainer]}>
           <ActivityIndicator size="large" color="#32A6D8" />
-          <Text style={styles.loadingText}>Loading profile...</Text>
+          <Text style={styles.loadingText}>{copy("Loading profile...")}</Text>
         </View>
       </ScreenWrapper>
     );
@@ -200,7 +202,7 @@ export default function EditProfileDetailsScreen({ navigation }) {
 
   const handleSave = async () => {
     if (!name.trim()) {
-      alert('Error', 'Name is required', 'error');
+      alert(copy("Error"), copy("Name is required"), 'error');
       return;
     }
 
@@ -235,10 +237,10 @@ export default function EditProfileDetailsScreen({ navigation }) {
       // Update AsyncStorage
       await AsyncStorage.setItem('user', JSON.stringify(data.data.user));
 
-      alert('Success', 'Profile updated successfully!', 'success', 'OK', () => navigation.goBack());
+      alert(copy("Success"), copy("Profile updated successfully!"), 'success', copy('OK'), () => navigation.goBack());
     } catch (error) {
       console.error('Save profile error:', error);
-      alert('Error', error.message || 'Failed to update profile. Please try again.', 'error');
+      alert(copy("Error"), error.message || copy("Failed to update profile. Please try again."), 'error');
     } finally {
       setSaving(false);
     }
@@ -252,7 +254,7 @@ export default function EditProfileDetailsScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Edit Details</Text>
+          <Text style={styles.headerTitle}>{copy("Edit Details")}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -296,10 +298,10 @@ export default function EditProfileDetailsScreen({ navigation }) {
           <View style={styles.formContainer}>
             {/* Name Field */}
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Name<Text style={{ color: '#FF3B30' }}> *</Text></Text>
+              <Text style={styles.fieldLabel}>{copy("Name")}<Text style={{ color: '#FF3B30' }}> *</Text></Text>
               <Input
                 type="text"
-                placeholder="Enter your name"
+                placeholder={copy("Enter your name")}
                 value={name}
                 onChangeText={setName}
                 leftIcon={<MyProfileIcon width={20} height={20} />}
@@ -310,38 +312,39 @@ export default function EditProfileDetailsScreen({ navigation }) {
 
             {/* Email Field - Read Only */}
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Email</Text>
+              <Text style={styles.fieldLabel}>{copy("Email")}</Text>
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={copy("Enter your email")}
                 value={email}
                 leftIcon={<EnvelopeIcon width={20} height={20} />}
                 containerStyle={[styles.inputField, styles.disabledInput]}
                 editable={false}
               />
-              <Text style={styles.helperText}>Email cannot be changed</Text>
+              <Text style={styles.helperText}>{copy("Email cannot be changed")}</Text>
             </View>
 
             {/* Phone Number Field - Read Only */}
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Phone Number</Text>
+              <Text style={styles.fieldLabel}>{copy("Phone Number")}</Text>
               <Input
                 type="phone"
-                placeholder="Not set"
+                placeholder={copy("Not set")}
                 value={phoneNumber}
                 leftIcon={<PhoneCallIcon width={20} height={20} />}
                 containerStyle={[styles.inputField, styles.disabledInput]}
                 editable={false}
               />
-              <Text style={styles.helperText}>Phone number cannot be changed</Text>
+              <Text style={styles.helperText}>{copy("Phone number cannot be changed")}</Text>
             </View>
 
             {/* Gender Field */}
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Gender</Text>
+              <Text style={styles.fieldLabel}>{copy("Gender")}</Text>
               <Dropdown
-                placeholder="Select gender"
+                placeholder={copy("Select gender")}
                 value={gender}
+                formatLabel={copy}
                 onSelect={setGender}
                 options={['Male', 'Female', 'Other']}
                 rightIcon={<Icon name="chevron-down" size={20} color="#8D8E90" />}
@@ -352,10 +355,10 @@ export default function EditProfileDetailsScreen({ navigation }) {
 
             {/* Address Field */}
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Address</Text>
+              <Text style={styles.fieldLabel}>{copy("Address")}</Text>
               <Input
                 type="text"
-                placeholder="Enter your address"
+                placeholder={copy("Enter your address")}
                 value={address}
                 onChangeText={setAddress}
                 rightIcon={<EditIcon width={16} height={16} fill="#D4D4D4" />}
@@ -369,7 +372,7 @@ export default function EditProfileDetailsScreen({ navigation }) {
         <KeyboardStickyView offset={{ closed: 0, opened: insets.bottom }}>
           <View style={styles.buttonContainer}>
             <Button
-              title={saving ? 'Saving...' : 'Save'}
+              title={saving ? copy("Saving...") : copy("Save")}
               onPress={handleSave}
               fullWidth
               size="medium"
@@ -552,3 +555,4 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir LT Std',
   },
 });
+

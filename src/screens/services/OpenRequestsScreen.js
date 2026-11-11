@@ -1,3 +1,5 @@
+import { displayLocale, relativeTime } from '../../utils/localizedDisplay';
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image, Animated, PanResponder, ActivityIndicator, RefreshControl } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
@@ -35,7 +37,7 @@ const formatDateRange = (startIso, endIso) => {
   const s = new Date(startIso);
   const e = endIso ? new Date(endIso) : null;
   const fmt = (d, full = true) =>
-    d.toLocaleDateString('en-US', full
+    d.toLocaleDateString(displayLocale(), full
       ? { month: 'short', day: 'numeric' }
       : { day: 'numeric' });
   if (!e || s.toDateString() === e.toDateString()) return fmt(s);
@@ -45,21 +47,7 @@ const formatDateRange = (startIso, endIso) => {
   return `${fmt(s)} - ${fmt(e)}`;
 };
 
-const getRelativeTime = (dateString) => {
-  if (!dateString) return '';
-  const now = new Date();
-  const date = new Date(dateString);
-  const diffMs = now - date;
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins} min ago`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
-  return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`;
-};
+const getRelativeTime = relativeTime;
 
 const SwipeableRequestCard = ({ request, onPress, onDelete }) => {
   const translateX = useRef(new Animated.Value(0)).current;
@@ -173,13 +161,13 @@ const SwipeableRequestCard = ({ request, onPress, onDelete }) => {
                   color="#32A6D8"
                 />
                 <Text style={styles.serviceBadgeText} numberOfLines={1}>
-                  {SERVICE_META[request.serviceType]?.label
+                  {copy(SERVICE_META[request.serviceType]?.label)
                     || request.serviceType?.replace(/_/g, ' ')
-                    || 'Service'}
+                    || copy("Service")}
                 </Text>
               </View>
             </View>
-            <Text style={styles.requestTime}>{request.time}</Text>
+            <Text style={styles.requestTime}>{getRelativeTime(request.createdAt)}</Text>
           </View>
 
           {/* Row 2 — booking meta (date · pet) */}
@@ -212,7 +200,7 @@ const SwipeableRequestCard = ({ request, onPress, onDelete }) => {
               const meta = STATUS_META[request.status] || STATUS_META.pending;
               return (
                 <View style={[styles.statusPill, { backgroundColor: meta.bg }]}>
-                  <Text style={[styles.statusPillText, { color: meta.fg }]}>{meta.label}</Text>
+                  <Text style={[styles.statusPillText, { color: meta.fg }]}>{copy(meta.label)}</Text>
                 </View>
               );
             })()}
@@ -224,6 +212,7 @@ const SwipeableRequestCard = ({ request, onPress, onDelete }) => {
 };
 
 export default function OpenRequestsScreen({ navigation }) {
+  useCopyUpdates();
   const alert = useAppAlert();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -241,6 +230,7 @@ export default function OpenRequestsScreen({ navigation }) {
         name: booking.sitter?.user?.fullName || 'Sitter',
         message: booking.notes || '',
         time: getRelativeTime(booking.createdAt),
+        createdAt: booking.createdAt,
         status: booking.status?.toLowerCase() || 'pending',
         avatar: booking.sitter?.user?.avatarUrl || null,
         serviceType: booking.serviceType,
@@ -252,7 +242,7 @@ export default function OpenRequestsScreen({ navigation }) {
       setRequests(formatted);
     } catch (err) {
       console.error('Error fetching requests:', err);
-      setError('Failed to load requests');
+      setError(copy("Failed to load requests"));
       setRequests([]);
     } finally {
       setLoading(false);
@@ -299,7 +289,7 @@ export default function OpenRequestsScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>My Requests</Text>
+          <Text style={styles.headerTitle}>{copy("My Requests")}</Text>
           <View style={styles.backButton} />
         </View>
 
@@ -308,19 +298,19 @@ export default function OpenRequestsScreen({ navigation }) {
           {loading ? (
             <View style={styles.centerContainer}>
               <ActivityIndicator size="large" color="#32A6D8" />
-              <Text style={styles.loadingText}>Loading requests...</Text>
+              <Text style={styles.loadingText}>{copy("Loading requests...")}</Text>
             </View>
           ) : error ? (
             <View style={styles.centerContainer}>
               <Text style={styles.errorText}>{error}</Text>
               <TouchableOpacity onPress={() => { setLoading(true); fetchRequests(); }}>
-                <Text style={styles.retryText}>Tap to retry</Text>
+                <Text style={styles.retryText}>{copy("Tap to retry")}</Text>
               </TouchableOpacity>
             </View>
           ) : requests.length === 0 ? (
             <View style={styles.centerContainer}>
-              <Text style={styles.emptyTitle}>No Open Requests</Text>
-              <Text style={styles.emptySubtitle}>New requests will appear here</Text>
+              <Text style={styles.emptyTitle}>{copy("No Open Requests")}</Text>
+              <Text style={styles.emptySubtitle}>{copy("New requests will appear here")}</Text>
             </View>
           ) : (
             <ScrollView
@@ -583,3 +573,4 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
 });
+

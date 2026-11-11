@@ -1,3 +1,5 @@
+import { displayLocale } from '../../utils/localizedDisplay';
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,6 +8,7 @@ import Button from '../../components/Button';
 import { BackArrowIcon, PawIcon } from '../../assets';
 
 export default function ScanMapDetailScreen({ route, navigation }) {
+  useCopyUpdates();
   const { scan } = route.params || {};
   const insets = useSafeAreaInsets();
 
@@ -18,12 +21,12 @@ export default function ScanMapDetailScreen({ route, navigation }) {
               <BackArrowIcon width={20} height={20} />
             </TouchableOpacity>
             <View style={styles.headerInfo}>
-              <Text style={styles.headerTitle}>Scan Details</Text>
+              <Text style={styles.headerTitle}>{copy("Scan Details")}</Text>
             </View>
             <View style={styles.placeholder} />
           </View>
           <View style={styles.noMapContainer}>
-            <Text style={styles.noMapText}>Scan data not available</Text>
+            <Text style={styles.noMapText}>{copy("Scan data not available")}</Text>
           </View>
         </View>
       </ScreenWrapper>
@@ -44,7 +47,7 @@ export default function ScanMapDetailScreen({ route, navigation }) {
       android: 'geo:0,0?q=',
     });
     const latLng = `${scan.latitude},${scan.longitude}`;
-    const label = 'Scan Location';
+    const label = copy('Scan Location');
     const url = Platform.select({
       ios: `${scheme}${label}@${latLng}`,
       android: `${scheme}${latLng}(${label})`,
@@ -56,18 +59,18 @@ export default function ScanMapDetailScreen({ route, navigation }) {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString(displayLocale(), options);
   };
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     const options = { hour: 'numeric', minute: '2-digit', hour12: true };
-    return date.toLocaleTimeString('en-US', options);
+    return date.toLocaleTimeString(displayLocale(), options);
   };
 
-  const petName = scan.pet?.name || 'Unknown Pet';
-  const petBreed = scan.pet?.breed || scan.pet?.type || 'Unknown Breed';
-  const ownerName = scan.pet?.user?.fullName || 'Unknown Owner';
+  const petName = scan.pet?.name || copy('Unknown Pet');
+  const petBreed = scan.pet?.breed || scan.pet?.type || copy('Unknown Breed');
+  const ownerName = scan.pet?.user?.fullName || copy('Unknown Owner');
   const petImage = scan.pet?.photoUrl;
 
   // Age / weight, formatted the same way as PetDetailScreen and
@@ -75,16 +78,17 @@ export default function ScanMapDetailScreen({ route, navigation }) {
   const getAgeDisplay = () => {
     const years = scan.pet?.ageYears || 0;
     const months = scan.pet?.ageMonths || 0;
-    if (years === 0 && months === 0) return 'Age not specified';
-    if (years === 0) return `${months} month${months !== 1 ? 's' : ''} old`;
-    if (months === 0) return `${years} year${years !== 1 ? 's' : ''} old`;
-    return `${years} year${years !== 1 ? 's' : ''} & ${months} month${months !== 1 ? 's' : ''} old`;
+    if (years === 0 && months === 0) return copy('Age not specified');
+    const yearText = years === 1 ? copy('1 year') : copy('{{count}} years', {count: years});
+    const monthText = months === 1 ? copy('1 month') : copy('{{count}} months', {count: months});
+    const age = years && months ? copy('{{years}} and {{months}}', {years: yearText, months: monthText}) : years ? yearText : monthText;
+    return copy('{{age}} old', {age});
   };
   const getWeightDisplay = () =>
-    scan.pet?.weight ? `${scan.pet.weight} lbs` : 'Weight not specified';
+    scan.pet?.weight ? copy('{{weight}} lbs', {weight:scan.pet.weight}) : copy('Weight not specified');
   const scanDate = scan.scannedAt ? formatDate(scan.scannedAt) : scan.date || '';
   const scanTime = scan.scannedAt ? formatTime(scan.scannedAt) : scan.time || '';
-  const scanTitle = scan.pet?.name ? `${scan.pet.name} Scanned` : scan.title || 'Tag Scanned';
+  const scanTitle = scan.pet?.name ? copy('{{name}} Scanned', {name:scan.pet.name}) : scan.title || copy('Tag Scanned');
 
   return (
     <ScreenWrapper noBottomTabs>
@@ -125,7 +129,7 @@ export default function ScanMapDetailScreen({ route, navigation }) {
           </MapView>
         ) : (
           <View style={styles.noMapContainer}>
-            <Text style={styles.noMapText}>Location not available</Text>
+            <Text style={styles.noMapText}>{copy("Location not available")}</Text>
           </View>
         )}
 
@@ -140,13 +144,13 @@ export default function ScanMapDetailScreen({ route, navigation }) {
                 <Text style={styles.breedText}>{petBreed}</Text>
               </View>
               <Text style={styles.detailsText}>
-                <Text style={styles.detailLabel}>Weight:</Text>
+                <Text style={styles.detailLabel}>{copy("Weight:")}</Text>
                 <Text style={styles.detailValue}> {getWeightDisplay()}</Text>
                 <Text style={styles.detailValue}>  ·  </Text>
-                <Text style={styles.detailLabel}>Age:</Text>
+                <Text style={styles.detailLabel}>{copy("Age:")}</Text>
                 <Text style={styles.detailValue}> {getAgeDisplay()}</Text>
               </Text>
-              <Text style={styles.ownerText}>Owner: {ownerName}</Text>
+              <Text style={styles.ownerText}>{copy("Owner:") + " "}{ownerName}</Text>
             </View>
             <View style={styles.petImageContainer}>
               <Image 
@@ -161,7 +165,7 @@ export default function ScanMapDetailScreen({ route, navigation }) {
           {scan.latitude && scan.longitude && (
             <View style={styles.buttonContainer}>
               <Button
-                title="View Directions"
+                title={copy("View Directions")}
                 onPress={handleViewDirections}
                 size='small'
               />
@@ -315,3 +319,4 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
 });
+

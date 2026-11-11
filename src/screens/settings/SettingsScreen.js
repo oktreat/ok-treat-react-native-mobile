@@ -8,13 +8,14 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon } from '../../assets';
 import { logout } from '../../store/slices/authSlice';
 import { clearPushTokenOnServer } from '../../services/notificationService';
-import { LEGAL_URLS, openInAppBrowser } from '../../config/links';
+import { getInformation } from './informationContent';
 import api from '../../config/api';
 
 export default function SettingsScreen({ navigation }) {
   useCopyUpdates();
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const informationTitle = (page) => getInformation(i18n.resolvedLanguage || i18n.language, page).title;
 
   const handleBack = () => {
     navigation.goBack();
@@ -41,7 +42,7 @@ export default function SettingsScreen({ navigation }) {
       [
         { text: copy("Cancel"), style: 'cancel' },
         {
-          text: 'Delete',
+          text: copy('Delete'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -49,7 +50,7 @@ export default function SettingsScreen({ navigation }) {
               await clearPushTokenOnServer().catch(() => {});
               dispatch(logout());
             } catch (e) {
-              Alert.alert(copy("Error"), e?.response?.data?.message || 'Failed to delete account. Please try again.');
+              Alert.alert(copy("Error"), e?.response?.data?.message || copy('Failed to delete account. Please try again.'));
             }
           },
         },
@@ -71,14 +72,14 @@ export default function SettingsScreen({ navigation }) {
     { title: t('settings.language'), screen: 'Language', params: { fromSettings: true } },
     { title: copy('Payment currency'), screen: 'PaymentCountry' },
     { title: 'Blocked Users', screen: 'BlockedUsers' },
-    { title: t('settings.privacyChoices'), action: () => openInAppBrowser(LEGAL_URLS.privacy) },
+    { title: informationTitle('privacyChoices'), screen: 'Information', params: { page: 'privacyChoices' } },
     { title: t('settings.logout'), action: handleLogout },
   ];
 
   const aboutSettings = [
-    { title: t('settings.privacyPolicy'), action: () => openInAppBrowser(LEGAL_URLS.privacy) },
-    { title: 'Terms of Service', action: () => openInAppBrowser(LEGAL_URLS.terms) },
-    { title: 'About OkTreat', action: () => openInAppBrowser(LEGAL_URLS.about) },
+    { title: informationTitle('privacyPolicy'), screen: 'Information', params: { page: 'privacyPolicy' } },
+    { title: informationTitle('terms'), screen: 'Information', params: { page: 'terms' } },
+    { title: informationTitle('about'), screen: 'Information', params: { page: 'about' } },
     { title: 'Delete Account', action: handleDeleteAccount, danger: true },
   ];
 
@@ -210,3 +211,4 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '-90deg' }],
   },
 });
+

@@ -1,0 +1,42 @@
+name: PALS app checks
+on:
+  push:
+    branches: [codex/pals-live-20261110]
+  pull_request:
+    branches: [codex/pals-wallet-testflight-20261109]
+permissions:
+  contents: read
+concurrency:
+  group: pals-app-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: node --test tests/pals-live.cjs tests/translations.cjs tests/chat-messages.cjs tests/notification-badge.cjs tests/notification-registration.test.cjs tests/support-inbox.cjs tests/profile-cover.cjs tests/bonding-preview.cjs
+      - run: npx expo export --platform ios --output-dir .ci/pals-ios
+      - run: npx expo export --platform android --output-dir .ci/pals-android
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: pod install
+        working-directory: ios
+      - run: xcodebuild -workspace ios/OkTreat.xcworkspace -scheme OkTreat -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

@@ -4,7 +4,7 @@ import Icon from '@expo/vector-icons/Ionicons';
 import ClearTabBar from '../components/ClearTabBar';
 
 import HomeScreen from '../screens/main/HomeScreen';
-import BondingScreen from '../screens/community/BondingScreen';
+import BondingScreen from '../screens/community/PalsLiveScreen';
 import BookingsScreen from '../screens/main/BookingsScreen';
 import BookingDetailScreen from '../screens/main/BookingDetailScreen';
 import RebookScreen from '../screens/main/RebookScreen';
@@ -55,6 +55,7 @@ import InviteFriendsScreen from '../screens/main/InviteFriendsScreen';
 import SupportScreen from '../screens/profile/SupportScreen';
 import EditProfileDetailsScreen from '../screens/profile/EditProfileDetailsScreen';
 import PrivacyPolicyScreen from '../screens/settings/PrivacyPolicyScreen';
+import InformationScreen from '../screens/settings/InformationScreen';
 
 import ScansScreen from '../screens/scans/ScansScreen';
 import ScanMapDetailScreen from '../screens/scans/ScanMapDetailScreen';
@@ -306,6 +307,7 @@ export default function MainNavigator() {
       <RootStack.Screen name="Scans" component={ScansScreen} />
       <RootStack.Screen name="ScanMapDetail" component={ScanMapDetailScreen} />
       <RootStack.Screen name="Settings" component={SettingsScreen} />
+      <RootStack.Screen name="Information" component={InformationScreen} />
       <RootStack.Screen name="Language" component={LanguageScreen} />
       <RootStack.Screen name="PaymentCountry" component={PaymentCountryScreen} />
       <RootStack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
@@ -337,4 +339,5 @@ export default function MainNavigator() {
     </RootStack.Navigator>
   );
 }
+
 

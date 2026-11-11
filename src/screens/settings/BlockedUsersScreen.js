@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -6,6 +7,7 @@ import { BackArrowIcon, DogImage } from '../../assets';
 import { getBlockedUsers, unblockUser } from '../../services/moderationService';
 
 export default function BlockedUsersScreen({ navigation }) {
+  useCopyUpdates();
   const [blocked, setBlocked] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
@@ -44,7 +46,7 @@ export default function BlockedUsersScreen({ navigation }) {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Blocked Users</Text>
+          <Text style={styles.headerTitle}>{copy("Blocked Users")}</Text>
           <View style={styles.backButton} />
         </View>
 
@@ -52,14 +54,14 @@ export default function BlockedUsersScreen({ navigation }) {
           <View style={styles.center}><ActivityIndicator size="large" color="#32A6D8" /></View>
         ) : blocked.length === 0 ? (
           <View style={styles.center}>
-            <Text style={styles.emptyText}>You haven't blocked anyone.</Text>
+            <Text style={styles.emptyText}>{copy("You haven't blocked anyone.")}</Text>
           </View>
         ) : (
           <ScrollView contentContainerStyle={styles.list} showsVerticalScrollIndicator={false}>
             {blocked.map((u) => (
               <View key={u.id} style={styles.row}>
                 <Image source={u.avatarUrl ? { uri: u.avatarUrl } : DogImage} style={styles.avatar} />
-                <Text style={styles.name} numberOfLines={1}>{u.fullName || 'User'}</Text>
+                <Text style={styles.name} numberOfLines={1}>{u.fullName || copy("User")}</Text>
                 <TouchableOpacity
                   style={styles.unblockBtn}
                   onPress={() => handleUnblock(u.id)}
@@ -67,7 +69,7 @@ export default function BlockedUsersScreen({ navigation }) {
                 >
                   {busyId === u.id
                     ? <ActivityIndicator size="small" color="#32A6D8" />
-                    : <Text style={styles.unblockText}>Unblock</Text>}
+                    : <Text style={styles.unblockText}>{copy("Unblock")}</Text>}
                 </TouchableOpacity>
               </View>
             ))}
@@ -101,3 +103,4 @@ const styles = StyleSheet.create({
   },
   unblockText: { color: '#32A6D8', fontSize: 13, fontFamily: 'Poppins', fontWeight: '600' },
 });
+

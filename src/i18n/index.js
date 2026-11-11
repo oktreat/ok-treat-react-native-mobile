@@ -35,6 +35,7 @@ import copyEnUk from './locales/copy-en-uk.json';
 import copyJa from './locales/copy-ja.json';
 import copyFr from './locales/copy-fr.json';
 import copyDe from './locales/copy-de.json';
+import copyZh from './locales/copy-zh.json';
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'en-us', name: 'English (US)' },
@@ -49,7 +50,7 @@ const resources = {
   'en-us': { translation: enUs, copy: copyEn },
   'en-uk': { translation: enUk, copy: copyEnUk },
   ja: { translation: ja, copy: copyJa },
-  zh: { translation: zh },
+  zh: { translation: zh, copy: copyZh },
   fr: { translation: fr, copy: copyFr },
   de: { translation: de, copy: copyDe },
 };

@@ -1,3 +1,4 @@
+import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform, Linking } from 'react-native';
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +24,7 @@ import {
 } from '../../assets';
 
 export default function ProfileScreen({ navigation }) {
+  useCopyUpdates();
   const dispatch = useDispatch();
   const alert = useAppAlert();
   const { user, token } = useSelector(state => state.auth);
@@ -99,7 +101,7 @@ export default function ProfileScreen({ navigation }) {
   const handleRateUs = async () => {
     const webUrl = ((Platform.OS === 'ios' ? appStoreUrl : playStoreUrl) || '').trim();
     if (!webUrl) {
-      alert('Rate Us', 'This feature is under development.', 'pending');
+      alert(copy("Rate Us"), copy("This feature is under development."), 'pending');
       return;
     }
     const idMatch = webUrl.match(/id(\d+)/);
@@ -114,7 +116,7 @@ export default function ProfileScreen({ navigation }) {
       try {
         await Linking.openURL(webUrl);
       } catch (_) {
-        alert('Rate Us', 'Could not open the app store.', 'error');
+        alert(copy("Rate Us"), copy("Could not open the app store."), 'error');
       }
     }
   };
@@ -125,7 +127,7 @@ export default function ProfileScreen({ navigation }) {
     } else if (item.action === 'rate') {
       handleRateUs();
     } else if (item.action === 'coming_soon') {
-      alert(item.comingSoonLabel || item.title, 'Coming after release', 'pending');
+      alert(item.comingSoonLabel || item.title, copy("Coming after release"), 'pending');
     } else if (item.screen) {
       navigation.navigate(item.screen);
     }
@@ -139,7 +141,7 @@ export default function ProfileScreen({ navigation }) {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Your Profile</Text>
+          <Text style={styles.headerTitle}>{copy("Your Profile")}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -169,7 +171,7 @@ export default function ProfileScreen({ navigation }) {
               </TouchableOpacity>
             </View>
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{user?.fullName || user?.name || 'Your name'}</Text>
+              <Text style={styles.profileName}>{user?.fullName || user?.name || copy("Your name")}</Text>
               <Text style={styles.profileEmail}>{user?.email || ''}</Text>
             </View>
           </View>
@@ -192,9 +194,9 @@ export default function ProfileScreen({ navigation }) {
                     </View>
                     <View style={styles.menuItemTextWrap}>
                       <Text style={[styles.menuTitle, isComingSoon && styles.menuTitleDisabled]}>
-                        {item.title}
+                        {copy(item.title)}
                       </Text>
-                      {isComingSoon && <Text style={styles.comingSoonBadge}>Coming soon</Text>}
+                      {isComingSoon && <Text style={styles.comingSoonBadge}>{copy("Coming soon")}</Text>}
                     </View>
                   </View>
                   <Icon
@@ -351,3 +353,4 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
 });
+

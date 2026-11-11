@@ -33,6 +33,7 @@ export default function Dropdown({
   textStyle,
   disabled = false,
   label,
+  formatLabel = (option) => option,
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(screenHeight)).current;
@@ -80,7 +81,7 @@ export default function Dropdown({
         <View style={styles.content}>
           {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
           <Text style={[styles.text, !value && styles.placeholder, textStyle]}>
-            {value || placeholder}
+            {value ? formatLabel(value) : placeholder}
           </Text>
         </View>
         {rightIcon && <View style={styles.iconRight}>{rightIcon}</View>}
@@ -136,7 +137,7 @@ export default function Dropdown({
                       styles.optionText,
                       isSelected && styles.optionTextSelected,
                     ]}>
-                      {option}
+                      {formatLabel(option)}
                     </Text>
                     {isSelected && (
                       <Icon name="checkmark-circle" size={20} color="#32A6D8" />
@@ -255,3 +256,4 @@ const styles = StyleSheet.create({
     color: '#32A6D8',
   },
 });
+
