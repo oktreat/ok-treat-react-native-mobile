@@ -1,5 +1,7 @@
 import { displayLocale, relativeTime } from '../../utils/localizedDisplay';
 import { copy, useCopyUpdates } from '../../i18n/copy';
+import i18n from '../../i18n';
+import { localizeNotification } from '../../utils/notificationCopy';
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Linking } from 'react-native';
 import { BackArrowIcon, MoneySendIcon, Calendar2Icon, Setting2Icon } from '../../assets';
@@ -14,6 +16,7 @@ const getRelativeTime = relativeTime;
 
 const NotificationItem = ({ notification, onPress }) => {
   const IconComp = notification.iconType === 'payment' ? MoneySendIcon : Calendar2Icon;
+  const localized = localizeNotification(notification, i18n.resolvedLanguage || i18n.language);
 
   return (
     <TouchableOpacity
@@ -25,7 +28,7 @@ const NotificationItem = ({ notification, onPress }) => {
         <View style={styles.iconContainer}>
           <IconComp width={24} height={24} color="#676869" />
         </View>
-        <Text style={styles.notificationText}>{notification.message}</Text>
+        <Text style={styles.notificationText}>{localized.message}</Text>
       </View>
       <View style={styles.notificationRight}>
         <Text style={styles.timeText}>{getRelativeTime(notification.createdAt)}</Text>

@@ -14,9 +14,9 @@ import { Lexend_300Light } from '@expo-google-fonts/lexend';
 import store from './src/store';
 import RootNavigator from './src/navigation/RootNavigator';
 import { setNavigationRef, setTokenExpiredModalHandler, handleTokenExpiredAction } from './src/config/axiosInterceptor';
-import { registerForPushNotifications, syncNotificationBadge } from './src/services/notificationService';
+import { registerForPushNotifications, syncNotificationBadge, syncPushLanguage } from './src/services/notificationService';
 import { syncUserLocation } from './src/services/locationService';
-import { initI18n } from './src/i18n';
+import i18n, { initI18n } from './src/i18n';
 import { getLanguage } from './src/utils/storage';
 import { AlertProvider } from './src/context/AlertContext';
 import { PaymentConfigProvider, usePaymentConfig } from './src/context/PaymentConfigContext';
@@ -84,6 +84,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!i18nReady) return;
     // Set token expired modal handler (only once)
     setTokenExpiredModalHandler(() => {
       setShowSessionExpired(true);
@@ -93,6 +94,8 @@ export default function App() {
     // No-ops if the user isn't logged in yet (auth-token call is gated).
     // Login screens call this again post-auth so a new login picks up the token.
     registerForPushNotifications();
+    const onLanguageChanged = () => syncPushLanguage();
+    i18n.on('languageChanged', onLanguageChanged);
 
     // Capture + sync the user's location so they can receive "missing pet near
     // you" alerts. No-ops if not logged in. On each launch it refreshes the
@@ -114,9 +117,11 @@ export default function App() {
       });
       appStateSub = AppState.addEventListener('change', (state) => {
         if (state === 'active') {
-          getLanguage().then(saved => initI18n(saved)).catch(() => {});
+          getLanguage().then(saved => initI18n(saved)).then(() => {
+            syncPushLanguage();
+            registerForPushNotifications();
+          }).catch(() => {});
           syncNotificationBadge();
-          registerForPushNotifications();
         }
       });
       const routeFromPush = (data) => {
@@ -191,6 +196,7 @@ export default function App() {
     // Cleanup
     return () => {
       setTokenExpiredModalHandler(null);
+      i18n.off('languageChanged', onLanguageChanged);
       if (responseSub) responseSub.remove();
       if (receivedSub) receivedSub.remove();
       if (appStateSub) appStateSub.remove();
@@ -198,7 +204,7 @@ export default function App() {
         document.head.removeChild(webStyle);
       }
     };
-  }, []);
+  }, [i18nReady]);
 
   const handleLoginAgain = async () => {
     setShowSessionExpired(false);

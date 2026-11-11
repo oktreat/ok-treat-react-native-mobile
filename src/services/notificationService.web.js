@@ -10,4 +10,5 @@ export const registerForPushNotifications = async () => {
 };
 
 export const syncNotificationBadge = async () => {};
+export const syncPushLanguage = async () => {};
 export const clearPushTokenOnServer = async () => {};

@@ -2,7 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-function load({ os = 'android', status = 'undetermined', granted = true, auth = 'session', token = 'device-token' } = {}) {
+function load({ os = 'android', status = 'undetermined', granted = true, auth = 'session', token = 'device-token', language = 'ja' } = {}) {
   const calls = [];
   const Notifications = {
     setBadgeCountAsync: async count => calls.push(['badge', count]),
@@ -13,10 +13,10 @@ function load({ os = 'android', status = 'undetermined', granted = true, auth = 
     requestPermissionsAsync: async value => { calls.push(['permission', value]); return { status: granted ? 'granted' : 'denied' }; },
     getDevicePushTokenAsync: async () => { calls.push(['token']); return { data: token }; },
   };
-  const source = fs.readFileSync('src/services/notificationService.js', 'utf8').replace(/^import .*;$/gm, '').replace(/export const /g, 'const ') + '\nmodule.exports = { registerForPushNotifications, clearPushTokenOnServer, initializeNotifications };';
+  const source = fs.readFileSync('src/services/notificationService.js', 'utf8').replace(/^import .*;$/gm, '').replace(/export const /g, 'const ') + '\nmodule.exports = { registerForPushNotifications, clearPushTokenOnServer, initializeNotifications, syncPushLanguage };';
   const module = { exports: {} };
   vm.runInNewContext(source, {
-    module, Notifications, Platform: { OS: os }, API_BASE_URL: 'https://test.invalid', getAuthToken: async () => auth,
+    module, Notifications, i18n: {language}, Platform: { OS: os }, API_BASE_URL: 'https://test.invalid', getAuthToken: async () => auth,
     axios: { get: async () => ({ data: { data: { unreadCount: 3 } } }), put: async (...args) => calls.push(['sync', ...args]) }, console,
   });
   return { ...module.exports, calls };
@@ -56,4 +56,20 @@ test('logout clears push registration, and modern handler allows visible, audibl
   assert.equal(result.shouldPlaySound, true);
   assert.equal(result.shouldShowBanner, true);
   assert.equal(result.shouldShowList, true);
+});
+test('push registration includes the effective app language', async () => {
+  const service = load({language: 'fr'});
+  await service.registerForPushNotifications();
+  assert.equal(service.calls.find(c => c[0] === 'sync')[2].notificationLanguage, 'fr');
+});
+test('language changes sync without changing token or requesting permissions', async () => {
+  const service = load({language: 'de'});
+  await service.syncPushLanguage();
+  assert.deepEqual(service.calls.map(c => c[0]), ['sync']);
+  const body = service.calls[0][2];
+  assert.equal(body.notificationLanguage, 'de');
+  assert.equal('pushToken' in body, false);
+  const loggedOut = load({auth: null});
+  await loggedOut.syncPushLanguage();
+  assert.equal(loggedOut.calls.length, 0);
 });
