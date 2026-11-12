@@ -6,6 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { fetchSitters } from '../../store/slices/sitterSlice';
 import ScreenWrapper from '../../components/ScreenWrapper';
+import AIMatchingBadge from '../../components/AIMatchingBadge';
 import ProfileVerifiedModal from '../../components/ProfileVerifiedModal';
 import Icon from '@expo/vector-icons/Ionicons';
 import { SplashIcon } from '../../assets';
@@ -197,7 +198,7 @@ export default function HomeScreen({ navigation }) {
             <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()} TreatCoins</Text>
           </TouchableOpacity>
           <View style={styles.barterCard}>
-            <View style={styles.barterTitleRow}><Text style={styles.barterTitle}>{t('home.barter')}</Text><TreatCoinMark size={24} /></View>
+            <View style={styles.barterTitleRow}><Text style={styles.barterTitle}>{t('home.barter')}</Text><TreatCoinMark size={24} /><AIMatchingBadge size={44} /></View>
             <View style={styles.careActions}>
               <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}>
                 <Icon name="search-outline" size={27} color="#087EA4" /><Text style={styles.findCareText}>{t('home.findCare')}</Text><Text style={styles.actionDetail}>{copy('AI-assisted matching')}</Text>
