@@ -93,7 +93,9 @@ export default function ServicesScreen({ navigation }) {
             <Text style={styles.welcomeText}>{copy("Services")}</Text>
             <Text style={styles.emailText}>{copy("You can choose services")}</Text>
           </View>
-          <AIMatchingBadge size={52} />
+          <View pointerEvents="none" style={styles.matchingBadge}>
+            <AIMatchingBadge size={64} />
+          </View>
         </View>
 
         {/* Services Grid */}
@@ -200,6 +202,12 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
+  matchingBadge: {
+    position: 'absolute',
+    left: '69%',
+    top: '50%',
+    transform: [{ translateX: -32 }, { translateY: -30 }],
+  },
   headerTextContainer: {
     flex: 1,
     gap: 2,
