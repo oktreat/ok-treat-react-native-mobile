@@ -2,6 +2,7 @@ import { copy, useCopyUpdates } from '../../i18n/copy';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
 import ScreenWrapper from '../../components/ScreenWrapper';
+import AIMatchingBadge from '../../components/AIMatchingBadge';
 import { Calendar2Icon, CalendarIconBlue } from '../../assets';
 import { 
   SliderIcon,
@@ -92,6 +93,7 @@ export default function ServicesScreen({ navigation }) {
             <Text style={styles.welcomeText}>{copy("Services")}</Text>
             <Text style={styles.emailText}>{copy("You can choose services")}</Text>
           </View>
+          <AIMatchingBadge size={52} />
         </View>
 
         {/* Services Grid */}
