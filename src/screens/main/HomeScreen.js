@@ -198,7 +198,10 @@ export default function HomeScreen({ navigation }) {
             <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()} TreatCoins</Text>
           </TouchableOpacity>
           <View style={styles.barterCard}>
-            <View style={styles.barterTitleRow}><Text style={styles.barterTitle}>{t('home.barter')}</Text><TreatCoinMark size={24} /><AIMatchingBadge size={44} /></View>
+            <View style={styles.barterTitleRow}><Text style={styles.barterTitle}>{t('home.barter')}</Text><TreatCoinMark size={24} /></View>
+            <View pointerEvents="none" style={styles.matchingBadge}>
+              <AIMatchingBadge size={64} />
+            </View>
             <View style={styles.careActions}>
               <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}>
                 <Icon name="search-outline" size={27} color="#087EA4" /><Text style={styles.findCareText}>{t('home.findCare')}</Text><Text style={styles.actionDetail}>{copy('AI-assisted matching')}</Text>
@@ -259,6 +262,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   homeContent: { paddingHorizontal: 24, paddingBottom: 24 },
   barterCard: { marginBottom: 20 },
+  matchingBadge: { position: 'absolute', left: '73%', top: -46, transform: [{ translateX: -32 }] },
   barterTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 },
   barterTitle: { fontSize: 22, fontWeight: '700', color: '#132F39' },
   balance: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: '#FFF7DC', borderRadius: 22, padding: 10, minHeight: 44 },
