@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Switch, Modal, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Switch, Modal, Dimensions, ActivityIndicator, Linking } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useAppAlert } from '../../context/AlertContext';
 import { useState, useEffect } from 'react';
@@ -6,6 +6,7 @@ import Icon from '@expo/vector-icons/Ionicons';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { BackArrowIcon, CalendarIcon, CheckCircleIcon } from '../../assets';
 import { Button } from '../../components';
+import api from '../../config/api';
 import { createBooking } from '../../services/bookingService';
 import { getUserPets } from '../../services/petService';
 import { useWallet } from '../../context/WalletContext';
@@ -62,6 +63,33 @@ export default function ContactSitterScreen({ navigation, route }) {
   const [loadingPets, setLoadingPets] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [loadingCallNumber, setLoadingCallNumber] = useState(false);
+  const sitterId = sitter?.id || sitter?.sitterId || sitter?._id;
+
+  const handleCallSitter = async () => {
+    setLoadingCallNumber(true);
+    try {
+      const response = await api.get(`/sitter/${encodeURIComponent(sitterId)}/call-number`);
+      const phone = response.data?.data?.phone;
+      if (typeof phone !== 'string' || !/^\+?[0-9]{7,15}$/.test(phone)) {
+        alert('Number unavailable', 'This sitter does not have a phone number available for calls.', 'error');
+        return;
+      }
+
+      await Linking.openURL(`tel:${phone}`);
+    } catch (error) {
+      const unavailable = error?.response?.status === 404;
+      alert(
+        unavailable ? 'Number unavailable' : 'Could not open the call',
+        unavailable
+          ? 'This sitter does not have a phone number available for calls.'
+          : 'Please try again or send a message below.',
+        'error'
+      );
+    } finally {
+      setLoadingCallNumber(false);
+    }
+  };
 
   // Refresh balance whenever this screen opens — covers the case where the
   // user pulled coins via ShopCoins on a sibling stack and came back.
@@ -266,6 +294,21 @@ export default function ContactSitterScreen({ navigation, route }) {
           keyboardDismissMode={iosKeyboardDismissMode}
           bottomOffset={90}
         >
+          {sitterId && (
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityState={{ disabled: loadingCallNumber, busy: loadingCallNumber }}
+              disabled={loadingCallNumber}
+              onPress={handleCallSitter}
+              style={styles.callSitterButton}
+            >
+              {loadingCallNumber
+                ? <ActivityIndicator size="small" color="#087EA4" />
+                : <Icon name="call-outline" size={20} color="#087EA4" />}
+              <Text style={styles.callSitterText}>Call Sitter</Text>
+            </TouchableOpacity>
+          )}
+
           {/* Service Section */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Service</Text>
@@ -484,6 +527,23 @@ export default function ContactSitterScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  callSitterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 8,
+    minHeight: 44,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#CFDFE9',
+    borderRadius: 12,
+  },
+  callSitterText: {
+    color: '#087EA4',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
