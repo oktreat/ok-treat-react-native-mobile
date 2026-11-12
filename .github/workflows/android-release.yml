@@ -1,0 +1,69 @@
+name: OkTreat Android release
+on:
+  push:
+    branches: [codex/android-2.2.0-release]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npm ci --no-audit --no-fund
+      - name: Configure upload signing when available
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [[ -z "$KEYSTORE" && -z "$STORE_PASSWORD" && -z "$KEY_ALIAS" && -z "$KEY_PASSWORD" ]]; then
+            echo "::notice::Android upload key is missing. Running build validation only."
+            exit 0
+          fi
+          : "${KEYSTORE:?Missing Android upload keystore}" "${STORE_PASSWORD:?Missing Android upload store password}" "${KEY_ALIAS:?Missing Android upload key alias}" "${KEY_PASSWORD:?Missing Android upload key password}"
+          umask 077
+          printf '%s' "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/oktreat-upload.jks"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          def escape(value):
+              return ''.join(f'\\u{ord(char):04x}' if ord(char) <= 0xffff else ''.join(f'\\u{unit:04x}' for unit in [0xd800 + ((ord(char)-0x10000) >> 10), 0xdc00 + ((ord(char)-0x10000) & 1023)]) for char in value)
+          values = {
+              'OKTREAT_UPLOAD_STORE_FILE': str(Path(os.environ['RUNNER_TEMP']) / 'oktreat-upload.jks'),
+              'OKTREAT_UPLOAD_STORE_PASSWORD': os.environ['STORE_PASSWORD'],
+              'OKTREAT_UPLOAD_KEY_ALIAS': os.environ['KEY_ALIAS'],
+              'OKTREAT_UPLOAD_KEY_PASSWORD': os.environ['KEY_PASSWORD'],
+          }
+          Path('android/keystore.properties').write_text(''.join(f'{key}={escape(value)}\n' for key, value in values.items()))
+          PY
+          echo "OKTREAT_UPLOAD_SIGNING=true" >> "$GITHUB_ENV"
+      - name: Build Android App Bundle
+        working-directory: android
+        run: bash ./gradlew :app:bundleRelease --no-daemon
+      - name: Verify signed bundle
+        if: env.OKTREAT_UPLOAD_SIGNING == 'true'
+        run: |
+          bundle=android/app/build/outputs/bundle/release/app-release.aab
+          jarsigner -verify "$bundle" | grep -F 'jar verified.'
+          keytool -printcert -jarfile "$bundle" | grep 'SHA256:'
+      - uses: actions/upload-artifact@v4
+        if: env.OKTREAT_UPLOAD_SIGNING == 'true'
+        with:
+          name: oktreat-android-2.2.0
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+      - name: Remove signing material
+        if: always()
+        run: rm -f android/keystore.properties "$RUNNER_TEMP/oktreat-upload.jks"
