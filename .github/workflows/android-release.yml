@@ -63,7 +63,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: env.OKTREAT_UPLOAD_SIGNING == 'true'
         with:
-          name: oktreat-android-2.2.1
+          name: oktreat-android-2.2.1-build-36
           path: android/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
       - name: Remove signing material
