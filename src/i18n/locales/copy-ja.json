@@ -748,5 +748,21 @@
   "Failed to delete account. Please try again.": "アカウントを削除できませんでした。もう一度お試しください。",
   "Your sitter application was not approved. Please contact support for details.": "シッターの申請は承認されませんでした。詳しくはサポートにお問い合わせください。",
   "Check your conversation before sending again; your message may have arrived.": "再送信する前に会話をご確認ください。メッセージが届いている可能性があります。",
-  "Email {{email}} for help.": "お困りの場合は{{email}}へご連絡ください。"
+  "Email {{email}} for help.": "お困りの場合は{{email}}へご連絡ください。",
+  "Photo matched": "写真照合済み",
+  "Verify main photo": "メイン写真を照合",
+  "Check photo status": "写真の確認状況を確認",
+  "Agree and continue": "同意して続行",
+  "Your photo check is still pending. Complete the Stripe check, then check status.": "写真の確認はまだ完了していません。Stripeで確認を完了してから、状況を確認してください。",
+  "We could not match this photo. Use a clear photo of only yourself and try again.": "この写真を照合できませんでした。ご自身だけが鮮明に写った写真で、もう一度お試しください。",
+  "Could not open the photo check. Please try again.": "写真の確認を開けませんでした。もう一度お試しください。",
+  "This photo matched the selfie from a completed identity check. This is not a guarantee of safety.": "この写真は、完了済みの本人確認の自撮り写真と一致しました。安全性を保証するものではありません。",
+  "Choose a clear main photo showing only you. Photo matching is separate from your identity check.": "ご自身だけが鮮明に写ったメイン写真を選んでください。写真の照合は本人確認とは別の手続きです。",
+  "Complete your live identity check before verifying a PALS photo.": "PALSの写真を照合する前に、本番の本人確認を完了してください。",
+  "Choose recent photos of yourself. Only photos labelled Photo matched have been compared with an identity selfie.": "最近のご自身の写真を選んでください。「写真照合済み」と表示された写真のみ、本人確認の自撮り写真と照合されています。",
+  "PALS invitations and chat require live identity checks. A photo is face-matched only when it carries the Photo matched label.": "PALSの招待とチャットには本番の本人確認が必要です。顔の照合済み写真には「写真照合済み」と表示されます。",
+  "Find pet care with AI sitter matching, then chat before booking.": "AIシッターマッチングでペットケアを探し、予約前にチャットできます。",
+  "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "PALSの写真や旅行プランを保存し、一人旅の仲間を探してアクティビティに招待できます。",
+  "Manage your notification preferences and contact OkTreat Care from the app.": "アプリから通知設定を管理し、OkTreat Careに問い合わせできます。",
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripeでカメラによる自撮りと写真付き身分証の提示を求められます。同意すると、OkTreatは確認済みの自撮り写真とこのPALS写真をAmazon Rekognitionに送り、顔を照合します。身分証はAmazonに送られず、PALSにも表示されません。照合が成功した場合、この写真だけに照合済みバッジが付きます。続行しますか？"
 }

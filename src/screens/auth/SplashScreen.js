@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Linking, Platform } from 'react-native';
+import { openAppStore } from '../../utils/appStoreLinks';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import * as Application from 'expo-application';
 import { useDispatch } from 'react-redux';
@@ -8,17 +9,11 @@ import { evaluateAppUpdate, tryPlayInAppUpdate } from '../../services/appVersion
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
 import { loadRemoteConfig } from '../../store/slices/appSlice';
 
-// Open the store listing; fall back to the Play web URL if the market:// deep
-// link can't be handled.
+// A failed deep link must stay in the correct platform's store.
 const openStore = async (storeUrl) => {
-  const fallback = 'https://play.google.com/store/apps/details?id=com.oktreat.app';
   try {
-    const url = storeUrl || fallback;
-    const ok = await Linking.canOpenURL(url);
-    await Linking.openURL(ok ? url : fallback);
-  } catch (e) {
-    try { await Linking.openURL(fallback); } catch (_) {}
-  }
+    await openAppStore(Linking, Platform.OS, storeUrl);
+  } catch (_) { /* Keep the existing update controls usable if the store fails. */ }
 };
 
 const splashVideo = require('../../assets/media/splash_video.mp4');

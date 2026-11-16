@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import * as Application from 'expo-application';
 import api from '../config/api';
+import { appStoreLink } from '../utils/appStoreLinks';
 
 // The installed build number — Android versionCode / iOS CFBundleVersion — as
 // an integer. This is what the backend config compares against (monotonic).
@@ -34,7 +35,7 @@ export async function evaluateAppUpdate() {
   const p = config[platform] || {};
   const installed = getInstalledBuild();
   const mode = config.mode || 'auto';
-  const storeUrl = p.storeUrl || '';
+  const storeUrl = appStoreLink(platform, p.storeUrl);
   const message = config.message || '';
 
   // Only gate when we actually know the installed build and the admin set a
@@ -46,6 +47,11 @@ export async function evaluateAppUpdate() {
     return { action: 'soft', message, storeUrl };
   }
   if (mode === 'auto') {
+    // Until the native Play updater is linked, use a dismissible prompt when
+    // the administrator supplies a known newer build. Never force an update.
+    if (installed > 0 && Number.isFinite(Number(p.latest)) && installed < Number(p.latest)) {
+      return { action: 'soft', message, storeUrl };
+    }
     return { action: 'auto', message, storeUrl };
   }
   return { action: 'none' };

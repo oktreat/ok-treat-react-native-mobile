@@ -745,5 +745,21 @@
   "Failed to delete account. Please try again.": "Impossible de supprimer le compte. Réessayez.",
   "Your sitter application was not approved. Please contact support for details.": "Votre candidature de pet-sitter n'a pas été approuvée. Contactez l'assistance pour en savoir plus.",
   "Check your conversation before sending again; your message may have arrived.": "Consultez la conversation avant de renvoyer ; votre message a peut-être été reçu.",
-  "Email {{email}} for help.": "Pour obtenir de l'aide, écrivez à {{email}}."
+  "Email {{email}} for help.": "Pour obtenir de l'aide, écrivez à {{email}}.",
+  "Photo matched": "Photo correspondante",
+  "Verify main photo": "Vérifier la photo principale",
+  "Check photo status": "Vérifier le statut de la photo",
+  "Agree and continue": "Accepter et continuer",
+  "Your photo check is still pending. Complete the Stripe check, then check status.": "La vérification est en cours. Terminez la procédure Stripe, puis vérifiez le statut.",
+  "We could not match this photo. Use a clear photo of only yourself and try again.": "Nous n’avons pas pu confirmer la correspondance. Utilisez une photo nette de vous seul et réessayez.",
+  "Could not open the photo check. Please try again.": "Impossible d’ouvrir la vérification. Réessayez.",
+  "This photo matched the selfie from a completed identity check. This is not a guarantee of safety.": "Cette photo correspond au selfie d’une vérification d’identité terminée. Cela ne garantit pas la sécurité.",
+  "Choose a clear main photo showing only you. Photo matching is separate from your identity check.": "Choisissez une photo principale nette de vous seul. La comparaison des photos est distincte de la vérification d’identité.",
+  "Complete your live identity check before verifying a PALS photo.": "Terminez votre vérification d’identité en mode réel avant de vérifier une photo PALS.",
+  "Choose recent photos of yourself. Only photos labelled Photo matched have been compared with an identity selfie.": "Choisissez des photos récentes de vous. Seules celles portant la mention Photo correspondante ont été comparées à un selfie d’identité.",
+  "PALS invitations and chat require live identity checks. A photo is face-matched only when it carries the Photo matched label.": "Les invitations et le chat PALS nécessitent une vérification d’identité en mode réel. Une photo n’est comparée au visage que si elle porte la mention Photo correspondante.",
+  "Find pet care with AI sitter matching, then chat before booking.": "Trouvez une garde grâce à la sélection de sitters par IA, puis discutez avant de réserver.",
+  "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "Enregistrez vos photos et voyages PALS, découvrez d’autres voyageurs en solo et proposez des activités.",
+  "Manage your notification preferences and contact OkTreat Care from the app.": "Gérez vos préférences de notification et contactez OkTreat Care depuis l’application.",
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe vous demandera un selfie pris avec la caméra et une pièce d’identité avec photo. Avec votre accord, OkTreat enverra le selfie vérifié et cette photo PALS à Amazon Rekognition pour comparer les visages. Votre pièce d’identité n’est ni envoyée à Amazon ni affichée sur PALS. Seule cette photo recevra un badge si la comparaison réussit. Continuer ?"
 }

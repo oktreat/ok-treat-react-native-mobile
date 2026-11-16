@@ -350,5 +350,21 @@
   "You can choose services": "选择您需要的服务",
   "You can manage your bookings": "管理您的预约",
   "You can manage your pets": "管理您的宠物",
-  "Your Pets": "您的宠物"
+  "Your Pets": "您的宠物",
+  "Photo matched": "照片已匹配",
+  "Verify main photo": "验证主照片",
+  "Check photo status": "查看照片验证状态",
+  "Agree and continue": "同意并继续",
+  "Your photo check is still pending. Complete the Stripe check, then check status.": "照片验证仍在处理中。请完成 Stripe 验证，然后查看状态。",
+  "We could not match this photo. Use a clear photo of only yourself and try again.": "无法匹配此照片。请使用只有您本人且清晰的照片重试。",
+  "Could not open the photo check. Please try again.": "无法打开照片验证，请重试。",
+  "This photo matched the selfie from a completed identity check. This is not a guarantee of safety.": "此照片与已完成身份验证的自拍照匹配。这并不保证安全。",
+  "Choose a clear main photo showing only you. Photo matching is separate from your identity check.": "请选择只有您本人的清晰主照片。照片匹配与身份验证是独立的步骤。",
+  "Complete your live identity check before verifying a PALS photo.": "请先完成正式身份验证，再验证 PALS 照片。",
+  "Choose recent photos of yourself. Only photos labelled Photo matched have been compared with an identity selfie.": "请选择您近期的照片。只有标注“照片已匹配”的照片才与身份验证自拍照进行了比对。",
+  "PALS invitations and chat require live identity checks. A photo is face-matched only when it carries the Photo matched label.": "PALS 邀请和聊天需要正式身份验证。只有带有“照片已匹配”标注的照片才经过面部匹配。",
+  "Find pet care with AI sitter matching, then chat before booking.": "通过 AI 保姆匹配寻找宠物照护，预订前先聊天。",
+  "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "保存 PALS 照片和旅行计划，发现其他独自旅行者，并发送活动邀请。",
+  "Manage your notification preferences and contact OkTreat Care from the app.": "在应用中管理通知偏好并联系 OkTreat Care。",
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe 将要求您使用相机自拍并提供带照片的身份证件。经您同意，OkTreat 会将已验证的自拍照和这张 PALS 照片发送至 Amazon Rekognition 进行面部比对。您的身份证件不会发送给 Amazon，也不会显示在 PALS 上。验证成功后，仅这张照片会获得匹配标记。是否继续？"
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View,
@@ -80,6 +80,7 @@ export default function NotificationPreferencesScreen({ navigation }) {
   const [prefs, setPrefs] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState({});
+  const pendingKeys = useRef(new Set());
 
   useEffect(() => {
     (async () => {
@@ -99,18 +100,24 @@ export default function NotificationPreferencesScreen({ navigation }) {
   }, []);
 
   const toggle = async (key) => {
-    if (!prefs) return;
+    if (!prefs || pendingKeys.current.has(key)) return;
+    pendingKeys.current.add(key);
     const next = !prefs[key];
     setPrefs((p) => ({ ...p, [key]: next }));
     setSaving((s) => ({ ...s, [key]: true }));
     try {
       const res = await api.put('/notifications/preferences', { [key]: next });
-      setPrefs(res.data?.data?.preferences || prefs);
+      const saved = res.data?.data?.preferences?.[key];
+      if (res.data?.success === false || typeof saved !== 'boolean') throw new Error('Preference save was not confirmed');
+      // Another category may have been changed while this request was running.
+      // A whole-response replacement would overwrite that newer local choice.
+      setPrefs((current) => ({ ...current, [key]: saved }));
     } catch (e) {
       // Roll back optimistic update
       setPrefs((p) => ({ ...p, [key]: !next }));
       alert(copy('Failed to update'), e?.response?.data?.message || copy('Try again.'), 'error');
     } finally {
+      pendingKeys.current.delete(key);
       setSaving((s) => ({ ...s, [key]: false }));
     }
   };

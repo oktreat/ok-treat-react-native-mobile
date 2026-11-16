@@ -456,5 +456,21 @@
   "Resend code in": "Resend code in",
   "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.": "Your name, email and message will be shared with the OkTreat support team. Do not send passwords or payment card details.",
   "Weight not specified": "Weight not specified",
-  "{{weight}} lbs": "{{weight}} lbs"
+  "{{weight}} lbs": "{{weight}} lbs",
+  "Photo matched": "Photo matched",
+  "Verify main photo": "Verify main photo",
+  "Check photo status": "Check photo status",
+  "Agree and continue": "Agree and continue",
+  "Your photo check is still pending. Complete the Stripe check, then check status.": "Your photo check is still pending. Complete the Stripe check, then check status.",
+  "We could not match this photo. Use a clear photo of only yourself and try again.": "We could not match this photo. Use a clear photo of only yourself and try again.",
+  "Could not open the photo check. Please try again.": "Could not open the photo check. Please try again.",
+  "This photo matched the selfie from a completed identity check. This is not a guarantee of safety.": "This photo matched the selfie from a completed identity check. This is not a guarantee of safety.",
+  "Choose a clear main photo showing only you. Photo matching is separate from your identity check.": "Choose a clear main photo showing only you. Photo matching is separate from your identity check.",
+  "Complete your live identity check before verifying a PALS photo.": "Complete your live identity check before verifying a PALS photo.",
+  "Choose recent photos of yourself. Only photos labelled Photo matched have been compared with an identity selfie.": "Choose recent photos of yourself. Only photos labelled Photo matched have been compared with an identity selfie.",
+  "PALS invitations and chat require live identity checks. A photo is face-matched only when it carries the Photo matched label.": "PALS invitations and chat require live identity checks. A photo is face-matched only when it carries the Photo matched label.",
+  "Find pet care with AI sitter matching, then chat before booking.": "Find pet care with AI sitter matching, then chat before booking.",
+  "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.",
+  "Manage your notification preferences and contact OkTreat Care from the app.": "Manage your notification preferences and contact OkTreat Care from the app.",
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?"
 }

@@ -1,11 +1,12 @@
 import { copy, useCopyUpdates } from '../i18n/copy';
 import React, { useEffect, useState } from 'react';
 import { Alert, Linking, Modal, Platform, Text, TouchableOpacity, View } from 'react-native';
-import Constants from 'expo-constants';
+import * as Application from 'expo-application';
+import { APP_STORE_URL } from '../utils/appStoreLinks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
-const STORE = 'https://apps.apple.com/app/id6479255523';
-const release = '2.1.0-pals-profile-preview-2';
+const STORE = APP_STORE_URL;
+const release = '2.2.1-pals-and-app-fixes';
 const newer = (a, b) => {
   const left = a.split('.').map(Number),
     right = b.split('.').map(Number);
@@ -41,7 +42,8 @@ export default function ReleaseNotice() {
         } finally {
           clearTimeout(timeout);
         }
-        const current = Constants.nativeAppVersion || Constants.expoConfig?.version;
+        // app.json can lag a signed native release. Compare the installed binary.
+        const current = Application.nativeApplicationVersion;
         const available = data.results?.[0]?.version;
         if (live && current && available && /^\d+(\.\d+)*$/.test(available) && newer(available, current)) {
           await AsyncStorage.setItem('update-reminder-at', String(Date.now()));
@@ -76,7 +78,7 @@ export default function ReleaseNotice() {
           fontSize: 23,
           color: '#173342',
           fontWeight: '700'
-        }}>{copy("What’s new")}</Text>{['Find and offer pet care more easily from your refreshed home page.', 'Try the Pals profile form and explore the sample discovery map.', 'Enjoy a fresh TreatCoins look and gentle coin animations.'].map(paragraph => <Text key={copy(paragraph)} style={{
+        }}>{copy("What’s new")}</Text>{['Find pet care with AI sitter matching, then chat before booking.', 'Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.', 'Manage your notification preferences and contact OkTreat Care from the app.'].map(paragraph => <Text key={paragraph} style={{
           color: '#365463',
           lineHeight: 24
         }}>{copy(paragraph)}</Text>)}
@@ -84,7 +86,7 @@ export default function ReleaseNotice() {
           color: '#486371',
           fontSize: 13,
           lineHeight: 20
-        }}>{copy("Pals is a preview with fictional members. Profile details stay on this phone. Invitations and reports are not sent.")}</Text><TouchableOpacity accessibilityRole="button" onPress={() => {
+        }}>{copy("PALS invitations and chat require live identity checks. A photo is face-matched only when it carries the Photo matched label.")}</Text><TouchableOpacity accessibilityRole="button" onPress={() => {
           setShow(false);
           AsyncStorage.setItem(key, '1').catch(() => {});
         }} style={{
