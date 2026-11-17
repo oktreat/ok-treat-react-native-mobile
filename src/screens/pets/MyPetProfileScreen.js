@@ -295,8 +295,15 @@ export default function MyPetProfileScreen({ route, navigation }) {
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Your Pet Profile</Text>
-          <TouchableOpacity style={styles.placeholder} onPress={handleSharePetTag}>
-            <Icon name="share-social-outline" size={22} color="#0D0D12" />
+          <TouchableOpacity
+            style={styles.shareButton}
+            onPress={handleSharePetTag}
+            accessibilityRole="button"
+            accessibilityLabel="Share pet profile"
+            accessibilityHint="Opens sharing options for this pet's public tag page."
+          >
+            <Icon name="share-social-outline" size={20} color="#087EA4" />
+            <Text style={styles.shareButtonText}>Share</Text>
           </TouchableOpacity>
         </View>
 
@@ -641,6 +648,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins',
     fontWeight: '500',
     lineHeight: 24.8,
+  },
+  shareButton: {
+    width: 56,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#EAF7FC',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shareButtonText: {
+    color: '#087EA4',
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 2,
   },
   placeholder: {
     width: 48,
