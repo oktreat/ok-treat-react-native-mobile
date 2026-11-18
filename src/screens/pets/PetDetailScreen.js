@@ -1,3 +1,4 @@
+import { formatPetAge } from '../../utils/petAge';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Linking, Dimensions, Share, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import { BackArrowIcon, LocationArrowCircleIcon, WhatsappIcon, PhoneCallIcon, DogIcon } from '../../assets';
@@ -34,16 +35,7 @@ export default function PetDetailScreen({ route, navigation }) {
   }
 
   // Format age display
-  const getAgeDisplay = () => {
-    if (!pet) return '';
-    const years = pet.ageYears || 0;
-    const months = pet.ageMonths || 0;
-    
-    if (years === 0 && months === 0) return 'Age not specified';
-    if (years === 0) return `${months} month${months !== 1 ? 's' : ''} old`;
-    if (months === 0) return `${years} year${years !== 1 ? 's' : ''} old`;
-    return `${years} year${years !== 1 ? 's' : ''} & ${months} month${months !== 1 ? 's' : ''} old`;
-  };
+  const getAgeDisplay = () => formatPetAge(pet);
 
   // Format weight display
   const getWeightDisplay = () => {

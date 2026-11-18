@@ -1,3 +1,4 @@
+import { formatPetAge } from '../../utils/petAge';
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, ActivityIndicator, Share, Alert } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
@@ -159,7 +160,7 @@ export default function MyPetProfileScreen({ route, navigation }) {
         name: pet.name || '',
         breed: pet.breed || '',
         type: pet.petType || '',
-        age: pet.ageYears ? `${pet.ageYears} years${pet.ageMonths ? ` ${pet.ageMonths} months` : ''}` : '',
+        age: formatPetAge(pet),
         weight: pet.weight || '',
         sex: pet.sex || '',
         temperament: pet.energyLevel || '',
@@ -191,16 +192,7 @@ export default function MyPetProfileScreen({ route, navigation }) {
   };
 
   // Format age display
-  const getAgeDisplay = () => {
-    if (!pet) return '';
-    const years = pet.ageYears || 0;
-    const months = pet.ageMonths || 0;
-
-    if (years === 0 && months === 0) return 'Age not specified';
-    if (years === 0) return `${months} month${months !== 1 ? 's' : ''} old`;
-    if (months === 0) return `${years} year${years !== 1 ? 's' : ''} old`;
-    return `${years} year${years !== 1 ? 's' : ''} & ${months} month${months !== 1 ? 's' : ''} old`;
-  };
+  const getAgeDisplay = () => formatPetAge(pet);
 
   // Format weight display
   const getWeightDisplay = () => {

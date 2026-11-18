@@ -1,3 +1,4 @@
+import { petFormPayload } from '../utils/petAgeForm';
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 import { getAuthToken } from '../utils/storage';
@@ -24,7 +25,7 @@ authApi.interceptors.request.use(async (config) => {
 // Create a new pet
 export const createPet = async (petData) => {
   try {
-    const response = await authApi.post('/pets', petData);
+    const response = await authApi.post('/pets', petFormPayload(petData));
     return response.data;
   } catch (error) {
     console.error('Create pet error:', error.response?.data || error.message);
@@ -57,7 +58,7 @@ export const getPetById = async (petId) => {
 // Update a pet
 export const updatePet = async (petId, petData) => {
   try {
-    const response = await authApi.put(`/pets/${petId}`, petData);
+    const response = await authApi.put(`/pets/${petId}`, petFormPayload(petData));
     return response.data;
   } catch (error) {
     console.error('Update pet error:', error.response?.data || error.message);

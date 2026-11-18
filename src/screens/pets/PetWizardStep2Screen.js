@@ -1,3 +1,5 @@
+import { formatPetAge } from '../../utils/petAge';
+import { ageInputFromForm } from '../../utils/petAgeForm';
 import { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -32,7 +34,7 @@ export default function PetWizardStep2Screen({ formData, setFormData }) {
         name: formData.name || '',
         breed: formData.breed || '',
         type: formData.petType || '',
-        age: formData.ageYears ? `${formData.ageYears} years${formData.ageMonths ? ` ${formData.ageMonths} months` : ''}` : '',
+        age: formatPetAge(ageInputFromForm(formData)),
         weight: formData.weight || '',
         sex: formData.sex || '',
       };
