@@ -71,7 +71,7 @@ jobs:
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Upload OkTreat 2.2.1 without startup popup to TestFlight'
+        if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Build OkTreat 2.2.1 with automatic pet age and sharing'
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
