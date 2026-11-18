@@ -1,3 +1,4 @@
+import PetAgeInput from '../../components/PetAgeInput';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, ActivityIndicator, Image } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useAppAlert } from '../../context/AlertContext';
@@ -148,31 +149,7 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
             </View>
           </View>
 
-          {/* Age Row */}
-          <View style={styles.rowFields}>
-            <View style={styles.halfField}>
-              <Text style={styles.fieldLabel}>Age (Yr.)</Text>
-              <Input
-                type="number"
-                placeholder="e.g., 3"
-                keyboardType="numeric"
-                value={formData.ageYears}
-                onChangeText={(text) => setFormData({ ...formData, ageYears: text })}
-                containerStyle={styles.inputContainer}
-              />
-            </View>
-            <View style={styles.halfField}>
-              <Text style={styles.fieldLabel}>Age (Mo.)</Text>
-              <Input
-                type="number"
-                placeholder="e.g., 6"
-                keyboardType="numeric"
-                value={formData.ageMonths}
-                onChangeText={(text) => setFormData({ ...formData, ageMonths: text })}
-                containerStyle={styles.inputContainer}
-              />
-            </View>
-          </View>
+          <PetAgeInput formData={formData} setFormData={setFormData} />
 
           {/* Sex Selection */}
           <View style={styles.fieldContainer}>

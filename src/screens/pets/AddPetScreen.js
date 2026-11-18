@@ -1,3 +1,4 @@
+import { validAgeForm } from '../../utils/petAgeForm';
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal, ActivityIndicator } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
@@ -25,6 +26,8 @@ export default function AddPetScreen({ navigation, route }) {
     name: '',
     weight: '',
     breed: '',
+    ageMode: 'birthday',
+    dateOfBirth: '',
     ageYears: '',
     ageMonths: '',
     sex: '',
@@ -71,7 +74,7 @@ export default function AddPetScreen({ navigation, route }) {
 
   // Helpers
   const has = (v) => v !== undefined && v !== null && String(v).trim() !== '';
-  const hasAge = () => has(formData.ageYears) || has(formData.ageMonths);
+  const hasAge = () => validAgeForm(formData);
 
   // Each step lists the fields the user MUST fill before Next becomes
   // active. The list is ordered — getValidationMessage walks it and
@@ -83,7 +86,7 @@ export default function AddPetScreen({ navigation, route }) {
       ['name',        'Please enter the pet\'s name',            () => has(formData.name)],
       ['weight',      'Please enter the pet\'s weight',          () => has(formData.weight)],
       ['breed',       'Please enter the pet\'s breed',           () => has(formData.breed)],
-      ['age',         'Please enter the pet\'s age',             hasAge],
+      ['age',         'Choose a birthday or enter a valid estimated age (months 0–11)',             hasAge],
       ['sex',         'Please select the pet\'s sex',            () => has(formData.sex)],
       ['photo',       'Please upload a photo of the pet',        () => has(formData.photo)],
     ],

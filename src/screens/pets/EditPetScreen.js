@@ -1,3 +1,4 @@
+import { validAgeForm, ageFormFromPet } from '../../utils/petAgeForm';
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal, ActivityIndicator } from 'react-native';
 import moment from 'moment';
@@ -37,6 +38,8 @@ export default function EditPetScreen({ navigation, route }) {
     name: '',
     weight: '',
     breed: '',
+    ageMode: 'birthday',
+    dateOfBirth: '',
     ageYears: '',
     ageMonths: '',
     sex: '',
@@ -80,8 +83,7 @@ export default function EditPetScreen({ navigation, route }) {
           name: pet.name || '',
           weight: pet.weight ? String(pet.weight) : '',
           breed: pet.breed || '',
-          ageYears: pet.ageYears ? String(pet.ageYears) : (pet.age ? String(Math.floor(parseFloat(pet.age))) : ''),
-          ageMonths: pet.ageMonths ? String(pet.ageMonths) : '',
+          ...ageFormFromPet(pet),
           sex: pet.sex || pet.gender || '',
           photo: pet.photo || pet.profileImage || pet.photoUrl || '',
           microchipped: pet.microchipped || '',
@@ -140,14 +142,14 @@ export default function EditPetScreen({ navigation, route }) {
   // optional on EDIT — many legacy pets were created without one and
   // forcing re-upload on every edit is unfriendly.
   const has = (v) => v !== undefined && v !== null && String(v).trim() !== '';
-  const hasAge = () => has(formData.ageYears) || has(formData.ageMonths);
+  const hasAge = () => validAgeForm(formData);
   const STEP_RULES = {
     1: [
       ['petType', 'Please select a pet type',                 () => has(formData.petType)],
       ['name',    'Please enter the pet\'s name',             () => has(formData.name)],
       ['weight',  'Please enter the pet\'s weight',           () => has(formData.weight)],
       ['breed',   'Please enter the pet\'s breed',            () => has(formData.breed)],
-      ['age',     'Please enter the pet\'s age',              hasAge],
+      ['age',     'Choose a birthday or enter a valid estimated age (months 0–11)',              hasAge],
       ['sex',     'Please select the pet\'s sex',             () => has(formData.sex)],
       // photo optional on edit — see note above
     ],

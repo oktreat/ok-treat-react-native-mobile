@@ -18,5 +18,6 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: node --test tests/fair-sitter-matching.cjs tests/learned-sitter-matching.cjs tests/bonding-preview.cjs
+      - run: node --test tests/pet-age.test.cjs tests/pet-age-form.cjs
       - name: Verify iPhone JavaScript bundle
         run: npx expo export --platform ios --output-dir .ci/matching-ios

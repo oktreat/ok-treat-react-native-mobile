@@ -1,3 +1,4 @@
+import { getPetAge } from '../../utils/petAge';
 import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, ActivityIndicator, RefreshControl, Animated, PanResponder, Modal } from 'react-native';
@@ -71,15 +72,15 @@ const SwipeablePetCard = ({ pet, onPress, onDelete }) => {
   };
 
   const getAgeDisplay = () => {
-    const years = pet.ageYears || 0;
-    const months = pet.ageMonths || 0;
+    const age = getPetAge(pet);
+    if (!age) return copy('Age not specified');
+    const { years, months } = age;
     
-    if (years === 0 && months === 0) return copy('Age not specified');
+    if (years === 0 && months === 0) return copy('Under 1 month old');
     const monthText = copy(months === 1 ? '{{count}} month' : '{{count}} months', { count: months });
     const yearText = copy(years === 1 ? '{{count}} year' : '{{count}} years', { count: years });
-    if (years === 0) return monthText;
-    if (months === 0) return yearText;
-    return yearText + ' · ' + monthText;
+    const label = years === 0 ? monthText : months === 0 ? yearText : yearText + ' · ' + monthText;
+    return age.estimated ? copy('About {{age}}', { age: label }) : label;
   };
 
   const getWeightDisplay = () => {

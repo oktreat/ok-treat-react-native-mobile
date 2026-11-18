@@ -1,3 +1,4 @@
+import { formatPetAge } from '../../../../utils/petAge';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { useAppAlert } from '../../../../context/AlertContext';
 import React, { useState } from 'react';
@@ -165,7 +166,7 @@ export default function YourPetsScreen({ navigation }) {
                     <Text style={styles.petInfoLabel}>Weight:</Text>
                     <Text style={styles.petInfoValue}> {pet.weight || 'N/A'}          .         </Text>
                     <Text style={styles.petInfoLabel}>Age:</Text>
-                    <Text style={styles.petInfoValue}> {pet.age || 'N/A'}</Text>
+                    <Text style={styles.petInfoValue}> {formatPetAge(pet)}</Text>
                   </Text>
                 </View>
 
