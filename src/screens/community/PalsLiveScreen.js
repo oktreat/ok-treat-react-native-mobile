@@ -1,5 +1,5 @@
 import React, {useEffect,useRef,useState} from 'react';
-import {ActivityIndicator,Alert,Image,KeyboardAvoidingView,Modal,Platform,ScrollView,StyleSheet,Switch,Text,TextInput,TouchableOpacity,View} from 'react-native';
+import {ActivityIndicator,AppState,Alert,Image,KeyboardAvoidingView,Modal,Platform,ScrollView,StyleSheet,Switch,Text,TextInput,TouchableOpacity,View} from 'react-native';
 import {useSelector} from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -25,11 +25,18 @@ export default function PalsLiveScreen({navigation}) {
  const operation=useRef(false);
  const mounted=useRef(true),revision=useRef(0),pendingMessage=useRef(null);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;revision.current++}},[]);
- async function refresh(){const owner=userId;const data=await palsRequest('me');if(!mounted.current||accountRef.current!==owner)return;setMe(data);setSelectedTrip(old=>data.trips.some(t=>t.id===old)?old:data.trips[0]?.id||'');const p=data.profile;setForm(p?{...p,interests:p.interests.join(', '),languages:p.languages.join(', '),adult:true,single:true,rules:true}:emptyProfile);setReady(true);}
+ const readSequence=useRef(0),savedForm=useRef(null);
+ async function refresh(preserveDraft=false){const seq=++readSequence.current;const owner=userId;const data=await palsRequest('me');if(seq!==readSequence.current || !mounted.current||accountRef.current!==owner)return;setMe(data);setSelectedTrip(old=>data.trips.some(t=>t.id===old)?old:data.trips[0]?.id||'');const p=data.profile;const nextForm=p?{...p,interests:p.interests.join(', '),languages:p.languages.join(', '),adult:true,single:true,rules:true}:emptyProfile;const previous=savedForm.current;savedForm.current=nextForm;setForm(current=>preserveDraft && previous && p ? {...nextForm,...Object.fromEntries(Object.keys(emptyProfile).filter(key=>current[key]!==previous[key]).map(key=>[key,current[key]]))}:nextForm);setReady(true);}
  async function refreshVerification(){const owner=userId;const data=await palsRequest('me');if(mounted.current&&accountRef.current===owner)setMe(data);}
  useEffect(()=>{revision.current++;setMe(null);setPendingPhotos([]);setForm(emptyProfile);setMembers([]);setChat(null);setMessages([]);setDetail(null);setInvitations([]);setReady(false);setError('');refresh().catch(e=>{if(mounted.current){setError(e.message);setReady(true)}});},[userId]);
  async function run(work){if(operation.current)return;operation.current=true;setBusy(true);setError('');try{await work()}catch(e){if(mounted.current)setError(e.message)}finally{operation.current=false;if(mounted.current)setBusy(false)}}
  async function inbox(){const data=await palsRequest('invitations');if(mounted.current)setInvitations(data.invitations);}
+ useEffect(()=>{
+   const resume=()=>{if(userId && navigation.isFocused() && !operation.current) void run(()=>refresh(true));};
+   const unsubscribe=navigation.addListener('focus',resume);
+   const subscription=AppState.addEventListener('change',state=>{if(state==='active')resume()});
+   return ()=>{unsubscribe();subscription.remove()};
+ },[navigation,userId]);
  useEffect(()=>{if(tab!=='Invitations'||!userId)return;let active=true;const update=()=>palsRequest('invitations').then(d=>{if(active)setInvitations(d.invitations)}).catch(e=>{if(active)setError(e.message)});update();const timer=setInterval(update,15000);return()=>{active=false;clearInterval(timer)}},[tab,userId]);
  useEffect(()=>{if(!chat)return;const current=++revision.current;setMessages([]);setOlder(false);setDraft('');pendingMessage.current=null;const update=()=>palsRequest('invitations/'+chat.id+'/messages').then(d=>{if(mounted.current&&revision.current===current){setMessages(d.messages);setOlder(d.hasMore)}}).catch(e=>{if(mounted.current&&revision.current===current){setError(e.message);setChat(null)}});update();const timer=setInterval(update,10000);return()=>{revision.current++;clearInterval(timer)}},[chat?.id,userId]);
  const patch=(name,value)=>setForm(p=>({...p,[name]:value}));
