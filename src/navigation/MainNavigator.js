@@ -23,6 +23,8 @@ import PetWizardStep3Screen from '../screens/pets/PetWizardStep3Screen';
 import PetWizardStep4Screen from '../screens/pets/PetWizardStep4Screen';
 import PetQRScanScreen from '../screens/pets/PetQRScanScreen';
 import PetQRManualEntryScreen from '../screens/pets/PetQRManualEntryScreen';
+import AiVetScreen from '../screens/pets/AiVetScreen';
+import PetCareDiaryScreen from '../screens/pets/PetCareDiaryScreen';
 
 import SitterMapViewScreen from '../screens/map/SitterMapViewScreen';
 
@@ -268,6 +270,8 @@ export default function MainNavigator() {
       <RootStack.Screen name="EditPet" component={EditPetScreen} />
       <RootStack.Screen name="PetDetail" component={PetDetailScreen} />
       <RootStack.Screen name="MyPetProfile" component={MyPetProfileScreen} />
+      <RootStack.Screen name="AiVet" component={AiVetScreen} />
+      <RootStack.Screen name="PetCareDiary" component={PetCareDiaryScreen} />
       <RootStack.Screen name="ReportMissing" component={ReportMissingScreen} />
       <RootStack.Screen name="NearbyMissingPet" component={NearbyMissingPetScreen} />
       <RootStack.Screen name="PetWizardStep1" component={PetWizardStep1Screen} />

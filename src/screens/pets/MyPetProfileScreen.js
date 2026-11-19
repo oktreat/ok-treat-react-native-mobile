@@ -523,6 +523,14 @@ export default function MyPetProfileScreen({ route, navigation }) {
                   <Text style={styles.cardDescription}>
                     Provide the sitter with the information they need to keep your pet safe and healthy.
                   </Text>
+                  <TouchableOpacity
+                    accessibilityRole="button"
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, borderRadius: 12, backgroundColor: '#EAF5FC', marginBottom: 14 }}
+                    onPress={() => navigation.navigate('PetCareDiary', { petId: pet.id, petName: pet.name })}
+                  >
+                    <Icon name="journal-outline" size={20} color="#087EA4" />
+                    <Text style={{ color: '#175B76', fontWeight: '700' }}>Open care diary</Text>
+                  </TouchableOpacity>
 
                   {/* Food allergies */}
                   {Array.isArray(pet.foodAllergies) && pet.foodAllergies.length > 0 && (

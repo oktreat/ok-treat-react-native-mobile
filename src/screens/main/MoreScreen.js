@@ -138,6 +138,11 @@ export default function MoreScreen({ navigation }) {
       screen: 'PetList',
       component: PawIcon
     },
+    {
+      title: 'Ask AiVet',
+      screen: 'AiVet',
+      component: PawIcon,
+    },
     // Tester comment 5 (round 5): wanted My Bookings accessible from the
     // More tab in addition to the Home grid card. Grouped here with the
     // other "things I own/manage" rows.

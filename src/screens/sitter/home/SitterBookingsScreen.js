@@ -89,6 +89,7 @@ export default function SitterBookingsScreen({ navigation }) {
           clientName: client.fullName || client.name || 'Client',
           clientImage: avatar ? { uri: avatar } : DogImage,
           petName: booking.pet?.name || '',
+          petId: booking.pet?.id || booking.petId || null,
           serviceType: humanizeService(booking.serviceType || booking.service),
           date: formatShortDate(startDate),
           dateTime: formatDateTime(startDate, endDate),
@@ -279,6 +280,15 @@ export default function SitterBookingsScreen({ navigation }) {
             <Icon name="hourglass-outline" size={14} color="#E5A33D" />
             <Text style={styles.awaitingText}>Waiting for owner to confirm</Text>
           </View>
+        )}
+        {booking.petId && ['CONFIRMED', 'ONGOING', 'COMPLETED'].includes(booking.rawStatus) && (
+          <TouchableOpacity
+            style={styles.markButton}
+            onPress={() => navigation.navigate('PetCareDiary', { petId: booking.petId, petName: booking.petName, bookingId: booking.id, sitterMode: true })}
+          >
+            <Icon name="camera-outline" size={16} color="#FFFFFF" />
+            <Text style={styles.markButtonText}>Share care update</Text>
+          </TouchableOpacity>
         )}
       </View>
     );

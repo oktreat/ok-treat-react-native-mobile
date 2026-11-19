@@ -247,6 +247,18 @@ export default function BookingDetailScreen({ navigation, route }) {
                   )}
                 </View>
               </View>
+              <TouchableOpacity
+                style={[styles.actionBtn, styles.actionPrimary, { marginTop: 14 }]}
+                onPress={() => navigation.navigate('PetCareDiary', {
+                  petId: booking.petId || booking.pet?.id,
+                  petName,
+                  bookingId: booking.id,
+                  sitterMode: false,
+                })}
+              >
+                <Icon name="journal-outline" size={18} color="#FFFFFF" />
+                <Text style={styles.actionPrimaryText}>{status === 'COMPLETED' ? copy('View care updates') : status === 'ONGOING' ? copy('Check in on your pet') : copy('Prepare for this stay')}</Text>
+              </TouchableOpacity>
             </View>
           )}
 
