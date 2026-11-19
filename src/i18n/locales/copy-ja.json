@@ -766,5 +766,9 @@
   "Find pet care with AI sitter matching, then chat before booking.": "AIシッターマッチングでペットケアを探し、予約前にチャットできます。",
   "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "PALSの写真や旅行プランを保存し、一人旅の仲間を探してアクティビティに招待できます。",
   "Manage your notification preferences and contact OkTreat Care from the app.": "アプリから通知設定を管理し、OkTreat Careに問い合わせできます。",
-  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripeでカメラによる自撮りと写真付き身分証の提示を求められます。同意すると、OkTreatは確認済みの自撮り写真とこのPALS写真をAmazon Rekognitionに送り、顔を照合します。身分証はAmazonに送られず、PALSにも表示されません。照合が成功した場合、この写真だけに照合済みバッジが付きます。続行しますか？"
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripeでカメラによる自撮りと写真付き身分証の提示を求められます。同意すると、OkTreatは確認済みの自撮り写真とこのPALS写真をAmazon Rekognitionに送り、顔を照合します。身分証はAmazonに送られず、PALSにも表示されません。照合が成功した場合、この写真だけに照合済みバッジが付きます。続行しますか？",
+  "Ask AiVet": "AiVetに相談",
+  "View care updates": "ケアの更新を見る",
+  "Check in on your pet": "ペットの様子を確認",
+  "Prepare for this stay": "このお世話の準備"
 }

@@ -368,5 +368,9 @@
   "Find pet care with AI sitter matching, then chat before booking.": "通过 AI 保姆匹配寻找宠物照护，预订前先聊天。",
   "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "保存 PALS 照片和旅行计划，发现其他独自旅行者，并发送活动邀请。",
   "Manage your notification preferences and contact OkTreat Care from the app.": "在应用中管理通知偏好并联系 OkTreat Care。",
-  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe 将要求您使用相机自拍并提供带照片的身份证件。经您同意，OkTreat 会将已验证的自拍照和这张 PALS 照片发送至 Amazon Rekognition 进行面部比对。您的身份证件不会发送给 Amazon，也不会显示在 PALS 上。验证成功后，仅这张照片会获得匹配标记。是否继续？"
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe 将要求您使用相机自拍并提供带照片的身份证件。经您同意，OkTreat 会将已验证的自拍照和这张 PALS 照片发送至 Amazon Rekognition 进行面部比对。您的身份证件不会发送给 Amazon，也不会显示在 PALS 上。验证成功后，仅这张照片会获得匹配标记。是否继续？",
+  "Ask AiVet": "咨询 AiVet",
+  "View care updates": "查看照护更新",
+  "Check in on your pet": "查看宠物情况",
+  "Prepare for this stay": "准备这次照护"
 }

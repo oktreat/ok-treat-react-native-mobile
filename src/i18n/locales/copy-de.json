@@ -763,5 +763,9 @@
   "Find pet care with AI sitter matching, then chat before booking.": "Finde Tierbetreuung mit KI-Sitter-Matching und chatte vor der Buchung.",
   "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "Speichere PALS-Fotos und Reisepläne, entdecke andere Alleinreisende und lade sie zu Aktivitäten ein.",
   "Manage your notification preferences and contact OkTreat Care from the app.": "Verwalte deine Benachrichtigungen und kontaktiere OkTreat Care direkt in der App.",
-  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe bittet dich um ein Kamera-Selfie und einen Lichtbildausweis. Mit deiner Zustimmung sendet OkTreat das verifizierte Selfie und dieses PALS-Foto an Amazon Rekognition zum Gesichtsvergleich. Dein Ausweis wird weder an Amazon gesendet noch auf PALS angezeigt. Nur dieses Foto erhält bei erfolgreichem Abgleich ein Abzeichen. Fortfahren?"
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe bittet dich um ein Kamera-Selfie und einen Lichtbildausweis. Mit deiner Zustimmung sendet OkTreat das verifizierte Selfie und dieses PALS-Foto an Amazon Rekognition zum Gesichtsvergleich. Dein Ausweis wird weder an Amazon gesendet noch auf PALS angezeigt. Nur dieses Foto erhält bei erfolgreichem Abgleich ein Abzeichen. Fortfahren?",
+  "Ask AiVet": "AiVet fragen",
+  "View care updates": "Betreuungsupdates ansehen",
+  "Check in on your pet": "Nach Ihrem Tier sehen",
+  "Prepare for this stay": "Diese Betreuung vorbereiten"
 }

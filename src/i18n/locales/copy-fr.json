@@ -763,5 +763,9 @@
   "Find pet care with AI sitter matching, then chat before booking.": "Trouvez une garde grâce à la sélection de sitters par IA, puis discutez avant de réserver.",
   "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "Enregistrez vos photos et voyages PALS, découvrez d’autres voyageurs en solo et proposez des activités.",
   "Manage your notification preferences and contact OkTreat Care from the app.": "Gérez vos préférences de notification et contactez OkTreat Care depuis l’application.",
-  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe vous demandera un selfie pris avec la caméra et une pièce d’identité avec photo. Avec votre accord, OkTreat enverra le selfie vérifié et cette photo PALS à Amazon Rekognition pour comparer les visages. Votre pièce d’identité n’est ni envoyée à Amazon ni affichée sur PALS. Seule cette photo recevra un badge si la comparaison réussit. Continuer ?"
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe vous demandera un selfie pris avec la caméra et une pièce d’identité avec photo. Avec votre accord, OkTreat enverra le selfie vérifié et cette photo PALS à Amazon Rekognition pour comparer les visages. Votre pièce d’identité n’est ni envoyée à Amazon ni affichée sur PALS. Seule cette photo recevra un badge si la comparaison réussit. Continuer ?",
+  "Ask AiVet": "Demander à AiVet",
+  "View care updates": "Voir les nouvelles de garde",
+  "Check in on your pet": "Prendre des nouvelles de votre animal",
+  "Prepare for this stay": "Préparer cette garde"
 }

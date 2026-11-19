@@ -281,7 +281,7 @@ export default function SitterBookingsScreen({ navigation }) {
             <Text style={styles.awaitingText}>Waiting for owner to confirm</Text>
           </View>
         )}
-        {booking.petId && ['CONFIRMED', 'ONGOING', 'COMPLETED'].includes(booking.rawStatus) && (
+        {booking.petId && (['ONGOING', 'COMPLETED'].includes(booking.rawStatus) || (booking.rawStatus === 'CONFIRMED' && booking.startAtMs != null && booking.startAtMs <= Date.now())) && (
           <TouchableOpacity
             style={styles.markButton}
             onPress={() => navigation.navigate('PetCareDiary', { petId: booking.petId, petName: booking.petName, bookingId: booking.id, sitterMode: true })}

@@ -474,5 +474,9 @@
   "Find pet care with AI sitter matching, then chat before booking.": "Find pet care with AI sitter matching, then chat before booking.",
   "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.": "Save PALS photos and travel plans, discover fellow solo travellers, and send activity invitations.",
   "Manage your notification preferences and contact OkTreat Care from the app.": "Manage your notification preferences and contact OkTreat Care from the app.",
-  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?"
+  "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?": "Stripe will ask for a camera selfie and photo ID. With your agreement, OkTreat will send the verified selfie and this PALS photo to Amazon Rekognition to compare the faces. Your ID document is not sent to Amazon or shown on PALS. Only this photo receives a matched badge if the check succeeds. Continue?",
+  "Ask AiVet": "Ask AiVet",
+  "View care updates": "View care updates",
+  "Check in on your pet": "Check in on your pet",
+  "Prepare for this stay": "Prepare for this stay"
 }
