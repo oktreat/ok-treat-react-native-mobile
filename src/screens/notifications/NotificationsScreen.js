@@ -38,7 +38,9 @@ const NotificationItem = ({ notification, onPress }) => {
   );
 };
 
-export default function NotificationsScreen({ navigation }) {
+export default function NotificationsScreen({ navigation, route }) {
+  const isSitterMode = route?.params?.mode === 'sitter';
+  const accentColor = isSitterMode ? '#56AA9A' : '#32A6D8';
   useCopyUpdates();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -268,10 +270,10 @@ export default function NotificationsScreen({ navigation }) {
           <Text style={styles.headerTitle}>{copy("Notifications")}</Text>
           <TouchableOpacity
             style={styles.settingsButton}
-            onPress={() => navigation.navigate('NotificationPreferences')}
+            onPress={() => navigation.navigate('NotificationPreferences', { mode: route?.params?.mode })}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Setting2Icon width={16.36} height={16.36} color="#1C1C28" />
+            <Setting2Icon width={16.36} height={16.36} color={accentColor} />
           </TouchableOpacity>
         </View>
 
@@ -279,14 +281,14 @@ export default function NotificationsScreen({ navigation }) {
         <View style={styles.contentContainer}>
           {loading ? (
             <View style={styles.centerContainer}>
-              <ActivityIndicator size="large" color="#32A6D8" />
+              <ActivityIndicator size="large" color={accentColor} />
               <Text style={styles.loadingText}>{copy("Loading notifications...")}</Text>
             </View>
           ) : error ? (
             <View style={styles.centerContainer}>
               <Text style={styles.errorText}>{error}</Text>
               <TouchableOpacity onPress={() => { setLoading(true); fetchNotifications(); }}>
-                <Text style={styles.retryText}>{copy("Tap to retry")}</Text>
+                <Text style={[styles.retryText, { color: accentColor }]}>{copy("Tap to retry")}</Text>
               </TouchableOpacity>
             </View>
           ) : notifications.length === 0 ? (

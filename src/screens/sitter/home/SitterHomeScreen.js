@@ -177,7 +177,7 @@ export default function SitterHomeScreen({ navigation }) {
           </View>
           <TouchableOpacity
             style={styles.notificationButton}
-            onPress={() => navigation.navigate('Notifications')}
+            onPress={() => navigation.navigate('Notifications', { mode: 'sitter' })}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Icon name="notifications-outline" size={24.55} color={palette.accent} />

@@ -73,7 +73,9 @@ const CATEGORIES = [
   },
 ];
 
-export default function NotificationPreferencesScreen({ navigation }) {
+export default function NotificationPreferencesScreen({ navigation, route }) {
+  const isSitterMode = route?.params?.mode === 'sitter';
+  const accentColor = isSitterMode ? '#56AA9A' : '#32A6D8';
   const { i18n } = useTranslation();
   const copy = getNotificationPreferencesCopy(i18n.resolvedLanguage || i18n.language);
   const alert = useAppAlert();
@@ -137,7 +139,7 @@ export default function NotificationPreferencesScreen({ navigation }) {
 
         {loading ? (
           <View style={styles.center}>
-            <ActivityIndicator size="large" color="#32A6D8" />
+            <ActivityIndicator size="large" color={accentColor} />
           </View>
         ) : !prefs ? (
           <View style={styles.center}>
@@ -153,10 +155,12 @@ export default function NotificationPreferencesScreen({ navigation }) {
               {copy('Choose what you want to be notified about. Changes take effect immediately.')}
             </Text>
 
-            {CATEGORIES.map((cat) => (
+            {CATEGORIES.map((cat) => {
+              const categoryColor = isSitterMode && cat.key === 'bookings' ? '#56AA9A' : cat.color;
+              return (
               <View key={cat.key} style={styles.row}>
-                <View style={[styles.iconCircle, { backgroundColor: cat.color + '22' }]}>
-                  <Icon name={cat.icon} size={20} color={cat.color} />
+                <View style={[styles.iconCircle, { backgroundColor: categoryColor + '22' }]}>
+                  <Icon name={cat.icon} size={20} color={categoryColor} />
                 </View>
                 <View style={styles.rowBody}>
                   <Text style={styles.rowTitle}>{copy(cat.title)}</Text>
@@ -165,19 +169,20 @@ export default function NotificationPreferencesScreen({ navigation }) {
                 </View>
                 <View style={styles.switchWrap}>
                   {saving[cat.key] ? (
-                    <ActivityIndicator size="small" color="#32A6D8" />
+                    <ActivityIndicator size="small" color={accentColor} />
                   ) : (
                     <Switch
                       accessibilityLabel={copy(cat.title)}
                       value={Boolean(prefs[cat.key])}
                       onValueChange={() => toggle(cat.key)}
-                      trackColor={{ false: '#D1D5DB', true: cat.color }}
+                      trackColor={{ false: '#D1D5DB', true: categoryColor }}
                       thumbColor="#FFFFFF"
                     />
                   )}
                 </View>
               </View>
-            ))}
+            );
+            })}
 
             <View style={styles.footer}>
               <Icon name="shield-checkmark-outline" size={16} color="#818898" />
