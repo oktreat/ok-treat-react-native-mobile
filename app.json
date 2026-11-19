@@ -3,7 +3,7 @@
     "name": "OkTreat",
     "slug": "oktreat",
     "scheme": "oktreat",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
@@ -45,7 +45,7 @@
           "apiKey": "AIzaSyCKC_xOrCxAmFIdYpDVTYMDi9CYp_DE5rs"
         }
       },
-      "versionCode": 37
+      "versionCode": 38
     },
     "web": {},
     "plugins": [
