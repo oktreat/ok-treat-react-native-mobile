@@ -1,6 +1,6 @@
 import { copy, useCopyUpdates } from '../../i18n/copy';
-import { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, ActivityIndicator } from 'react-native';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { Animated, Easing, View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
@@ -23,6 +23,8 @@ export default function InviteFriendsScreen({ navigation }) {
   const referrerReward = stats?.rewardAmounts?.referrerReward ?? 100;
   const referredReward = stats?.rewardAmounts?.referredReward ?? 100;
   const [copied, setCopied] = useState(false);
+  const copiedProgress = useRef(new Animated.Value(0)).current;
+  const copyTimer = useRef(null);
 
   const code = stats?.referralCode || user?.referralCode || '';
 
@@ -40,11 +42,30 @@ export default function InviteFriendsScreen({ navigation }) {
     dispatch(loadRemoteConfig());
   }, [fetchStats, dispatch]));
 
+  useEffect(() => {
+    Animated.timing(copiedProgress, {
+      toValue: copied ? 1 : 0,
+      duration: copied ? 180 : 130,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start();
+  }, [copied, copiedProgress]);
+
+  useEffect(() => () => {
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+  }, []);
+
   const handleCopy = async () => {
     if (!code) return;
-    await Clipboard.setStringAsync(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      await Clipboard.setStringAsync(code);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+      copiedProgress.setValue(0);
+      setCopied(true);
+      copyTimer.current = setTimeout(() => setCopied(false), 1000);
+    } catch {
+      // Keep the referral screen usable if the platform clipboard is unavailable.
+    }
   };
 
   const handleShare = async () => {
@@ -97,11 +118,30 @@ export default function InviteFriendsScreen({ navigation }) {
             <Text style={styles.codeLabel}>{copy("YOUR CODE")}</Text>
             <View style={styles.codeRow}>
               <Text style={styles.code} numberOfLines={1} selectable>{code || '—'}</Text>
-              <TouchableOpacity style={styles.copyBtn} onPress={handleCopy} disabled={!code} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Icon name={copied ? 'checkmark' : 'copy-outline'} size={20} color="#32A6D8" />
-              </TouchableOpacity>
+              <View style={styles.copyAction}>
+                <Animated.View
+                  pointerEvents="none"
+                  style={[
+                    styles.copyToast,
+                    {
+                      opacity: copiedProgress,
+                      transform: [{ translateY: copiedProgress.interpolate({ inputRange: [0, 1], outputRange: [5, 0] }) }],
+                    },
+                  ]}
+                >
+                  <Text style={styles.copyToastText}>{copy('Copied!')}</Text>
+                </Animated.View>
+                <TouchableOpacity style={styles.copyBtn} onPress={handleCopy} disabled={!code} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                  <Animated.View style={{ transform: [
+                    { perspective: 500 },
+                    { rotateY: copiedProgress.interpolate({ inputRange: [0, 0.5, 1], outputRange: ['0deg', '90deg', '180deg'] }) },
+                    { scale: copiedProgress.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 0.72, 1] }) },
+                  ] }}>
+                    <Icon name={copied ? 'checkmark' : 'copy-outline'} size={20} color={copied ? '#2F9B68' : '#32A6D8'} />
+                  </Animated.View>
+                </TouchableOpacity>
+              </View>
             </View>
-            {copied && <Text style={styles.copiedText}>{copy("Copied!")}</Text>}
           </View>
 
           <TouchableOpacity style={styles.shareBtn} onPress={handleShare} disabled={!code}>
@@ -153,7 +193,9 @@ const styles = StyleSheet.create({
     width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(90,172,244,0.12)',
     justifyContent: 'center', alignItems: 'center', marginLeft: 8,
   },
-  copiedText: { color: '#3FA477', fontSize: 12, fontFamily: 'Poppins', fontWeight: '500', marginTop: 6 },
+  copyAction: { position: 'relative', marginLeft: 8 },
+  copyToast: { position: 'absolute', bottom: 46, right: -12, zIndex: 2, backgroundColor: '#173342', borderRadius: 14, paddingHorizontal: 10, paddingVertical: 5, minWidth: 66, alignItems: 'center' },
+  copyToastText: { color: '#FFFFFF', fontSize: 11, fontFamily: 'Poppins', fontWeight: '600' },
   shareBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: '#32A6D8', height: 52, borderRadius: 26, marginTop: 14,

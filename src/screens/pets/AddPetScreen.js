@@ -1,6 +1,6 @@
 import { validAgeForm } from '../../utils/petAgeForm';
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal, ActivityIndicator } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { Animated, Easing, View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal, ActivityIndicator } from 'react-native';
 import { useAppAlert } from '../../context/AlertContext';
 import Button from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -18,6 +18,8 @@ export default function AddPetScreen({ navigation, route }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validationAttempt, setValidationAttempt] = useState(0);
+  const validationReveal = useRef(new Animated.Value(1)).current;
   const totalSteps = 4;
 
   const [formData, setFormData] = useState({
@@ -121,17 +123,36 @@ export default function AddPetScreen({ navigation, route }) {
     return rules.every(([, , check]) => check());
   };
 
-  const getValidationMessage = (step) => {
+  const getMissingValidationRule = (step) => {
     const rules = STEP_RULES[step];
-    if (!rules) return '';
+    if (!rules) return null;
     const missing = rules.find(([, , check]) => !check());
-    return missing ? missing[1] : '';
+    return missing || null;
   };
 
   const isCurrentStepValid = validateStep(currentStep);
-  const validationMessage = getValidationMessage(currentStep);
+  const missingRule = getMissingValidationRule(currentStep);
+  const validationField = missingRule?.[0] || '';
+  const validationMessage = missingRule?.[1] || '';
+
+  useEffect(() => {
+    if (!validationAttempt || isCurrentStepValid) return undefined;
+    validationReveal.setValue(0);
+    const entrance = Animated.timing(validationReveal, {
+      toValue: 1,
+      duration: 220,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    });
+    entrance.start();
+    return () => entrance.stop();
+  }, [isCurrentStepValid, validationAttempt, validationReveal]);
 
   const handleNext = () => {
+    if (!isCurrentStepValid) {
+      setValidationAttempt(value => value + 1);
+      return;
+    }
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -207,7 +228,7 @@ export default function AddPetScreen({ navigation, route }) {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <PetWizardStep1Screen formData={formData} setFormData={setFormData} />;
+        return <PetWizardStep1Screen formData={formData} setFormData={setFormData} invalidField={validationAttempt ? validationField : ''} errorTrigger={validationAttempt} />;
       case 2:
         return <PetWizardStep2Screen formData={formData} setFormData={setFormData} />;
       case 3:
@@ -241,14 +262,16 @@ export default function AddPetScreen({ navigation, route }) {
         {/* Footer - Absolute positioned at bottom */}
         <View style={styles.footer}>
           {!isCurrentStepValid && validationMessage && (
-            <Text style={styles.validationMessage} numberOfLines={2}>{validationMessage}</Text>
+            <Animated.View style={{ opacity: validationReveal, transform: [{ translateY: validationReveal.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) }] }}>
+              <Text style={styles.validationMessage} numberOfLines={2}>{validationMessage}</Text>
+            </Animated.View>
           )}
           <Button 
             title={getButtonText()} 
             onPress={handleNext} 
             fullWidth 
             size="medium"
-            disabled={loading || !isCurrentStepValid}
+            disabled={loading}
           />
           {loading && (
             <View style={styles.loadingOverlay}>

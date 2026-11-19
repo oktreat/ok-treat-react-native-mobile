@@ -13,7 +13,7 @@ import { iosKeyboardDismissMode } from '../../utils/keyboard';
 
 const { width } = Dimensions.get('window');
 
-export default function PetWizardStep1Screen({ formData, setFormData }) {
+export default function PetWizardStep1Screen({ formData, setFormData, invalidField = '', errorTrigger = 0 }) {
   const alert = useAppAlert();
   const [uploading, setUploading] = React.useState(false);
 
@@ -43,7 +43,7 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
     >
       {/* Photo Upload */}
       <ImagePickerButton onImageSelected={handleImageSelected}>
-        <View style={styles.photoUploadContainer}>
+        <View style={[styles.photoUploadContainer, invalidField === 'photo' && styles.invalidField]}>
           <ImageBackground
             source={formData.photo ? { uri: formData.photo } : require('../../assets/images/Pet_default_image.png')}
             style={styles.photoBackground}
@@ -104,7 +104,7 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
                   // )
                 }
                 rightIcon={<Icon name="chevron-down" size={10} color="#FFFFFF" />}
-                containerStyle={styles.petTypeDropdown}
+                containerStyle={[styles.petTypeDropdown, invalidField === 'petType' && styles.invalidField]}
                 textStyle={styles.petTypeText}
               />
             </View>
@@ -121,6 +121,8 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
               value={formData.name}
               onChangeText={(text) => setFormData({ ...formData, name: text })}
               containerStyle={styles.inputContainer}
+              invalid={invalidField === 'name'}
+              errorTrigger={errorTrigger}
             />
           </View>
 
@@ -135,6 +137,8 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
                 value={formData.weight}
                 onChangeText={(text) => setFormData({ ...formData, weight: text })}
                 containerStyle={styles.inputContainer}
+                invalid={invalidField === 'weight'}
+                errorTrigger={errorTrigger}
               />
             </View>
             <View style={styles.halfField}>
@@ -145,11 +149,13 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
                 value={formData.breed}
                 onChangeText={(text) => setFormData({ ...formData, breed: text })}
                 containerStyle={styles.inputContainer}
+                invalid={invalidField === 'breed'}
+                errorTrigger={errorTrigger}
               />
             </View>
           </View>
 
-          <PetAgeInput formData={formData} setFormData={setFormData} />
+          <PetAgeInput formData={formData} setFormData={setFormData} invalid={invalidField === 'age'} errorTrigger={errorTrigger} />
 
           {/* Sex Selection */}
           <View style={styles.fieldContainer}>
@@ -159,6 +165,7 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
                 style={[
                   styles.sexButton,
                   formData.sex === 'Male' && styles.sexButtonActive,
+                  invalidField === 'sex' && styles.invalidField,
                 ]}
                 onPress={() => setFormData({ ...formData, sex: 'Male' })}
               >
@@ -175,6 +182,7 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
                 style={[
                   styles.sexButton,
                   formData.sex === 'Female' && styles.sexButtonActive,
+                  invalidField === 'sex' && styles.invalidField,
                 ]}
                 onPress={() => setFormData({ ...formData, sex: 'Female' })}
               >
@@ -196,6 +204,7 @@ export default function PetWizardStep1Screen({ formData, setFormData }) {
 }
 
 const styles = StyleSheet.create({
+  invalidField: { borderColor: '#D94B45', borderWidth: 2 },
   scrollContainer: {
     flex: 1,
     backgroundColor: '#FFFFFF',

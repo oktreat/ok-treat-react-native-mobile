@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, View, TextInput, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { EnvelopeIcon, PasswordIcon, EyeIcon } from '../assets';
 
 const { width } = Dimensions.get('window');
@@ -49,9 +49,27 @@ export default function Input({
   autoCorrect = false,
   style,
   containerStyle,
+  invalid = false,
+  errorTrigger = 0,
   ...props
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  const shakeX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!invalid) {
+      shakeX.setValue(0);
+      return undefined;
+    }
+    const shake = Animated.sequence([
+      Animated.timing(shakeX, { toValue: -5, duration: 45, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: 5, duration: 55, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: -3, duration: 45, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: 0, duration: 55, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+    ]);
+    shake.start();
+    return () => shake.stop();
+  }, [errorTrigger, invalid, shakeX]);
 
   // Determine icon based on type
   const getLeftIcon = () => {
@@ -103,7 +121,7 @@ export default function Input({
   const leftIconElement = getLeftIcon();
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <Animated.View style={[styles.container, invalid && styles.invalidContainer, containerStyle, { transform: [{ translateX: shakeX }] }]}>
       {leftIconElement && (
         <View style={styles.iconLeft}>
           {leftIconElement}
@@ -147,7 +165,7 @@ export default function Input({
           {rightIcon}
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -162,6 +180,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     marginBottom: 16,
+  },
+  invalidContainer: {
+    borderColor: '#D94B45',
   },
   iconLeft: {
     width: 20,

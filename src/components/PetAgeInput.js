@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Input from './Input';
 import { formatPetAge } from '../utils/petAge';
 import { ageInputFromForm } from '../utils/petAgeForm';
 
-export default function PetAgeInput({ formData, setFormData }) {
+export default function PetAgeInput({ formData, setFormData, invalid = false, errorTrigger = 0 }) {
   const [showPicker, setShowPicker] = useState(false);
+  const shakeX = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (!invalid) {
+      shakeX.setValue(0);
+      return undefined;
+    }
+    const shake = Animated.sequence([
+      Animated.timing(shakeX, { toValue: -5, duration: 45, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: 5, duration: 55, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: -3, duration: 45, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: 0, duration: 55, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+    ]);
+    shake.start();
+    return () => shake.stop();
+  }, [errorTrigger, invalid, shakeX]);
   const birthdayMode = formData.ageMode === 'birthday';
   let preview = '';
   try { preview = formatPetAge(ageInputFromForm(formData)); } catch (_) { /* Incomplete input. */ }
@@ -17,7 +32,7 @@ export default function PetAgeInput({ formData, setFormData }) {
     setFormData(previous => ({ ...previous, dateOfBirth: birthday }));
   };
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { transform: [{ translateX: shakeX }] }]}>
       <Text style={styles.label}>Birthday & age</Text>
       <View style={styles.options} accessibilityRole="radiogroup">
         {[['birthday', 'I know the birthday'], ['estimate', 'Estimate age']].map(([mode, label]) => (
@@ -29,18 +44,18 @@ export default function PetAgeInput({ formData, setFormData }) {
         ))}
       </View>
       {birthdayMode ? (
-        <TouchableOpacity style={styles.date} onPress={() => setShowPicker(true)} accessibilityRole="button" accessibilityLabel={formData.dateOfBirth ? `Change birthday, ${formData.dateOfBirth}` : 'Choose pet birthday'}>
+        <TouchableOpacity style={[styles.date, invalid && styles.invalidField]} onPress={() => setShowPicker(true)} accessibilityRole="button" accessibilityLabel={formData.dateOfBirth ? `Change birthday, ${formData.dateOfBirth}` : 'Choose pet birthday'}>
           <Text style={styles.dateText}>{formData.dateOfBirth || 'Choose birthday'}</Text>
           <Text style={styles.calendar}>▾</Text>
         </TouchableOpacity>
       ) : (
         <View style={styles.options}>
           <View style={styles.field}><Text style={styles.fieldLabel}>Years</Text>
-            <Input type="number" keyboardType="number-pad" placeholder="e.g., 3" value={formData.ageYears}
+            <Input type="number" keyboardType="number-pad" placeholder="e.g., 3" value={formData.ageYears} invalid={invalid} errorTrigger={errorTrigger}
               onChangeText={ageYears => setFormData(previous => ({ ...previous, ageYears }))} />
           </View>
           <View style={styles.field}><Text style={styles.fieldLabel}>Months (0–11)</Text>
-            <Input type="number" keyboardType="number-pad" placeholder="e.g., 6" value={formData.ageMonths}
+            <Input type="number" keyboardType="number-pad" placeholder="e.g., 6" value={formData.ageMonths} invalid={invalid} errorTrigger={errorTrigger}
               onChangeText={ageMonths => setFormData(previous => ({ ...previous, ageMonths }))} />
           </View>
         </View>
@@ -48,7 +63,7 @@ export default function PetAgeInput({ formData, setFormData }) {
       {preview ? <Text style={styles.preview} accessibilityLiveRegion="polite">{preview}</Text> : null}
       <Text style={styles.help}>{birthdayMode ? 'Age updates automatically from the birthday.' : 'Enter their age today. It will update automatically and be shown as approximate.'}</Text>
       <DateTimePickerModal isVisible={showPicker} mode="date" date={chosenDate} maximumDate={new Date()} onConfirm={chooseDate} onCancel={() => setShowPicker(false)} />
-    </View>
+    </Animated.View>
   );
 }
 
@@ -61,6 +76,7 @@ const styles = StyleSheet.create({
   optionText: { color: '#425E6D', textAlign: 'center', fontSize: 14 },
   selectedText: { color: '#125F80', fontWeight: '600' },
   date: { minHeight: 52, borderWidth: 1, borderColor: '#BDD5E1', borderRadius: 12, padding: 14, flexDirection: 'row', justifyContent: 'space-between' },
+  invalidField: { borderColor: '#D94B45', borderWidth: 2 },
   dateText: { color: '#193441', fontSize: 16 },
   calendar: { color: '#2186B0', fontSize: 18 },
   field: { flex: 1 },

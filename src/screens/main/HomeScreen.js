@@ -1,6 +1,6 @@
 import { copy, useCopyUpdates } from '../../i18n/copy';
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import { useWallet } from '../../context/WalletContext';
 import api from '../../config/api';
 import SitterModeSwitch from '../../components/SitterModeSwitch';
 import TreatCoinMark from '../../components/TreatCoinMark';
+import FloatingActionBubble from '../../components/FloatingActionBubble';
 
 // Show the referral prompt at most once per app session.
 let referralPromptCheckedThisSession = false;
@@ -25,6 +26,9 @@ let referralPromptCheckedThisSession = false;
 
 export default function HomeScreen({ navigation }) {
   useCopyUpdates();
+  const { width: viewportWidth } = useWindowDimensions();
+  const primaryBubbleSize = Math.min(144, (viewportWidth - 72) / 2);
+  const shortcutBubbleSize = Math.min(104, (viewportWidth - 48 - 20) / 3);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { user } = useSelector(state => state.auth);
@@ -203,18 +207,43 @@ export default function HomeScreen({ navigation }) {
               <AIMatchingBadge size={64} />
             </View>
             <View style={styles.careActions}>
-              <TouchableOpacity accessibilityRole="button" style={styles.findCare} onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}>
-                <Icon name="search-outline" size={27} color="#087EA4" /><Text style={styles.findCareText}>{t('home.findCare')}</Text><Text style={styles.actionDetail}>{copy('AI-assisted matching')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity accessibilityRole="button" style={styles.offerCare} disabled={checkingStatus} onPress={handleBecomeASitter}>
-                <Icon name="heart-outline" size={27} color="#087EA4" /><Text style={styles.offerCareText}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text><Text style={styles.actionDetail}>{copy('Earn TreatCoins')}</Text>
-              </TouchableOpacity>
+              <FloatingActionBubble
+                accessibilityLabel={`${t('home.findCare')}, ${copy('AI-assisted matching')}`}
+                style={[styles.primaryBubble, { width: primaryBubbleSize, height: primaryBubbleSize }]}
+                delay={0}
+                onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}
+              >
+                <Icon name="search-outline" size={29} color="#087EA4" />
+                <Text style={styles.primaryBubbleTitle}>{t('home.findCare')}</Text>
+                <Text style={styles.primaryBubbleDetail}>{copy('AI-assisted matching')}</Text>
+              </FloatingActionBubble>
+              <FloatingActionBubble
+                accessibilityLabel={`${t('home.offerCare')}, ${copy('Earn TreatCoins')}`}
+                style={[styles.primaryBubble, { width: primaryBubbleSize, height: primaryBubbleSize }]}
+                delay={420}
+                disabled={checkingStatus}
+                onPress={handleBecomeASitter}
+              >
+                <Icon name="heart-outline" size={29} color="#087EA4" />
+                <Text style={styles.primaryBubbleTitle}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text>
+                <Text style={styles.primaryBubbleDetail}>{copy('Earn TreatCoins')}</Text>
+              </FloatingActionBubble>
             </View>
           </View>
           <View style={styles.shortcutGrid}>
-            {shortcuts.map(item => <TouchableOpacity key={copy(item.title)} accessibilityRole="button" style={[styles.shortcut, { backgroundColor: item.bg }]} onPress={item.press} disabled={checkingStatus && item.press === handleBecomeASitter}>
-              <Icon name={item.icon} size={26} color={item.color} /><View><Text style={styles.shortcutTitle}>{copy(item.title)}</Text><Text style={styles.shortcutDetail}>{copy(item.detail)}</Text></View>
-            </TouchableOpacity>)}
+            {shortcuts.map((item, index) => (
+              <FloatingActionBubble
+                key={copy(item.title)}
+                accessibilityLabel={`${copy(item.title)}. ${copy(item.detail)}`}
+                style={[styles.shortcutBubble, { width: shortcutBubbleSize, height: shortcutBubbleSize, backgroundColor: item.bg }]}
+                delay={index * 180}
+                onPress={item.press}
+              >
+                <Icon name={item.icon} size={24} color={item.color} />
+                <Text style={styles.shortcutTitle} numberOfLines={2}>{copy(item.title)}</Text>
+                <Text style={styles.shortcutDetail} numberOfLines={2}>{copy(item.detail)}</Text>
+              </FloatingActionBubble>
+            ))}
           </View>
 
         </ScrollView>
@@ -267,16 +296,16 @@ const styles = StyleSheet.create({
   barterTitle: { fontSize: 22, fontWeight: '700', color: '#132F39' },
   balance: { flexDirection: 'row', gap: 6, alignItems: 'center', backgroundColor: '#FFF7DC', borderRadius: 22, padding: 10, minHeight: 44 },
   balanceText: { color: '#624A10', fontSize: 14, fontWeight: '700' },
-  careActions: { flexDirection: 'row', gap: 10 },
-  findCare: { flex: 1, backgroundColor: '#F0F8FC', borderWidth: 1, borderColor: '#CFDFE9', padding: 14, borderRadius: 16, gap: 8, minHeight: 125 },
-  offerCare: { flex: 1, backgroundColor: '#F0F8FC', borderWidth: 1, borderColor: '#CFDFE9', padding: 14, borderRadius: 16, gap: 8, minHeight: 125 },
-  actionDetail: { fontSize: 11, color: '#486371' },
-  findCareText: { fontSize: 15, color: '#173342', fontWeight: '600' }, offerCareText: { fontSize: 15, color: '#14576A', fontWeight: '600' },
+  careActions: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 14, marginBottom: 20 },
+  primaryBubble: { borderRadius: 999, borderWidth: 1, borderColor: '#BBDCE9', backgroundColor: '#EAF7FC', padding: 10, justifyContent: 'center', alignItems: 'center', gap: 4, shadowColor: '#1B647A', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.10, shadowRadius: 9, elevation: 3 },
+  primaryBubbleTitle: { fontSize: 14, color: '#173342', fontWeight: '700', textAlign: 'center' },
+  primaryBubbleDetail: { fontSize: 9, color: '#486371', textAlign: 'center' },
   aiLine: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingTop: 10, minHeight: 40 }, aiText: { fontSize: 12, color: '#285D6D', fontWeight: '600' },
   shortcutsTitle: { color: '#172E38', fontSize: 16, fontWeight: '700', marginBottom: 12 },
-  shortcutGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12 },
-  shortcut: { width: '48%', minHeight: 116, borderRadius: 18, padding: 14, justifyContent: 'space-between', gap: 12 },
-  shortcutTitle: { fontSize: 14, fontWeight: '700', color: '#172E38' }, shortcutDetail: { fontSize: 11, color: '#3D5661', marginTop: 4, lineHeight: 16 },
+  shortcutGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 14 },
+  shortcutBubble: { borderRadius: 999, borderWidth: 1, borderColor: '#D4E7F0', paddingHorizontal: 5, paddingVertical: 8, justifyContent: 'center', alignItems: 'center', shadowColor: '#1B647A', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.08, shadowRadius: 7, elevation: 2 },
+  shortcutTitle: { fontSize: 11, fontWeight: '700', color: '#172E38', textAlign: 'center', marginTop: 3 },
+  shortcutDetail: { fontSize: 8, color: '#3D5661', marginTop: 2, lineHeight: 10, textAlign: 'center' },
   smartTags: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 12, backgroundColor: '#EEF2FB', borderRadius: 18, padding: 18, minHeight: 80 },
   container: {
     flex: 1,
