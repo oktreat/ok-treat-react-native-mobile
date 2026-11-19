@@ -18,6 +18,7 @@ import api from '../../config/api';
 import SitterModeSwitch from '../../components/SitterModeSwitch';
 import TreatCoinMark from '../../components/TreatCoinMark';
 import FloatingActionBubble from '../../components/FloatingActionBubble';
+import { useAppearance } from '../../context/AppearanceContext';
 
 // Show the referral prompt at most once per app session.
 let referralPromptCheckedThisSession = false;
@@ -31,6 +32,7 @@ export default function HomeScreen({ navigation }) {
   const shortcutBubbleSize = Math.min(104, (viewportWidth - 48 - 20) / 3);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const { dark } = useAppearance();
   const { user } = useSelector(state => state.auth);
 
   const [checkingStatus, setCheckingStatus] = useState(false);
@@ -156,10 +158,10 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ScreenWrapper>
-      <View style={styles.container}>
+      <View style={[styles.container, dark && { backgroundColor: '#0D1724' }]}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Your profile" onPress={() => navigation.navigate('ProfileView')} style={styles.avatarContainer}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Your profile" onPress={() => navigation.navigate('ProfileView')} style={[styles.avatarContainer, dark && { backgroundColor: '#1B3449' }]}>
             {user?.avatarUrl ? (
               // key={url} forces remount when the avatar changes — RN <Image>
               // caches by URI and would otherwise keep showing the old photo.
@@ -173,8 +175,8 @@ export default function HomeScreen({ navigation }) {
             )}
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.welcomeText} numberOfLines={1}>{t('home.welcome')}</Text>
-            <Text style={styles.emailText} numberOfLines={1} ellipsizeMode="tail">
+            <Text style={[styles.welcomeText, dark && { color: '#B3C0CE' }]} numberOfLines={1}>{t('home.welcome')}</Text>
+            <Text style={[styles.emailText, dark && { color: '#EEF4FA' }]} numberOfLines={1} ellipsizeMode="tail">
               {(user?.fullName || user?.name || 'Friend').split(' ')[0]}
             </Text>
           </View>
@@ -185,7 +187,7 @@ export default function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate('Notifications')}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Icon name="notifications-outline" size={26} color="#32A6D8" />
+            <Icon name="notifications-outline" size={26} color={dark ? '#55B5E8' : '#32A6D8'} />
             {unreadCount > 0 && (
               <View style={styles.bellBadge}>
                 <Text style={styles.bellBadgeText}>
@@ -198,35 +200,35 @@ export default function HomeScreen({ navigation }) {
 
         <ScrollView contentContainerStyle={styles.homeContent} showsVerticalScrollIndicator={false}>
           <SitterModeSwitch sitterMode={false} onChange={handleBecomeASitter} disabled={checkingStatus} />
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open TreatCoins wallet" style={[styles.balance, { marginBottom: 18, alignSelf: 'flex-start' }]} onPress={() => navigation.navigate('PaymentMethods')}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open TreatCoins wallet" style={[styles.balance, dark && { backgroundColor: '#342D1E' }, { marginBottom: 18, alignSelf: 'flex-start' }]} onPress={() => navigation.navigate('PaymentMethods')}>
             <TreatCoinMark /><Text style={styles.balanceText}>{wallet.loading ? '…' : wallet.error ? '—' : Number(wallet.coinBalance).toLocaleString()} TreatCoins</Text>
           </TouchableOpacity>
           <View style={styles.barterCard}>
-            <View style={styles.barterTitleRow}><Text style={styles.barterTitle}>{t('home.barter')}</Text><TreatCoinMark size={24} /></View>
+            <View style={styles.barterTitleRow}><Text style={[styles.barterTitle, dark && { color: '#F3F7FB' }]}>{t('home.barter')}</Text><TreatCoinMark size={24} /></View>
             <View pointerEvents="none" style={styles.matchingBadge}>
               <AIMatchingBadge size={64} />
             </View>
             <View style={styles.careActions}>
               <FloatingActionBubble
                 accessibilityLabel={`${t('home.findCare')}, ${copy('AI-assisted matching')}`}
-                style={[styles.primaryBubble, { width: primaryBubbleSize, height: primaryBubbleSize }]}
+                style={[styles.primaryBubble, dark && { backgroundColor: '#14283A', borderColor: '#28516A' }, { width: primaryBubbleSize, height: primaryBubbleSize }]}
                 delay={0}
                 onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}
               >
-                <Icon name="search-outline" size={29} color="#087EA4" />
-                <Text style={styles.primaryBubbleTitle}>{t('home.findCare')}</Text>
-                <Text style={styles.primaryBubbleDetail}>{copy('AI-assisted matching')}</Text>
+                <Icon name="search-outline" size={29} color={dark ? '#55B5E8' : '#087EA4'} />
+                <Text style={[styles.primaryBubbleTitle, dark && { color: '#F3F7FB' }]}>{t('home.findCare')}</Text>
+                <Text style={[styles.primaryBubbleDetail, dark && { color: '#B7C8D6' }]}>{copy('AI-assisted matching')}</Text>
               </FloatingActionBubble>
               <FloatingActionBubble
                 accessibilityLabel={`${t('home.offerCare')}, ${copy('Earn TreatCoins')}`}
-                style={[styles.primaryBubble, { width: primaryBubbleSize, height: primaryBubbleSize }]}
+                style={[styles.primaryBubble, dark && { backgroundColor: '#182B3B', borderColor: '#31536A' }, { width: primaryBubbleSize, height: primaryBubbleSize }]}
                 delay={420}
                 disabled={checkingStatus}
                 onPress={handleBecomeASitter}
               >
-                <Icon name="heart-outline" size={29} color="#087EA4" />
-                <Text style={styles.primaryBubbleTitle}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text>
-                <Text style={styles.primaryBubbleDetail}>{copy('Earn TreatCoins')}</Text>
+                <Icon name="heart-outline" size={29} color={dark ? '#55B5E8' : '#087EA4'} />
+                <Text style={[styles.primaryBubbleTitle, dark && { color: '#F3F7FB' }]}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text>
+                <Text style={[styles.primaryBubbleDetail, dark && { color: '#B7C8D6' }]}>{copy('Earn TreatCoins')}</Text>
               </FloatingActionBubble>
             </View>
           </View>
@@ -235,13 +237,13 @@ export default function HomeScreen({ navigation }) {
               <FloatingActionBubble
                 key={copy(item.title)}
                 accessibilityLabel={`${copy(item.title)}. ${copy(item.detail)}`}
-                style={[styles.shortcutBubble, { width: shortcutBubbleSize, height: shortcutBubbleSize, backgroundColor: item.bg }]}
+                style={[styles.shortcutBubble, dark && { backgroundColor: '#14283A', borderColor: '#2A4C61' }, { width: shortcutBubbleSize, height: shortcutBubbleSize, backgroundColor: dark ? '#14283A' : item.bg }]}
                 delay={index * 180}
                 onPress={item.press}
               >
-                <Icon name={item.icon} size={24} color={item.color} />
-                <Text style={styles.shortcutTitle} numberOfLines={2}>{copy(item.title)}</Text>
-                <Text style={styles.shortcutDetail} numberOfLines={2}>{copy(item.detail)}</Text>
+                <Icon name={item.icon} size={24} color={dark ? '#55B5E8' : item.color} />
+                <Text style={[styles.shortcutTitle, dark && { color: '#F3F7FB' }]} numberOfLines={2}>{copy(item.title)}</Text>
+                <Text style={[styles.shortcutDetail, dark && { color: '#B7C8D6' }]} numberOfLines={2}>{copy(item.detail)}</Text>
               </FloatingActionBubble>
             ))}
           </View>

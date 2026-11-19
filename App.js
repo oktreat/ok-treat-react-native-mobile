@@ -21,6 +21,7 @@ import { getLanguage } from './src/utils/storage';
 import { AlertProvider } from './src/context/AlertContext';
 import { PaymentConfigProvider, usePaymentConfig } from './src/context/PaymentConfigContext';
 import { WalletProvider } from './src/context/WalletContext';
+import { AppearanceProvider, useAppearance } from './src/context/AppearanceContext';
 import { recordPushDiagnostic } from './src/services/pushDiagnostics';
 
 // Lock the app's typography to our design — ignore the device's "Font size" /
@@ -230,6 +231,7 @@ export default function App() {
           <WalletProvider>
             <Provider store={store}>
               <ReleaseNotice />
+              <AppearanceProvider>
               <NavigationContainer
                 ref={navigationRef}
                 onReady={() => {
@@ -254,8 +256,9 @@ export default function App() {
                 <AlertProvider>
                   <RootNavigator />
                 </AlertProvider>
-                <StatusBar style="auto" />
+                <AppearanceStatusBar />
               </NavigationContainer>
+              </AppearanceProvider>
 
             {/* Session Expired Modal */}
             <Modal
@@ -299,6 +302,11 @@ export default function App() {
 // loaded a second or two into launch, which made the intro video play twice
 // (and, once the play-once guard was added, cut it off early). Prop-only update
 // = no remount = the splash mounts once and plays through.
+function AppearanceStatusBar() {
+  const { dark } = useAppearance();
+  return <StatusBar style={dark ? 'light' : 'dark'} />;
+}
+
 function StripeWrapper({ children }) {
   const { publishableKey } = usePaymentConfig();
   // Empty string while the key loads — SDK no-ops payment APIs until a real key

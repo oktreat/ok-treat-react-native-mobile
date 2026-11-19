@@ -1,6 +1,6 @@
 import { copy, useCopyUpdates } from '../../i18n/copy';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Switch } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -10,11 +10,16 @@ import { logout } from '../../store/slices/authSlice';
 import { clearPushTokenOnServer } from '../../services/notificationService';
 import { getInformation } from './informationContent';
 import api from '../../config/api';
+import { useAppearance } from '../../context/AppearanceContext';
 
 export default function SettingsScreen({ navigation }) {
   useCopyUpdates();
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
+  const { dark, setDark } = useAppearance();
+  const palette = dark
+    ? { background: '#0D1724', surface: '#142235', text: '#EEF4FA', muted: '#B3C0CE', border: '#2B3B4F', accent: '#55B5E8' }
+    : { background: '#FFFFFF', surface: '#FFFFFF', text: '#0D0D12', muted: '#898D8F', border: '#DFE7EB', accent: '#32A6D8' };
   const informationTitle = (page) => getInformation(i18n.resolvedLanguage || i18n.language, page).title;
 
   const handleBack = () => {
@@ -97,13 +102,13 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <ScreenWrapper noBottomTabs>
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: palette.background }]}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <BackArrowIcon width={20} height={20} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{t('settings.title')}</Text>
+          <Text style={[styles.headerTitle, { color: palette.text }]}>{t('settings.title')}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -115,17 +120,41 @@ export default function SettingsScreen({ navigation }) {
         >
           {/* General Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('settings.general')}</Text>
+            <Text style={[styles.sectionTitle, { color: palette.muted }]}>{t('settings.general')}</Text>
+            <View style={[styles.appearanceRow, { backgroundColor: palette.surface, borderColor: palette.border }]}>
+              <View>
+                <Text style={[styles.appearanceTitle, { color: palette.text }]}>{copy('Dark mode')}</Text>
+                <Text style={[styles.appearanceHint, { color: palette.muted }]}>{copy('Use a darker OkTreat home and sitter dashboard')}</Text>
+              </View>
+              <Switch
+                accessibilityRole="switch"
+                accessibilityLabel={copy('Dark mode')}
+                value={dark}
+                onValueChange={setDark}
+                trackColor={{ false: '#CBD1D5', true: '#4655B5' }}
+                thumbColor="#FFFFFF"
+              />
+            </View>
             <View style={styles.menuContainer}>
-              {generalSettings.map(renderMenuItem)}
+              {generalSettings.map((item, index) => (
+                <TouchableOpacity key={index} style={[styles.menuItem, { backgroundColor: palette.surface, borderColor: palette.border }]} onPress={() => handleMenuPress(item)} activeOpacity={0.7}>
+                  <Text style={[styles.menuText, { color: item.danger ? '#F56754' : palette.muted }]}>{copy(item.title)}</Text>
+                  <Icon name="chevron-down" size={20} color={item.danger ? '#F56754' : palette.accent} style={styles.chevron} />
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
 
           {/* About Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('settings.about')}</Text>
+            <Text style={[styles.sectionTitle, { color: palette.muted }]}>{t('settings.about')}</Text>
             <View style={styles.menuContainer}>
-              {aboutSettings.map(renderMenuItem)}
+              {aboutSettings.map((item, index) => (
+                <TouchableOpacity key={index} style={[styles.menuItem, { backgroundColor: palette.surface, borderColor: palette.border }]} onPress={() => handleMenuPress(item)} activeOpacity={0.7}>
+                  <Text style={[styles.menuText, { color: item.danger ? '#F56754' : palette.muted }]}>{copy(item.title)}</Text>
+                  <Icon name="chevron-down" size={20} color={item.danger ? '#F56754' : palette.accent} style={styles.chevron} />
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         </ScrollView>
@@ -199,7 +228,11 @@ const styles = StyleSheet.create({
     shadowRadius: 40,
     elevation: 1,
     borderRadius: 12,
+    borderWidth: 1,
   },
+  appearanceRow: { minHeight: 64, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  appearanceTitle: { fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '700' },
+  appearanceHint: { fontSize: 11, marginTop: 3 },
   menuText: {
     color: '#898D8F',
     fontSize: 14,

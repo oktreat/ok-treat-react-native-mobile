@@ -24,6 +24,7 @@ function setup(prevent = false) {
     Easing: { out: value => value, quad: value => value },
     useEffect() {}, useRef: value => ({ current: value }), useState: value => [value, () => {}],
     StyleSheet: { create: x => x }, useSafeAreaInsets: () => ({ bottom: 34 }),
+    useAppearance: () => ({ dark: false }),
   };
   vm.runInNewContext(transformed + '\nthis.Bar=ClearTabBar; this.TabButton=TabButton;', context);
   const routes = [{ key: 'home', name: 'Home' }, { key: 'pets', name: 'Pets', params: { screen: 'PetList' } }];

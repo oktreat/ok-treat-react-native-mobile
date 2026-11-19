@@ -7,6 +7,7 @@ import SitterModeSwitch from '../../../components/SitterModeSwitch';
 import { DogImage, ChatIcon } from '../../../assets';
 import Icon from '@expo/vector-icons/Ionicons';
 import { getSitterEarnings, getSitterBookings, getSitterRequests } from '../../../services/bookingService';
+import { useAppearance } from '../../../context/AppearanceContext';
 
 // Enum → human label for the service type.
 const SERVICE_LABELS = {
@@ -20,6 +21,10 @@ const humanizeService = (t) => SERVICE_LABELS[t] || t || '';
 
 export default function SitterHomeScreen({ navigation }) {
   const { user } = useSelector(state => state.auth);
+  const { dark } = useAppearance();
+  const palette = dark
+    ? { background: '#0D1724', surface: '#142235', text: '#EEF4FA', muted: '#B3C0CE', border: '#2B3B4F', accent: '#2AAE9B' }
+    : { background: '#FFFFFF', surface: '#FFFFFF', text: '#142D38', muted: '#757575', border: '#E9ECF2', accent: '#2AAE9B' };
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
@@ -162,39 +167,39 @@ export default function SitterHomeScreen({ navigation }) {
 
   return (
     <ScreenWrapper>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[styles.container, { backgroundColor: palette.background }]} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Image source={user?.avatarUrl ? { uri: user.avatarUrl } : DogImage} style={styles.avatar} />
           <View style={styles.headerText}>
-            <Text style={styles.greeting}>{greeting}</Text>
-            <Text style={styles.userName}>{user?.fullName || 'Sitter'}</Text>
+            <Text style={[styles.greeting, { color: palette.muted }]}>{greeting}</Text>
+            <Text style={[styles.userName, { color: palette.text }]}>{user?.fullName || 'Sitter'}</Text>
           </View>
           <TouchableOpacity
             style={styles.notificationButton}
             onPress={() => navigation.navigate('Notifications')}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Icon name="notifications-outline" size={24.55} color="#212121" />
+            <Icon name="notifications-outline" size={24.55} color={palette.accent} />
           </TouchableOpacity>
         </View>
 
         <View style={{ marginHorizontal: 24, marginTop: 12 }}><SitterModeSwitch sitterMode={true} onChange={() => navigation.navigate('MainTabs', { screen: 'Home' })} /></View>
 
         {/* Overview Card */}
-        <View style={styles.overviewCard}>
+        <View style={[styles.overviewCard, { backgroundColor: palette.surface, borderColor: palette.border, borderWidth: dark ? 1 : 0 }]}>
           {/* Overview Header */}
           <View style={styles.overviewHeader}>
-            <View style={styles.overviewIconContainer}>
-              <Icon name="bar-chart-outline" size={21.05} color="#FFFFFF" />
+            <View style={[styles.overviewIconContainer, { backgroundColor: dark ? '#17433E' : '#DDF4EF' }]}>
+              <Icon name="bar-chart-outline" size={21.05} color={palette.accent} />
             </View>
-            <Text style={styles.overviewTitle}>Overview</Text>
+            <Text style={[styles.overviewTitle, { color: palette.accent }]}>Overview</Text>
           </View>
 
           {/* Chart Area */}
           {loadingEarnings ? (
             <View style={styles.chartLoadingContainer}>
-              <ActivityIndicator size="small" color="#32A6D8" />
+              <ActivityIndicator size="small" color={palette.accent} />
             </View>
           ) : (
             <View style={styles.chartContainer}>
@@ -225,7 +230,7 @@ export default function SitterHomeScreen({ navigation }) {
                   {path ? (
                     <Path
                       d={path}
-                      stroke="#32A6D8"
+                      stroke={palette.accent}
                       strokeWidth="2.63"
                       fill="none"
                       strokeLinecap="round"
@@ -238,8 +243,8 @@ export default function SitterHomeScreen({ navigation }) {
                     cx={lastPoint.x}
                     cy={lastPoint.y}
                     r="5.16"
-                    fill="#FFC2EB"
-                    stroke="#FFFFFF"
+                    fill={palette.accent}
+                    stroke={dark ? '#142235' : '#FFFFFF'}
                     strokeWidth="3.51"
                   />
                 </Svg>
@@ -260,15 +265,15 @@ export default function SitterHomeScreen({ navigation }) {
           {/* Statistics */}
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <Text style={styles.statLabel}>This month's earnings</Text>
+              <Text style={[styles.statLabel, dark && { color: palette.muted }]}>This month's earnings</Text>
               <View style={styles.statValueRow}>
                 <Icon name="server-outline" size={13} color="#FBCE04" />
-                <Text style={styles.statValue}>{Number(totalSales || 0).toLocaleString()} TreatCoins</Text>
+                <Text style={[styles.statValue, dark && { color: palette.text }]}>{Number(totalSales || 0).toLocaleString()} TreatCoins</Text>
               </View>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Completed Orders</Text>
-              <Text style={styles.statValue}>{completedOrders}</Text>
+              <Text style={[styles.statLabel, dark && { color: palette.muted }]}>Completed Orders</Text>
+              <Text style={[styles.statValue, dark && { color: palette.text }]}>{completedOrders}</Text>
             </View>
           </View>
         </View>
@@ -295,7 +300,7 @@ export default function SitterHomeScreen({ navigation }) {
         {/* Upcoming Bookings Section */}
         <View style={styles.bookingsSection}>
           <View style={styles.bookingsHeader}>
-            <Text style={styles.bookingsTitle}>Upcoming Bookings</Text>
+            <Text style={[styles.bookingsTitle, dark && { color: palette.text }]}>Upcoming Bookings</Text>
             <TouchableOpacity onPress={() => navigation.navigate('SitterBookings')}>
               <Text style={styles.seeAllText}>See All</Text>
             </TouchableOpacity>
@@ -304,7 +309,7 @@ export default function SitterHomeScreen({ navigation }) {
           {/* Booking Cards */}
           {loadingBookings ? (
             <View style={styles.bookingsLoadingContainer}>
-              <ActivityIndicator size="small" color="#32A6D8" />
+              <ActivityIndicator size="small" color={palette.accent} />
               <Text style={styles.bookingsLoadingText}>Loading bookings...</Text>
             </View>
           ) : upcomingBookings.length === 0 ? (
@@ -314,11 +319,11 @@ export default function SitterHomeScreen({ navigation }) {
           ) : (
             <View style={styles.bookingsList}>
               {upcomingBookings.map((booking) => (
-                <View key={booking.id} style={styles.bookingCard}>
+                <View key={booking.id} style={[styles.bookingCard, dark && { backgroundColor: palette.surface, borderColor: palette.border, borderWidth: 1 }]}>
                   <View style={styles.bookingTop}>
                     <Image source={typeof booking.clientImage === 'string' ? { uri: booking.clientImage } : booking.clientImage} style={styles.bookingAvatar} />
                     <View style={styles.bookingInfo}>
-                      <Text style={styles.bookingClientName}>{booking.clientName}</Text>
+                      <Text style={[styles.bookingClientName, dark && { color: palette.text }]}>{booking.clientName}</Text>
                       <Text style={styles.bookingService}>
                         <Text style={styles.bookingServiceType}>{booking.serviceType}</Text>
                         <Text style={styles.bookingDate}> - {booking.date}</Text>
@@ -333,19 +338,19 @@ export default function SitterHomeScreen({ navigation }) {
                     <View style={styles.bookingContact}>
                       {!!booking.address && (
                         <View style={styles.bookingContactItem}>
-                          <Icon name="location-outline" size={14} color="#32A6D8" />
+                          <Icon name="location-outline" size={14} color={palette.accent} />
                           <Text style={styles.bookingContactText} numberOfLines={2}>{booking.address}</Text>
                         </View>
                       )}
                       {!!booking.petName && (
                         <View style={styles.bookingContactItem}>
-                          <Icon name="paw-outline" size={14} color="#32A6D8" />
+                          <Icon name="paw-outline" size={14} color={palette.accent} />
                           <Text style={styles.bookingContactText}>{booking.petName}</Text>
                         </View>
                       )}
                       {!!booking.phone && (
                         <View style={styles.bookingContactItem}>
-                          <Icon name="call-outline" size={13} color="#32A6D8" />
+                          <Icon name="call-outline" size={13} color={palette.accent} />
                           <Text style={styles.bookingContactText}>{booking.phone}</Text>
                         </View>
                       )}

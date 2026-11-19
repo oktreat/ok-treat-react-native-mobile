@@ -76,7 +76,7 @@
   "Send request": "Anfrage senden",
   "Sending…": "Wird gesendet…",
   "Services": "Betreuung",
-  "Sitter mode": "Tiersitter-Modus",
+  "Sitter mode": "Sitter-Modus",
   "Subject": "Betreff",
   "Successfully Deleted": "Erfolgreich gelöscht",
   "Support details": "Details zur Support-Anfrage",
@@ -767,5 +767,8 @@
   "Ask AiVet": "AiVet fragen",
   "View care updates": "Betreuungsupdates ansehen",
   "Check in on your pet": "Nach Ihrem Tier sehen",
-  "Prepare for this stay": "Diese Betreuung vorbereiten"
+  "Prepare for this stay": "Diese Betreuung vorbereiten",
+  "Owner mode": "Haltermodus",
+  "Dark mode": "Dunkelmodus",
+  "Use a darker OkTreat home and sitter dashboard": "Dunkle Darstellung für OkTreat-Startseite und Sitter-Dashboard verwenden"
 }

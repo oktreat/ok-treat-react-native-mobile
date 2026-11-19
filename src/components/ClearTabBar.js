@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Easing, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAppearance } from '../context/AppearanceContext';
 
 function TabButton({ label, selected, color, icon, onPress, onLongPress, accessibilityLabel, testID, onLayout }) {
   const labelProgress = useRef(new Animated.Value(selected ? 1 : 0)).current;
@@ -45,6 +46,7 @@ function TabButton({ label, selected, color, icon, onPress, onLongPress, accessi
 
 export default function ClearTabBar({ state, descriptors, navigation }) {
   const { t } = useTranslation();
+  const { dark } = useAppearance();
   const insets = useSafeAreaInsets();
   const [tabLayouts, setTabLayouts] = useState({});
   const highlightX = useRef(new Animated.Value(0)).current;
@@ -59,16 +61,22 @@ export default function ClearTabBar({ state, descriptors, navigation }) {
     ]).start();
   }, [highlightWidth, highlightX, state.index, tabLayouts]);
 
+  const sitterTabs = state.routes.some(route => route.name.startsWith('Sitter'));
+  const accent = sitterTabs ? '#2AAE9B' : '#1689C3';
+  const surface = dark ? '#111C2B' : '#FFFFFF';
+  const muted = dark ? '#A9B7C7' : '#263744';
+  const highlight = dark ? (sitterTabs ? '#153D3C' : '#173850') : (sitterTabs ? '#E3F5F1' : '#E2F3FB');
+
   return (
-    <View style={[styles.base, { paddingBottom: insets.bottom + 8 }]}>
-      <View style={styles.bar}>
-        <Animated.View pointerEvents="none" style={[styles.selectedHighlight, { left: highlightX, width: highlightWidth }]} />
+    <View style={[styles.base, { paddingBottom: insets.bottom + 8, backgroundColor: surface }]}>
+      <View style={[styles.bar, { backgroundColor: surface, borderColor: dark ? '#304153' : '#E5ECF0' }]}>
+        <Animated.View pointerEvents="none" style={[styles.selectedHighlight, { left: highlightX, width: highlightWidth, backgroundColor: highlight }]} />
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const selected = state.index === index;
           const rawLabel = options.tabBarLabel || options.title || route.name;
           const label = t(`tabs.${route.name}`, { defaultValue: rawLabel });
-          const color = selected ? '#08779D' : '#263744';
+          const color = selected ? accent : muted;
           const onPress = () => {
             const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
             if (!selected && !event.defaultPrevented) navigation.navigate(route.name, route.params);

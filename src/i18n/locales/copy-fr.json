@@ -76,7 +76,7 @@
   "Send request": "Envoyer la demande",
   "Sending…": "Envoi…",
   "Services": "Services",
-  "Sitter mode": "Mode pet-sitter",
+  "Sitter mode": "Mode gardien",
   "Subject": "Objet",
   "Successfully Deleted": "Suppression réussie",
   "Support details": "Détails de la demande",
@@ -767,5 +767,8 @@
   "Ask AiVet": "Demander à AiVet",
   "View care updates": "Voir les nouvelles de garde",
   "Check in on your pet": "Prendre des nouvelles de votre animal",
-  "Prepare for this stay": "Préparer cette garde"
+  "Prepare for this stay": "Préparer cette garde",
+  "Owner mode": "Mode propriétaire",
+  "Dark mode": "Mode sombre",
+  "Use a darker OkTreat home and sitter dashboard": "Utiliser un affichage sombre pour l’accueil et le tableau de bord du gardien"
 }

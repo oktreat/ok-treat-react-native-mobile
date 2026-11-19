@@ -186,7 +186,7 @@
   "Share invite": "分享邀请",
   "Shop TreatCoins": "购买TreatCoins",
   "Sitter": "宠物保姆",
-  "Sitter mode": "宠物保姆模式",
+  "Sitter mode": "保姆模式",
   "Sitters earn TreatCoins on completed bookings, held 30 days before becoming cashable. You'll see pending earnings here once you complete a booking as a sitter.": "宠物保姆完成订单后可赚取TreatCoins，冻结30天后可提现。以宠物保姆身份完成订单后，待结算收益将显示在这里。",
   "Submit request": "提交请求",
   "Success": "成功",
@@ -372,5 +372,8 @@
   "Ask AiVet": "咨询 AiVet",
   "View care updates": "查看照护更新",
   "Check in on your pet": "查看宠物情况",
-  "Prepare for this stay": "准备这次照护"
+  "Prepare for this stay": "准备这次照护",
+  "Owner mode": "主人模式",
+  "Dark mode": "深色模式",
+  "Use a darker OkTreat home and sitter dashboard": "使用深色的 OkTreat 首页和保姆控制面板"
 }

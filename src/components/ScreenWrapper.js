@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Platform, StyleSheet, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAppearance } from '../context/AppearanceContext';
 
 /**
  * ScreenWrapper - Universal wrapper for all screens
@@ -27,6 +28,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const DRAG_SLOP = 12;
 
 const ScreenWrapper = ({ children, style, scrollable = true, noBottomTabs = false, dismissKeyboard = true }) => {
+  const { dark } = useAppearance();
   // Is the tap-to-dismiss catcher armed? Only while the keyboard is up.
   //
   // This is a ref, deliberately, and the tree below never changes shape.
@@ -73,7 +75,7 @@ const ScreenWrapper = ({ children, style, scrollable = true, noBottomTabs = fals
         height: '100vh',
         width: '100%',
         overflow: scrollable ? 'auto' : 'hidden',
-        backgroundColor: style?.backgroundColor || '#FFFFFF',
+        backgroundColor: style?.backgroundColor || (dark ? '#0D1724' : '#FFFFFF'),
         ...style
       }}>
         {children}
@@ -139,7 +141,7 @@ const ScreenWrapper = ({ children, style, scrollable = true, noBottomTabs = fals
   };
 
   return (
-    <SafeAreaView style={[styles.container, style]} edges={edges}>
+    <SafeAreaView style={[styles.container, { backgroundColor: dark ? '#0D1724' : '#FFFFFF' }, style]} edges={edges}>
       <View
         style={styles.flex}
         onStartShouldSetResponder={onStartShouldSetResponder}
