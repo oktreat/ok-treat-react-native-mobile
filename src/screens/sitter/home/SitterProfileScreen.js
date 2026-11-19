@@ -51,31 +51,31 @@ export default function SitterProfileScreen({ navigation }) {
       title: 'Personal information',
       component: UserProfileIcon,
       screen: 'SitterPersonalProfile',
-      color: '#32A6D8'
+      color: '#FFC2EB'
     },
     {
       title: 'Services Setup',
       component: NotebookProfileIcon,
       screen: 'ProfileSetup',
-      color: '#32A6D8'
+      color: '#FFC2EB'
     },
     {
       title: 'My Bookings',
       component: NotebookProfileIcon,
       screen: 'SitterBookings',
-      color: '#32A6D8'
+      color: '#FFC2EB'
     },
     {
       title: 'Earnings',
       component: NotebookProfileIcon,
       screen: 'SitterEarnings',
-      color: '#32A6D8'
+      color: '#FFC2EB'
     },
     {
       title: 'Support',
       component: SupportProfileIcon,
       screen: 'HelpSupport',
-      color: '#32A6D8'
+      color: '#FFC2EB'
     },
     {
       title: 'Log out',
@@ -148,7 +148,7 @@ export default function SitterProfileScreen({ navigation }) {
                   <Text style={styles.statText}>{sitter?.averageRating || '0.0'} ({sitter?.totalReviews || 0} reviews)</Text>
                 </View>
                 <View style={styles.statItem}>
-                  <Icon name="people" size={16} color="#32A6D8" />
+                  <Icon name="people" size={16} color="#FFC2EB" />
                   <Text style={styles.statText}>{sitter?.repeatClients || 0} repeat clients</Text>
                 </View>
               </View>
@@ -156,14 +156,14 @@ export default function SitterProfileScreen({ navigation }) {
               {/* Stats Row 2 */}
               <View style={styles.statsRow}>
                 <View style={styles.statItem}>
-                  <Icon name="briefcase" size={14} color="#32A6D8" />
+                  <Icon name="briefcase" size={14} color="#FFC2EB" />
                   <Text style={styles.statTextGray}>
                     {user?.yearsOfExperience ? `${user.yearsOfExperience} yrs experience` : 'Pet sitter & walker'}
                   </Text>
                 </View>
                 {!!user?.address && (
                   <View style={styles.statItem}>
-                    <Icon name="location" size={14} color="#32A6D8" />
+                    <Icon name="location" size={14} color="#FFC2EB" />
                     <Text style={styles.statTextGray}>{user.address}</Text>
                   </View>
                 )}
