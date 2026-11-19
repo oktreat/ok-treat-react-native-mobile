@@ -7,14 +7,18 @@ function setup(prevent = false) {
   const createElement = (type, props, ...children) => ({ type, props: props || {}, children: children.flat() });
   const source = fs.readFileSync('src/components/ClearTabBar.js', 'utf8').replace(/^import .*;\n/gm, '').replace('export default function', 'function');
   const transformed = babel.transformSync(source, { configFile: false, babelrc: false, plugins: ['@babel/plugin-transform-react-jsx'] }).code;
-  const animatedValue = value => ({ value, setValue(next) { this.value = next; }, interpolate: () => ({}) });
+  class AnimatedValue {
+    constructor(value) { this.value = value; }
+    setValue(next) { this.value = next; }
+    interpolate() { return {}; }
+  }
   const animation = { start() {}, stop() {} };
   const context = {
     useTranslation: () => ({ t: (key, options) => options.defaultValue }),
     React: { createElement },
     View: 'View', Text: 'Text', TouchableOpacity: 'TouchableOpacity',
     Animated: {
-      Value: animatedValue, View: 'Animated.View',
+      Value: AnimatedValue, View: 'Animated.View',
       timing: () => animation, spring: () => animation, parallel: () => animation,
     },
     Easing: { out: value => value, quad: value => value },
@@ -25,8 +29,10 @@ function setup(prevent = false) {
   const routes = [{ key: 'home', name: 'Home' }, { key: 'pets', name: 'Pets', params: { screen: 'PetList' } }];
   const events = [], navigated = [];
   const tree = context.Bar({ state: { index: 0, routes }, descriptors: { home: { options: { tabBarLabel: 'Home' } }, pets: { options: { tabBarLabel: 'Your Pets' } } }, navigation: { emit: event => { events.push(event); return { defaultPrevented: prevent }; }, navigate: (...args) => navigated.push(args) } });
-  const bar = tree.children[0].children[0];
-  return { tree, bar, tabs: bar.children.slice(1), events, navigated, context };
+  const find = (node, predicate) => !node || typeof node !== 'object' ? [] : [...(predicate(node) ? [node] : []), ...(node.children || []).flatMap(child => find(child, predicate))];
+  const tabs = find(tree, node => typeof node.type === 'function' && node.type.name === 'TabButton');
+  const highlight = find(tree, node => node.props?.pointerEvents === 'none' && node.props?.style?.[0]?.backgroundColor === '#E2F3FB')[0];
+  return { tree, highlight, tabs, events, navigated, context };
 }
 function renderTab(setupResult, index) {
   const element = setupResult.tabs[index];
@@ -38,7 +44,7 @@ test('tabs expose labels and selection and reserve the home-indicator inset', ()
   assert.equal(home.props.accessibilityState.selected, true);
   assert.equal(pets.props.accessibilityLabel, 'Your Pets');
   assert.equal(pets.props.accessibilityState.selected, false);
-  assert.equal(s.bar.children[0].props.style[0].backgroundColor, '#E2F3FB');
+  assert.equal(s.highlight.props.style[0].backgroundColor, '#E2F3FB');
 });
 test('press and long press preserve React Navigation events and route params', () => {
   const s = setup(); renderTab(s, 1).props.onPress();
