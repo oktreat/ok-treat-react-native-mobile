@@ -1,5 +1,5 @@
 import React, {useEffect,useRef,useState} from 'react';
-import {ActivityIndicator,Alert,Image,KeyboardAvoidingView,Modal,Platform,ScrollView,StyleSheet,Switch,Text,TextInput,TouchableOpacity,View} from 'react-native';
+import {ActivityIndicator,Alert,Image,KeyboardAvoidingView,LayoutAnimation,Modal,Platform,ScrollView,StyleSheet,Switch,Text,TextInput,TouchableOpacity,View} from 'react-native';
 import {useSelector} from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -11,8 +11,27 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 const ACTIVITIES=['Dog walk','Coffee','Meal','Sightseeing','Day trip'];
 const emptyProfile={displayName:'',bio:'',dogId:'',interests:'',languages:'',visible:false,adult:false,single:false,rules:false};
 const date=v=>String(v||'').slice(0,10);
-const split=v=>v.split(',').map(s=>s.trim()).filter(Boolean);
+const split=v=>String(v||'').split(',').map(s=>s.trim()).filter(Boolean);
 const id=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+const BUBBLE_OPTIONS=[
+ {label:'Photos',size:76},{label:'Museums',size:94},{label:'Art',size:72},
+ {label:'Coffee',size:98},{label:'Food',size:88},{label:'Hiking',size:96},
+ {label:'Markets',size:98},{label:'Parks',size:76},{label:'Beach',size:84},
+ {label:'Music',size:82},{label:'Trains',size:100},
+];
+function BubbleInterestPicker({value,onChange,disabled}) {
+ const selected=split(value);
+ const toggle=(label)=>{
+  LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+  onChange((selected.includes(label)?selected.filter(item=>item!==label):[...selected,label]).join(', '));
+ };
+ return <View style={s.bubblePicker}>{BUBBLE_OPTIONS.map(item=>{
+  const active=selected.includes(item.label), size=item.size+(active?18:0);
+  return <TouchableOpacity key={item.label} accessibilityRole="button" accessibilityState={{selected:active,disabled:!!disabled}} disabled={disabled} onPress={()=>toggle(item.label)} style={[s.bubble,{width:size,height:size,borderRadius:size/2},active&&s.bubbleSelected,disabled&&s.disabled]}>
+   <Text style={[s.bubbleText,active&&s.bubbleTextSelected]}>{active?'✓  ':''}{copy(item.label)}</Text>
+  </TouchableOpacity>;
+ })}</View>;
+}
 export default function PalsLiveScreen({navigation}) {
  useCopyUpdates();
  const userId=useSelector(state=>state.auth.user?.id);
@@ -52,7 +71,7 @@ export default function PalsLiveScreen({navigation}) {
  {tab==='Profile'&&<>
  <Text style={s.heading}>{copy('Your PALS profile')}</Text><Text style={s.body}>{copy('For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.')}</Text>
  <Text style={s.notice}>{me.profile?.visible?copy('Your PALS profile is visible to signed-in members.'):copy('Your PALS profile is private. Choose photos and save your profile. Turn on Show my profile when you are ready to publish.')}</Text>
- {field('Display name',form.displayName,v=>patch('displayName',v))}{field('About me',form.bio,v=>patch('bio',v),true,'What would you enjoy doing together?')}{field('Interests, separated by commas',form.interests,v=>patch('interests',v))}{field('Languages, separated by commas',form.languages,v=>patch('languages',v))}
+ {field('Display name',form.displayName,v=>patch('displayName',v))}{field('About me',form.bio,v=>patch('bio',v),true,'What would you enjoy doing together?')}<View style={s.field}><Text style={s.label}>{copy('Choose your interests')}</Text><BubbleInterestPicker value={form.interests} onChange={v=>patch('interests',v)} disabled={busy}/></View>{field('Languages, separated by commas',form.languages,v=>patch('languages',v))}
  <Text style={s.label}>{copy('Your dog (optional)')}</Text><View style={s.row}>{button('No dog / travelling without a dog',()=>patch('dogId',''),false,!!form.dogId)}{me.dogs.map(d=>button(d.name,()=>patch('dogId',d.id),false,form.dogId!==d.id))}</View>{!me.dogs.length&&<Text style={s.body}>{copy('You can join PALS without a dog.')}</Text>}
  {toggle('I am 18 or older',form.adult,v=>patch('adult',v))}{toggle('I am travelling solo',form.single,v=>patch('single',v))}{toggle('I agree to the PALS community rules',form.rules,v=>patch('rules',v))}
  <Text style={s.body}>{copy('Be respectful. No harassment or requests for money. Meet in public places. Share only information you want other members to see. Rules version: 2026-11-10.')}</Text>
@@ -95,4 +114,9 @@ export default function PalsLiveScreen({navigation}) {
  <Modal visible={!!chat} animationType="slide" onRequestClose={()=>setChat(null)}><KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS==='ios'?'padding':undefined}><View style={[s.content,{paddingTop:48}]}>{button('Close chat',()=>setChat(null),false,true)}<Text style={s.heading}>{chat?.other.displayName}</Text></View><ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">{older&&button('Load older messages',()=>run(async()=>{const current=revision.current;const data=await palsRequest('invitations/'+chat.id+'/messages?before='+encodeURIComponent(messages[0].id));if(current===revision.current){setMessages(p=>[...data.messages,...p]);setOlder(data.hasMore)}}),false,true)}{messages.map(m=><View key={m.id} style={[s.bubble,m.senderId===userId&&s.mine]}><Text style={s.body}>{m.content}</Text><Text style={{fontSize:11}}>{new Date(m.createdAt).toLocaleString()}</Text></View>)}</ScrollView><View style={s.content}>{error?<Text style={s.error}>{error}</Text>:null}{field('Message',draft,setDraft,true)}{button('Send message',()=>run(async()=>{const current=revision.current;if(!pendingMessage.current||pendingMessage.current.content!==draft.trim())pendingMessage.current={requestId:id(),content:draft.trim()};await palsRequest('invitations/'+chat.id+'/messages',pendingMessage.current);if(current!==revision.current)return;pendingMessage.current=null;setDraft('');const d=await palsRequest('invitations/'+chat.id+'/messages');if(current===revision.current){setMessages(d.messages);setOlder(d.hasMore)}}),!draft.trim())}</View></KeyboardAvoidingView></Modal>
  </KeyboardAvoidingView></ScreenWrapper>;
 }
-const s=StyleSheet.create({header:{padding:18,flexDirection:'row',alignItems:'center',gap:14,backgroundColor:'#EDF8FB'},back:{fontSize:40,color:'#087EA4'},title:{fontSize:28,fontWeight:'800',color:'#103441'},subtitle:{fontSize:13,color:'#365563',marginTop:4},tabs:{flexDirection:'row',gap:5,padding:10},tab:{flex:1,paddingVertical:13,alignItems:'center',borderRadius:10,backgroundColor:'#EDF4F7'},activeTab:{backgroundColor:'#087EA4'},content:{padding:18,gap:16,paddingBottom:40},heading:{fontSize:19,fontWeight:'800',color:'#103441'},body:{fontSize:15,color:'#365563',lineHeight:23},field:{gap:7},label:{fontSize:15,fontWeight:'700',color:'#103441'},input:{borderWidth:1,borderColor:'#B9D3DE',borderRadius:12,padding:13,minHeight:48,fontSize:16,color:'#103441',backgroundColor:'white'},button:{padding:13,minHeight:46,borderRadius:11,backgroundColor:'#087EA4',alignItems:'center',justifyContent:'center'},secondary:{backgroundColor:'#EAF5FA'},disabled:{opacity:.45},buttonText:{color:'white',fontWeight:'700',fontSize:14},row:{flexDirection:'row',flexWrap:'wrap',gap:10,alignItems:'center'},toggle:{flexDirection:'row',alignItems:'center',gap:14},card:{padding:17,borderRadius:16,borderWidth:1,borderColor:'#D3E4EC',gap:12,backgroundColor:'white'},photo:{width:100,height:100,borderRadius:12},avatar:{width:64,height:64,borderRadius:32},notice:{padding:14,backgroundColor:'#FFF3CF',color:'#5B481D',lineHeight:22,borderRadius:12},error:{padding:14,backgroundColor:'#FCE8E5',color:'#9F2D1D',borderRadius:12},bubble:{padding:12,borderRadius:12,backgroundColor:'#EFF5F8',maxWidth:'88%'},mine:{alignSelf:'flex-end',backgroundColor:'#D5F1FB'}});
+const s=StyleSheet.create({
+ bubblePicker:{flexDirection:'row',flexWrap:'wrap',alignItems:'center',justifyContent:'center',gap:10,marginTop:8,marginBottom:8},
+ bubble:{alignItems:'center',justifyContent:'center',padding:8,backgroundColor:'rgba(255,255,255,0.16)',borderWidth:1,borderColor:'#FFFFFF',overflow:'hidden'},
+ bubbleSelected:{backgroundColor:'#A966CC',borderColor:'#A966CC'},
+ bubbleText:{color:'#FFFFFF',fontSize:12,fontWeight:'700',textAlign:'center'},
+ bubbleTextSelected:{fontSize:13},header:{padding:18,flexDirection:'row',alignItems:'center',gap:14,backgroundColor:'#EDF8FB'},back:{fontSize:40,color:'#087EA4'},title:{fontSize:28,fontWeight:'800',color:'#103441'},subtitle:{fontSize:13,color:'#365563',marginTop:4},tabs:{flexDirection:'row',gap:5,padding:10},tab:{flex:1,paddingVertical:13,alignItems:'center',borderRadius:10,backgroundColor:'#EDF4F7'},activeTab:{backgroundColor:'#087EA4'},content:{padding:18,gap:16,paddingBottom:40},heading:{fontSize:19,fontWeight:'800',color:'#103441'},body:{fontSize:15,color:'#365563',lineHeight:23},field:{gap:7},label:{fontSize:15,fontWeight:'700',color:'#103441'},input:{borderWidth:1,borderColor:'#B9D3DE',borderRadius:12,padding:13,minHeight:48,fontSize:16,color:'#103441',backgroundColor:'white'},button:{padding:13,minHeight:46,borderRadius:11,backgroundColor:'#087EA4',alignItems:'center',justifyContent:'center'},secondary:{backgroundColor:'#EAF5FA'},disabled:{opacity:.45},buttonText:{color:'white',fontWeight:'700',fontSize:14},row:{flexDirection:'row',flexWrap:'wrap',gap:10,alignItems:'center'},toggle:{flexDirection:'row',alignItems:'center',gap:14},card:{padding:17,borderRadius:16,borderWidth:1,borderColor:'#D3E4EC',gap:12,backgroundColor:'white'},photo:{width:100,height:100,borderRadius:12},avatar:{width:64,height:64,borderRadius:32},notice:{padding:14,backgroundColor:'#FFF3CF',color:'#5B481D',lineHeight:22,borderRadius:12},error:{padding:14,backgroundColor:'#FCE8E5',color:'#9F2D1D',borderRadius:12},bubble:{padding:12,borderRadius:12,backgroundColor:'#EFF5F8',maxWidth:'88%'},mine:{alignSelf:'flex-end',backgroundColor:'#D5F1FB'}});
