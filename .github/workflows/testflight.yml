@@ -58,8 +58,8 @@ jobs:
           security set-keychain-settings -lut 7200 "$kc"
           security unlock-keychain -p "$pass" "$kc"
           security import signing.p12 -k "$kc" -P "$PASSWORD" -T /usr/bin/codesign
-          security set-keychain-partition-list -S apple-tool:,apple: -s -k "$pass" "$kc"
-          security list-keychains -d user -s "$kc" "$HOME/Library/Keychains/login.keychain-db"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$pass" "$kc"
+          security list-keychain -d user -s "$kc" "$HOME/Library/Keychains/login.keychain-db"
           rm signing.p12
       - name: Archive and verify OkTreat
         env:
