@@ -24,7 +24,7 @@ if(Platform.OS==='android') UIManager.setLayoutAnimationEnabledExperimental?.(tr
 function BubbleInterestPicker({value,onChange,disabled}) {
  const selected=split(value);
  const [stageWidth,setStageWidth]=useState(0);
- const stageHeight=stageWidth*.74;
+ const stageHeight=stageWidth*.67;
  const toggle=(label)=>{
   LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
   onChange((selected.includes(label)?selected.filter(item=>item!==label):[...selected,label]).join(', '));
@@ -51,7 +51,7 @@ function BubbleInterestPicker({value,onChange,disabled}) {
  }
  return <LinearGradient colors={['#AEB9AA','#DCC0A7','#B5A7BD']} start={{x:0,y:.25}} end={{x:1,y:.9}} style={[s.bubbleStage,{height:Math.max(220,stageHeight)}]} onLayout={event=>{const next=event.nativeEvent.layout.width;if(Math.abs(next-stageWidth)>1)setStageWidth(next);}}>
   {stageWidth>0&&bubbles.map(item=><TouchableOpacity key={item.label} accessibilityRole="button" accessibilityState={{selected:item.active,disabled:!!disabled}} disabled={disabled} onPress={()=>toggle(item.label)} style={[s.interestBubble,{width:item.size,height:item.size,borderRadius:item.size/2,left:item.x-item.size/2,top:item.y-item.size/2,zIndex:item.active?3:1},item.active&&s.interestBubbleSelected,disabled&&s.disabled]}>
-   <View style={s.interestBubbleLabel}>{item.active&&<Text style={s.interestBubbleCheck}>✓</Text>}<Text numberOfLines={2} style={[s.interestBubbleText,{fontSize:item.active?15:(item.size<58?10:12)},item.active&&s.interestBubbleTextSelected]}>{copy(item.label)}</Text></View>
+   <View style={s.interestBubbleLabel}>{item.active&&<Text style={s.interestBubbleCheck}>✓</Text>}<Text numberOfLines={2} style={[s.interestBubbleText,{fontSize:item.active?Math.max(20,Math.min(28,Math.round(item.size*.145))):Math.max(13,Math.min(20,Math.round(item.size*.14)))},item.active&&s.interestBubbleTextSelected]}>{copy(item.label)}</Text></View>
   </TouchableOpacity>)}
  </LinearGradient>;
 }
@@ -139,7 +139,7 @@ export default function PalsLiveScreen({navigation}) {
 }
 const s=StyleSheet.create({
  bubbleStage:{position:'relative',width:'100%',alignSelf:'center',marginTop:8,marginBottom:8,overflow:'hidden',borderRadius:24,borderWidth:1.5,borderColor:'rgba(255,255,255,0.9)'},
- interestBubble:{alignItems:'center',justifyContent:'center',position:'absolute',padding:6,backgroundColor:'rgba(255,255,255,0.08)',borderWidth:1.3,borderColor:'rgba(255,255,255,0.95)',overflow:'hidden'},
+ interestBubble:{alignItems:'center',justifyContent:'center',position:'absolute',padding:6,backgroundColor:'rgba(226,217,205,0.46)',borderWidth:1.3,borderColor:'rgba(255,255,255,0.95)',overflow:'hidden'},
  interestBubbleSelected:{backgroundColor:'#A966CC',borderColor:'#A966CC'},
  interestBubbleText:{color:'#FFFFFF',fontWeight:'700',textAlign:'center'},
  interestBubbleLabel:{alignItems:'center',justifyContent:'center',gap:2},
