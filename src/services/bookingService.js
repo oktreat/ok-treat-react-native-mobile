@@ -61,6 +61,17 @@ export const cancelBooking = async (bookingId) => {
   }
 };
 
+// Assigned sitter confirms they have reviewed the care card and started the sitting.
+export const startSitting = async (bookingId) => {
+  try {
+    const response = await api.post(`/bookings/${bookingId}/start-sitting`);
+    return response.data;
+  } catch (error) {
+    console.error('Start sitting error:', error.response?.data || error.message);
+    throw error.response?.data || { message: 'Failed to start sitting' };
+  }
+};
+
 // Sitter marks a booking as completed (service delivered). Stamps
 // completionRequestedAt and asks the owner to confirm — does not pay yet.
 export const markBookingCompleted = async (bookingId) => {

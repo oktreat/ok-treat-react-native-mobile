@@ -142,6 +142,13 @@ export default function NotificationsScreen({ navigation, route }) {
           navigation.navigate('Bookings', { initialTab: 'Upcoming' });
         }
         return;
+      case 'CARE_UPDATE':
+        if (data.petId) {
+          navigation.navigate('PetCareDiary', { petId: data.petId, petName: data.petName, bookingId: data.bookingId });
+        } else if (data.bookingId) {
+          navigation.navigate('BookingDetail', { bookingId: data.bookingId });
+        }
+        return;
       case 'BOOKING_COMPLETED':
       case 'BOOKING_CANCELLED':
         if (data.bookingId) {

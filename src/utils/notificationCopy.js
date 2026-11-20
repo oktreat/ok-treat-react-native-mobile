@@ -47,6 +47,8 @@ const rows = [
 ];
 // {1}, {2}, etc. represent literal captures from an anchored system template.
 const templates = [
+ ['CARE_UPDATE', /^(.+)'s visit update is ready\.$/, '{1}の訪問レポートが届きました。','Le compte rendu de la visite de {1} est disponible.','Der Besuchsbericht für {1} ist verfügbar.','{1}的照护更新已送达。'],
+
  ['BOOKING_REQUEST', /^You have a new (.+) booking request$/, '新しい{1}の予約リクエストがあります','Vous avez une nouvelle demande de réservation : {1}','Du hast eine neue Buchungsanfrage für {1}','您有新的{1}预订请求'],
  ['MESSAGE', /^You have a new message from (.+)$/, '{1}から新しいメッセージが届きました','Vous avez un nouveau message de {1}','Du hast eine neue Nachricht von {1}','您收到来自{1}的新消息'],
  ['REVIEW', /^You received a ([0-9.]+)-star review$/, '星{1}のレビューが届きました','Vous avez reçu une évaluation de {1} étoiles','Du hast eine Bewertung mit {1} Sternen erhalten','您收到一条{1}星评价'],
