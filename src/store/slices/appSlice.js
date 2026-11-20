@@ -6,13 +6,15 @@ import {
   setOnboardingCompleted,
   isOnboardingCompleted
 } from '../../utils/storage';
-import { fetchAppConfig, DEFAULT_REMOTE_CONFIG } from '../../services/appConfigService';
+import { fetchAppConfig, getCachedAppConfig, DEFAULT_REMOTE_CONFIG } from '../../services/appConfigService';
 
-// Fetch the admin-editable remote config on launch. Fail-open — fetchAppConfig
-// never rejects (returns cache/defaults on error), so this never blocks startup.
+// Load cached settings immediately, then refresh remote config in the background.
 export const loadRemoteConfig = createAsyncThunk(
   'app/loadRemoteConfig',
-  async () => fetchAppConfig()
+  async (_, { dispatch }) => {
+    dispatch(remoteConfigReceived(await getCachedAppConfig()));
+    return fetchAppConfig();
+  }
 );
 
 /**
@@ -78,6 +80,9 @@ const appSlice = createSlice({
       state.language = 'system';
       state.onboardingCompleted = false;
     },
+    remoteConfigReceived: (state, action) => {
+      if (action.payload) state.remoteConfig = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -130,6 +135,5 @@ const appSlice = createSlice({
   },
 });
 
-export const { resetAppSettings } = appSlice.actions;
+export const { resetAppSettings, remoteConfigReceived } = appSlice.actions;
 export default appSlice.reducer;
-
