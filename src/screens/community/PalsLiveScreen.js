@@ -97,6 +97,7 @@ export default function PalsLiveScreen({navigation}) {
  {tab==='Profile'&&<>
  <Text style={s.heading}>{copy('Your PALS profile')}</Text><Text style={s.body}>{copy('For solo travellers meeting new friends, whatever your relationship status. A dog is optional. Your PALS photos and introduction are separate from your pet-care profile.')}</Text>
  <Text style={s.notice}>{me.profile?.visible?copy('Your PALS profile is visible to signed-in members.'):copy('Your PALS profile is private. Choose photos and save your profile. Turn on Show my profile when you are ready to publish.')}</Text>
+ <PalsIdentityVerification liveRequired mode={me.identityMode}/>
  {field('Display name',form.displayName,v=>patch('displayName',v))}{field('About me',form.bio,v=>patch('bio',v),true,'What would you enjoy doing together?')}<View style={s.field}><Text style={s.label}>{copy('Choose your interests')}</Text><Text style={s.body}>{copy('Choose up to 3 interests')}</Text><BubbleInterestPicker value={form.interests} onChange={v=>patch('interests',v)} disabled={busy}/></View>{field('Languages, separated by commas',form.languages,v=>patch('languages',v))}
  <Text style={s.label}>{copy('Your dog (optional)')}</Text><View style={s.row}>{button('No dog / travelling without a dog',()=>patch('dogId',''),false,!!form.dogId)}{me.dogs.map(d=>button(d.name,()=>patch('dogId',d.id),false,form.dogId!==d.id))}</View>{!me.dogs.length&&<Text style={s.body}>{copy('You can join PALS without a dog.')}</Text>}
  {toggle('I am 18 or older',form.adult,v=>patch('adult',v))}{toggle('I am travelling solo',form.single,v=>patch('single',v))}{toggle('I agree to the PALS community rules',form.rules,v=>patch('rules',v))}
@@ -107,7 +108,7 @@ export default function PalsLiveScreen({navigation}) {
  {me.profile?.photos[0]&&<PalsPhotoVerification key={userId+':'+me.profile.photos[0].id} photo={me.profile.photos[0]} identityVerified={me.identityMode==='live'&&me.profile.identityVerified} onChanged={refreshVerification}/>}
  </View>
  {button('Save PALS profile',()=>run(saveProfile),!form.adult||!form.single||!form.rules)}
- {me.profile&&<><PalsIdentityVerification liveRequired mode={me.identityMode}/>
+ {me.profile&&<>
  {button('Hide profile now',()=>run(async()=>{await palsRequest('profile/hide',{});await refresh()}),false,true)}
  {button('Delete PALS profile',()=>confirm('Delete PALS profile?','This removes your PALS photos, travel plans, invitations and PALS conversations. Your OkTreat pet-care account stays.',async()=>{await palsRequest('profile/delete',{});setInvitations([]);setMembers([]);await refresh()}),false,true)}</>}
  {!!me.blocks.length&&<><Text style={s.heading}>{copy('Blocked in PALS')}</Text>{me.blocks.map(b=><View key={b.blockedId} style={s.card}><Text>{copy('Blocked member')} · {b.blockedId.slice(0,8)}</Text>{button('Unblock',()=>run(async()=>{await palsRequest('blocks/remove',{userId:b.blockedId});await refresh()}),false,true)}</View>)}</>}
