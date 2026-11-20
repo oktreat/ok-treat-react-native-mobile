@@ -121,7 +121,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
     return (
       <ScreenWrapper noBottomTabs>
         <View style={[styles.container, styles.centered]}>
-          <ActivityIndicator size="large" color="#32A6D8" />
+          <ActivityIndicator size="large" color="#56AA9A" />
           <Text style={styles.dimText}>Loading your profile…</Text>
         </View>
       </ScreenWrapper>
@@ -158,7 +158,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
         style={styles.container}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#32A6D8" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#56AA9A" />
         }
       >
         {/* Header */}
@@ -208,7 +208,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
             </View>
             {repeatClients != null && (
               <View style={styles.statItem}>
-                <Icon name="people" size={16} color="#32A6D8" />
+                <Icon name="people" size={16} color="#56AA9A" />
                 <Text style={styles.statText}>{repeatClients} repeat client{repeatClients === 1 ? '' : 's'}</Text>
               </View>
             )}
@@ -218,13 +218,13 @@ export default function SitterPersonalProfileScreen({ navigation }) {
             <View style={styles.statsRow}>
               {!!businessTitle && (
                 <View style={styles.statItem}>
-                  <Icon name="briefcase" size={14} color="#32A6D8" />
+                  <Icon name="briefcase" size={14} color="#56AA9A" />
                   <Text style={styles.statTextGray} numberOfLines={1}>{businessTitle}</Text>
                 </View>
               )}
               {!!cityState && (
                 <View style={styles.statItem}>
-                  <Icon name="location" size={14} color="#32A6D8" />
+                  <Icon name="location" size={14} color="#56AA9A" />
                   <Text style={styles.statTextGray} numberOfLines={1}>{cityState}</Text>
                 </View>
               )}
@@ -267,7 +267,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
                 <View style={styles.listContainer}>
                   {sitter.skills.map((skill, i) => (
                     <View key={`${skill}-${i}`} style={styles.listItem}>
-                      <Icon name="checkmark-circle" size={20} color="#32A6D8" />
+                      <Icon name="checkmark-circle" size={20} color="#56AA9A" />
                       <Text style={styles.listText}>{skill}</Text>
                     </View>
                   ))}
@@ -283,13 +283,13 @@ export default function SitterPersonalProfileScreen({ navigation }) {
               <View style={styles.listContainer}>
                 {sitter.homeType && (
                   <View style={styles.listItem}>
-                    <Icon name="home" size={20} color="#32A6D8" />
+                    <Icon name="home" size={20} color="#56AA9A" />
                     <Text style={styles.listText}>Resides in {sitter.homeType.toLowerCase().includes('apartment') ? 'an apartment' : `a ${sitter.homeType.toLowerCase()}`}</Text>
                   </View>
                 )}
                 {sitter.yardType && (
                   <View style={styles.listItem}>
-                    <Icon name={String(sitter.yardType).toLowerCase() === 'none' ? 'close-circle' : 'checkmark-circle'} size={20} color="#32A6D8" />
+                    <Icon name={String(sitter.yardType).toLowerCase() === 'none' ? 'close-circle' : 'checkmark-circle'} size={20} color="#56AA9A" />
                     <Text style={styles.listText}>
                       {String(sitter.yardType).toLowerCase() === 'none' ? 'No yard available' : `${sitter.yardType} yard`}
                     </Text>
@@ -300,28 +300,28 @@ export default function SitterPersonalProfileScreen({ navigation }) {
                     <Icon
                       name={/non[- ]?smoker|no smoking/i.test(sitter.smokingPolicy) ? 'close-circle' : 'checkmark-circle'}
                       size={20}
-                      color="#32A6D8"
+                      color="#56AA9A"
                     />
                     <Text style={styles.listText}>{sitter.smokingPolicy}</Text>
                   </View>
                 )}
                 {Array.isArray(sitter.petsInHome) && sitter.petsInHome.length > 0 && (
                   <View style={styles.listItem}>
-                    <Icon name="paw" size={20} color="#32A6D8" />
+                    <Icon name="paw" size={20} color="#56AA9A" />
                     <Text style={styles.listText}>
                       Pets at home: {sitter.petsInHome.join(', ')}
                     </Text>
                   </View>
                 )}
                 <View style={styles.listItem}>
-                  <Icon name={sitter.childrenInHome ? 'checkmark-circle' : 'close-circle'} size={20} color="#32A6D8" />
+                  <Icon name={sitter.childrenInHome ? 'checkmark-circle' : 'close-circle'} size={20} color="#56AA9A" />
                   <Text style={styles.listText}>
                     {sitter.childrenInHome ? 'Children live in the home' : 'No children in the home'}
                   </Text>
                 </View>
                 {Array.isArray(sitter.petRestrictions) && sitter.petRestrictions.length > 0 && (
                   <View style={styles.listItem}>
-                    <Icon name="alert-circle" size={20} color="#32A6D8" />
+                    <Icon name="alert-circle" size={20} color="#56AA9A" />
                     <Text style={styles.listText}>{sitter.petRestrictions.flat().join(' · ')}</Text>
                   </View>
                 )}
@@ -334,7 +334,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
                 <Text style={styles.cardTitle}>Location</Text>
                 <View style={styles.listContainer}>
                   <View style={styles.listItem}>
-                    <Icon name="location" size={20} color="#FFC2EB" />
+                    <Icon name="location" size={20} color="#DDF4EF" />
                     <Text style={styles.listText}>
                       {[sitter.address, cityState].filter(Boolean).join(' · ')}
                     </Text>
@@ -390,7 +390,7 @@ export default function SitterPersonalProfileScreen({ navigation }) {
                 return (
                   <View key={type} style={styles.card}>
                     <View style={styles.serviceHeader}>
-                      <Icon name={meta.icon} size={18} color="#32A6D8" />
+                      <Icon name={meta.icon} size={18} color="#56AA9A" />
                       <Text style={styles.cardTitle}>{meta.label}</Text>
                     </View>
                     <View style={styles.serviceRow}>
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 24,
     paddingVertical: 10,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     borderRadius: 999,
   },
   retryText: { color: '#FFFFFF', fontFamily: 'Avenir LT Std', fontWeight: '700' },
@@ -524,9 +524,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  activeTab: { backgroundColor: 'rgba(255, 194, 235, 0.15)', borderColor: '#FFC2EB' },
+  activeTab: { backgroundColor: 'rgba(86, 170, 154, 0.15)', borderColor: '#DDF4EF' },
   tabText: { color: '#666D80', fontSize: 12, fontFamily: 'Avenir LT Std', fontWeight: '600' },
-  activeTabText: { color: '#32A6D8' },
+  activeTabText: { color: '#56AA9A' },
 
   contentContainer: { paddingHorizontal: 24, paddingBottom: 30, gap: 13 },
   card: {

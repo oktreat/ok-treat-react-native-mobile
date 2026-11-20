@@ -81,7 +81,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>Use your time to become a pet sitter</Text>
               <View style={[styles.expandIcon, !expandedSections.mainCard && styles.expandIconCollapsed]}>
-                <AngleDownIcon width={24} height={24} fill="#32A6D8" />
+                <AngleDownIcon width={24} height={24} fill="#56AA9A" />
               </View>
             </View>
 
@@ -97,21 +97,21 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                   <View style={styles.bulletList}>
                     <View style={styles.bulletItem}>
                       <View style={styles.bulletIconContainer}>
-                        <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                        <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                       </View>
                       <Text style={styles.bulletText}>Create your own schedule and set your rates</Text>
                     </View>
 
                     <View style={styles.bulletItem}>
                       <View style={styles.bulletIconContainer}>
-                        <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                        <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                       </View>
                       <Text style={styles.bulletText}>Provide any mix of pet care services</Text>
                     </View>
 
                     <View style={styles.bulletItem}>
                       <View style={styles.bulletIconContainer}>
-                        <PawFilledIconPink width={10} height={10} color="#FFC2EB" />
+                        <PawFilledIconPink width={10} height={10} color="#DDF4EF" />
                       </View>
                       <Text style={styles.bulletText}>
                         Choose pet sizes, ages, and other preferences that suit you
@@ -146,7 +146,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
           >
             <Text style={styles.expandableTitle}>Built-in tools to help you succeed</Text>
             <View style={[styles.expandableIcon, !expandedSections.tools && styles.expandableIconCollapsed]}>
-              <AngleDownIcon width={20} height={20} fill="#32A6D8" />
+              <AngleDownIcon width={20} height={20} fill="#56AA9A" />
             </View>
           </TouchableOpacity>
           {expandedSections.tools && (
@@ -154,7 +154,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
               <View style={styles.bulletList}>
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                    <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                   </View>
                   <Text style={styles.bulletText}>
                     Handle your pet sitting schedule and more—all in the OkTreat app
@@ -162,7 +162,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                 </View>
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                    <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                   </View>
                   <Text style={styles.bulletText}>
                     {copy("Report concerns through OkTreat Support. For urgent pet injury or illness, contact a veterinarian.")}
@@ -193,7 +193,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
           >
             <Text style={styles.expandableTitle}>How it works</Text>
             <View style={[styles.expandableIcon, !expandedSections.howItWorks && styles.expandableIconCollapsed]}>
-              <AngleDownIcon width={20} height={20} fill="#32A6D8" />
+              <AngleDownIcon width={20} height={20} fill="#56AA9A" />
             </View>
           </TouchableOpacity>
           {expandedSections.howItWorks && (
@@ -240,7 +240,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
           >
             <Text style={styles.expandableTitle}>Services</Text>
             <View style={[styles.expandableIcon, !expandedSections.services && styles.expandableIconCollapsed]}>
-              <AngleDownIcon width={20} height={20} fill="#32A6D8" />
+              <AngleDownIcon width={20} height={20} fill="#56AA9A" />
             </View>
           </TouchableOpacity>
           {expandedSections.services && (
@@ -248,7 +248,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
               <View style={styles.stepsGrid}>
                 <View style={styles.serviceCard}>
                   <View style={styles.serviceIconContainer}>
-                    <BuildingsIcon width={24} height={24} fill="#32A6D8" />
+                    <BuildingsIcon width={24} height={24} fill="#56AA9A" />
                   </View>
                   <Text style={styles.serviceTitle}>Boarding</Text>
                   <Text style={styles.serviceDescription}>
@@ -257,7 +257,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                 </View>
                 <View style={styles.serviceCard}>
                   <View style={styles.serviceIconContainer}>
-                    <HomeIconSvg width={24} height={24} fill="#32A6D8" />
+                    <HomeIconSvg width={24} height={24} fill="#56AA9A" />
                   </View>
                   <Text style={styles.serviceTitle}>House Sitting, Drop-In Visits</Text>
                   <Text style={styles.serviceDescription}>
@@ -269,7 +269,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
               <View style={styles.stepsGrid}>
                 <View style={styles.serviceCard}>
                   <View style={styles.serviceIconContainer}>
-                    <SunIcon width={24} height={24} fill="#32A6D8" />
+                    <SunIcon width={24} height={24} fill="#56AA9A" />
                   </View>
                   <Text style={styles.serviceTitle}>Day Care</Text>
                   <Text style={styles.serviceDescription}>
@@ -278,7 +278,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                 </View>
                 <View style={styles.serviceCard}>
                   <View style={styles.serviceIconContainer}>
-                    <PawIcon width={24} height={24} fill="#32A6D8" />
+                    <PawIcon width={24} height={24} fill="#56AA9A" />
                   </View>
                   <Text style={styles.serviceTitle}>Pet Walking</Text>
                   <Text style={styles.serviceDescription}>
@@ -299,7 +299,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
           >
             <Text style={styles.expandableTitle}>Safety always comes first</Text>
             <View style={[styles.expandableIcon, !expandedSections.safety && styles.expandableIconCollapsed]}>
-              <AngleDownIcon width={20} height={20} fill="#32A6D8" />
+              <AngleDownIcon width={20} height={20} fill="#56AA9A" />
             </View>
           </TouchableOpacity>
           {expandedSections.safety && (
@@ -311,7 +311,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
               <View style={styles.bulletList}>
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                    <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                   </View>
                   <Text style={styles.bulletText}>
                     {copy("During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.")}
@@ -319,7 +319,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                 </View>
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                    <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                   </View>
                   <Text style={styles.bulletText}>
                     Online payments that are safe, secure, and hassle-free
@@ -327,7 +327,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                 </View>
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                    <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                   </View>
                   <Text style={styles.bulletText}>
                     {copy("Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.")}
@@ -335,7 +335,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                 </View>
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                    <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                   </View>
                   <Text style={styles.bulletText}>
                     {copy("Support is not monitored continuously. Report a safety concern in the app.")}
@@ -343,7 +343,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
                 </View>
                 <View style={styles.bulletItem}>
                   <View style={styles.bulletIconContainer}>
-                    <PawFilledIconPink width={10} height={10} fill="#FFC2EB" />
+                    <PawFilledIconPink width={10} height={10} fill="#DDF4EF" />
                   </View>
                   <Text style={styles.bulletText}>
                     {copy("Discuss care instructions and emergency contacts before each booking.")}
@@ -361,7 +361,7 @@ export default function BecomeASitterIntroScreen({ navigation }) {
     </ScrollView>
 
     {/* Identity disclosure remains visible before registration. */}
-    <View style={{ paddingHorizontal: 24, paddingVertical: 10, backgroundColor: '#E2F3FB' }}>
+    <View style={{ paddingHorizontal: 24, paddingVertical: 10, backgroundColor: '#DDF4EF' }}>
       <Text style={{ color: '#183944', fontSize: 13, lineHeight: 19 }}>{copy("During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.")}</Text>
     </View>
     {/* Get Started Button - Fixed at Bottom */}
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     flex: 1,
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
   },
   expandableTitle: {
     flex: 1,
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
   serviceIconContainer: {
     width: 48,
     height: 48,
-    backgroundColor: '#F0F9FF',
+    backgroundColor: '#DDF4EF',
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',

@@ -269,7 +269,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                     {/* Info Banner */}
                     <View style={styles.infoBanner}>
                         <View style={styles.infoBannerIcon}>
-                            <InfoCircleIconBlue width={16.67} height={16.67} fill='#32A6D8' />
+                            <InfoCircleIconBlue width={16.67} height={16.67} fill='#56AA9A' />
                         </View>
                         <Text style={styles.infoBannerText}>
                             We've recommended default settings that work well for new sitters and walkers. You can update them now or change them anytime later
@@ -334,7 +334,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                             <Icon
                                                 name="paw"
                                                 size={24}
-                                                color={selectedPetSizes.includes(size) ? '#FFC2EB' : '#D0D0D0'}
+                                                color={selectedPetSizes.includes(size) ? '#DDF4EF' : '#D0D0D0'}
                                             />
                                             <Text style={styles.sizeText}>
                                                 <Text style={[
@@ -389,7 +389,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         placeholder="0"
                                                         placeholderTextColor="#A4ACB9"
                                                     />
-                                                    <Icon name="pencil" size={14} color="#32A6D8" />
+                                                    <Icon name="pencil" size={14} color="#56AA9A" />
                                                 </View>
                                             )}
                                         </View>
@@ -419,7 +419,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         placeholder="0"
                                                         placeholderTextColor="#A4ACB9"
                                                     />
-                                                    <Icon name="pencil" size={14} color="#32A6D8" />
+                                                    <Icon name="pencil" size={14} color="#56AA9A" />
                                                 </View>
                                             )}
                                         </View>
@@ -449,7 +449,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         placeholder="0"
                                                         placeholderTextColor="#A4ACB9"
                                                     />
-                                                    <Icon name="pencil" size={14} color="#32A6D8" />
+                                                    <Icon name="pencil" size={14} color="#56AA9A" />
                                                 </View>
                                             )}
                                         </View>
@@ -479,7 +479,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                                         placeholder="0"
                                                         placeholderTextColor="#A4ACB9"
                                                     />
-                                                    <Icon name="pencil" size={14} color="#32A6D8" />
+                                                    <Icon name="pencil" size={14} color="#56AA9A" />
                                                 </View>
                                             )}
                                         </View>
@@ -520,7 +520,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                     onPress={() => setAvailabilityImportant('yes')}
                                 >
                                     <View style={[styles.radioButton, availabilityImportant !== 'yes' && styles.radioButtonUnselected]}>
-                                        {availabilityImportant === 'yes' && <ProgressTickIcon width={25} height={25} fill="#32A6D8" />}
+                                        {availabilityImportant === 'yes' && <ProgressTickIcon width={25} height={25} fill="#56AA9A" />}
                                     </View>
                                     <Text style={styles.radioLabel}>Yes</Text>
                                 </TouchableOpacity>
@@ -529,7 +529,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                     onPress={() => setAvailabilityImportant('no')}
                                 >
                                     <View style={[styles.radioButton, availabilityImportant !== 'no' && styles.radioButtonUnselected]}>
-                                        {availabilityImportant === 'no' && <ProgressTickIcon width={25} height={25} fill="#32A6D8" />}
+                                        {availabilityImportant === 'no' && <ProgressTickIcon width={25} height={25} fill="#56AA9A" />}
                                     </View>
                                     <Text style={styles.radioLabel}>No</Text>
                                 </TouchableOpacity>
@@ -563,7 +563,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                         onPress={() => setPottyBreaks(option)}
                                     >
                                         <View style={[styles.radioButton, pottyBreaks !== option && styles.radioButtonUnselected]}>
-                                            {pottyBreaks === option && <ProgressTickIcon width={25} height={25} fill="#32A6D8" />}
+                                            {pottyBreaks === option && <ProgressTickIcon width={25} height={25} fill="#56AA9A" />}
                                         </View>
                                         <Text style={styles.radioLabel}>{option}</Text>
                                     </TouchableOpacity>
@@ -578,7 +578,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                 value={contactTime}
                                 onSelect={setContactTime}
                                 options={['Same day', '1 day before', '2 days before', '3 days before', '1 week before']}
-                                leftIcon={<InfoCircleIcon width={16.67} height={16.67} fill='#FFC2EB' />}
+                                leftIcon={<InfoCircleIcon width={16.67} height={16.67} fill='#DDF4EF' />}
                                 rightIcon={<AngleDownIcon width={8.33} height={5} fill='#3B1153' />}
                                 containerStyle={styles.dropdownContainer}
                             />
@@ -621,7 +621,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                         onPress={() => setHomeType(option)}
                                     >
                                         <View style={[styles.radioButton, homeType !== option && styles.radioButtonUnselected]}>
-                                            {homeType === option && <ProgressTickIcon width={25} height={25} fill="#32A6D8" />}
+                                            {homeType === option && <ProgressTickIcon width={25} height={25} fill="#56AA9A" />}
                                         </View>
                                         <Text style={styles.radioLabel}>{option}</Text>
                                     </TouchableOpacity>
@@ -639,7 +639,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                         onPress={() => setYardType(option)}
                                     >
                                         <View style={[styles.radioButton, yardType !== option && styles.radioButtonUnselected]}>
-                                            {yardType === option && <ProgressTickIcon width={25} height={25} fill="#32A6D8" />}
+                                            {yardType === option && <ProgressTickIcon width={25} height={25} fill="#56AA9A" />}
                                         </View>
                                         <Text style={styles.radioLabel}>{option}</Text>
                                     </TouchableOpacity>
@@ -683,7 +683,7 @@ export default function BoardingSettingsScreen({ navigation }) {
                                         onPress={() => setCancellationPolicy(option)}
                                     >
                                         <View style={[styles.radioButton, cancellationPolicy !== option && styles.radioButtonUnselected]}>
-                                            {cancellationPolicy === option && <ProgressTickIcon width={25} height={25} fill="#32A6D8" />}
+                                            {cancellationPolicy === option && <ProgressTickIcon width={25} height={25} fill="#56AA9A" />}
                                         </View>
                                         <Text style={styles.radioLabel}>{option}</Text>
                                     </TouchableOpacity>
@@ -774,7 +774,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         gap: 10,
         padding: 15,
-        backgroundColor: '#DAEFF8',
+        backgroundColor: '#DDF4EF',
         borderRadius: 10,
         marginBottom: 16,
     },
@@ -837,7 +837,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
         top: 18,
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 14,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
@@ -871,14 +871,14 @@ const styles = StyleSheet.create({
         gap: 6.88,
     },
     rateValue: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 13.76,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
         lineHeight: 21.34,
     },
     rateValueInput: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 13.76,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
@@ -887,7 +887,7 @@ const styles = StyleSheet.create({
         minWidth: 60,
     },
     rateUnit: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 14,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
@@ -931,7 +931,7 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     toggleTrackActive: {
-        backgroundColor: '#FFC2EB',
+        backgroundColor: '#DDF4EF',
     },
     toggleThumb: {
         position: 'absolute',
@@ -941,7 +941,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: '#FFC2EB',
+        borderColor: '#DDF4EF',
         shadowColor: '#000',
         shadowOffset: { width: -3, height: 0 },
         shadowOpacity: 0.15,
@@ -958,7 +958,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     showMoreText: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 12,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
@@ -989,13 +989,13 @@ const styles = StyleSheet.create({
     radioButtonUnselected: {
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: '#32A6D8',
+        borderColor: '#56AA9A',
     },
     radioButtonSelected: {
         width: 19.95,
         height: 19.95,
         borderRadius: 10,
-        backgroundColor: '#32A6D8',
+        backgroundColor: '#56AA9A',
     },
     radioLabel: {
         color: '#898D8F',
@@ -1023,8 +1023,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dayButtonSelected: {
-        backgroundColor: 'rgba(255, 194, 235, 0.15)',
-        borderColor: '#FFC2EB',
+        backgroundColor: 'rgba(86, 170, 154, 0.15)',
+        borderColor: '#DDF4EF',
     },
     dayButtonText: {
         color: '#666D80',
@@ -1034,7 +1034,7 @@ const styles = StyleSheet.create({
         lineHeight: 18.6,
     },
     dayButtonTextSelected: {
-        color: '#32A6D8',
+        color: '#56AA9A',
     },
     radioGroupGrid: {
         paddingHorizontal: 20,
@@ -1084,7 +1084,7 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
     noteText: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 11,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
@@ -1153,14 +1153,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
     },
     rateValue: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 12,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
         lineHeight: 18.6,
     },
     rateInput: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 12,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
@@ -1175,14 +1175,14 @@ const styles = StyleSheet.create({
         marginBottom: 0,
     },
     freeText: {
-        color: '#32A6D8',
+        color: '#56AA9A',
         fontSize: 12,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
         lineHeight: 18.6,
     },
     percentText: {
-        color: '#F38FB4',
+        color: '#56AA9A',
         fontSize: 12,
         fontFamily: 'Avenir LT Std',
         fontWeight: '600',
@@ -1212,8 +1212,8 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     sizeBoxSelected: {
-        backgroundColor: 'rgba(255, 194, 235, 0.15)',
-        borderColor: '#FFC2EB',
+        backgroundColor: 'rgba(86, 170, 154, 0.15)',
+        borderColor: '#DDF4EF',
     },
     sizeText: {
         textAlign: 'center',
@@ -1226,7 +1226,7 @@ const styles = StyleSheet.create({
         lineHeight: 23.25,
     },
     sizeNumberSelected: {
-        color: '#32A6D8',
+        color: '#56AA9A',
     },
     sizeLabel: {
         color: 'black',

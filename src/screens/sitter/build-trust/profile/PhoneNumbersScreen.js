@@ -161,7 +161,7 @@ export default function PhoneNumbersScreen({ navigation }) {
 
             <Text style={styles.fieldLabel}>Contact name (emergency)</Text>
             <View style={styles.inputContainer}>
-              <UserCircleIcon width={16.67} height={16.67} fill="#FFC2EB" />
+              <UserCircleIcon width={16.67} height={16.67} fill="#DDF4EF" />
               <TextInput
                 style={styles.input}
                 placeholder="e.g., John Smith"

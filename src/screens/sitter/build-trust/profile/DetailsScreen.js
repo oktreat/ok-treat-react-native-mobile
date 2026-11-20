@@ -305,13 +305,13 @@ export default function DetailsScreen({ navigation }) {
 
             <View style={styles.tipsList}>
               <View style={styles.tipItem}>
-                <PawFilledIcon width={13.34} height={12} fill="#FFC2EB" />
+                <PawFilledIcon width={13.34} height={12} fill="#DDF4EF" />
                 <Text style={styles.tipText}>
                   Avoid adding personal identifiers (e.g., last name or workplace) to your profile.
                 </Text>
               </View>
               <View style={styles.tipItem}>
-                <PawFilledIcon width={13.34} height={12} fill="#FFC2EB" />
+                <PawFilledIcon width={13.34} height={12} fill="#DDF4EF" />
                 <Text style={styles.tipText}>
                   Please select Save & Continue below to ensure your updates are saved.
                 </Text>
@@ -330,7 +330,7 @@ export default function DetailsScreen({ navigation }) {
                 activeOpacity={0.7}
               >
                 {aiGenerating ? (
-                  <ActivityIndicator size="small" color="#32A6D8" />
+                  <ActivityIndicator size="small" color="#56AA9A" />
                 ) : (
                   <Text style={styles.aiGenerateButtonText}>AI Generate</Text>
                 )}
@@ -591,9 +591,9 @@ const styles = StyleSheet.create({
   aiGenerateButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0F9FF',
+    backgroundColor: '#DDF4EF',
     borderWidth: 1,
-    borderColor: '#32A6D8',
+    borderColor: '#56AA9A',
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 5,
@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   aiGenerateButtonText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 12,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
@@ -695,7 +695,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     height: 44,
     borderRadius: 12,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -714,8 +714,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   chipSelected: {
-    backgroundColor: '#FFC2EB',
-    borderColor: '#32A6D8',
+    backgroundColor: '#DDF4EF',
+    borderColor: '#56AA9A',
   },
   chipText: {
     color: '#666D80',
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   chipTextSelected: {
-    color: '#32A6D8',
+    color: '#56AA9A',
   },
   toggleRow: {
     flexDirection: 'row',
@@ -743,8 +743,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   toggleButtonSelected: {
-    backgroundColor: '#FFC2EB',
-    borderColor: '#32A6D8',
+    backgroundColor: '#DDF4EF',
+    borderColor: '#56AA9A',
   },
   toggleButtonText: {
     color: '#666D80',
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   toggleButtonTextSelected: {
-    color: '#32A6D8',
+    color: '#56AA9A',
   },
   bottomButtonContainer: {
     paddingHorizontal: 24,

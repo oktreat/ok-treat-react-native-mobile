@@ -64,6 +64,7 @@ export default function BookingDetailScreen({ navigation, route }) {
   // refreshes from the API on focus so any in-flight status changes show up.
   const seed = route?.params?.booking || null;
   const bookingId = route?.params?.bookingId || seed?.id || null;
+  const accentColor = route?.params?.mode === 'sitter' ? '#56AA9A' : '#32A6D8';
 
   const [booking, setBooking] = useState(seed);
   const [loading, setLoading] = useState(!seed);
@@ -128,6 +129,7 @@ export default function BookingDetailScreen({ navigation, route }) {
     navigation.navigate('ChatConversation', {
       otherUserId,
       chatName: booking?.sitter?.user?.fullName || 'Sitter',
+      mode: route?.params?.mode,
     });
   };
 
@@ -144,7 +146,7 @@ export default function BookingDetailScreen({ navigation, route }) {
     return (
       <ScreenWrapper noBottomTabs>
         <View style={[styles.container, styles.centered]}>
-          <ActivityIndicator size="large" color="#32A6D8" />
+          <ActivityIndicator size="large" color={accentColor} />
         </View>
       </ScreenWrapper>
     );
@@ -191,7 +193,7 @@ export default function BookingDetailScreen({ navigation, route }) {
           <View style={styles.headerCard}>
             <View style={styles.serviceRow}>
               <View style={styles.serviceIconWrap}>
-                <Icon name={serviceMeta.icon} size={20} color="#32A6D8" />
+                <Icon name={serviceMeta.icon} size={20} color={accentColor} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.serviceLabel}>{copy(serviceMeta.label)}</Text>
@@ -221,7 +223,7 @@ export default function BookingDetailScreen({ navigation, route }) {
             </View>
             {canContact && (
               <View style={styles.contactRow}>
-                <TouchableOpacity style={[styles.iconBtn, styles.iconBtnPrimary]} onPress={handleMessage}>
+                <TouchableOpacity style={[styles.iconBtn, styles.iconBtnPrimary, { backgroundColor: accentColor }]} onPress={handleMessage}>
                   <Icon name="chatbubble-ellipses" size={18} color="#FFFFFF" />
                   <Text style={styles.iconBtnText}>{copy("Message")}</Text>
                 </TouchableOpacity>
@@ -248,7 +250,7 @@ export default function BookingDetailScreen({ navigation, route }) {
                 </View>
               </View>
               <TouchableOpacity
-                style={[styles.actionBtn, styles.actionPrimary, { marginTop: 14 }]}
+                style={[styles.actionBtn, styles.actionPrimary, { backgroundColor: accentColor, marginTop: 14 }]}
                 onPress={() => navigation.navigate('PetCareDiary', {
                   petId: booking.petId || booking.pet?.id,
                   petName,
@@ -277,7 +279,7 @@ export default function BookingDetailScreen({ navigation, route }) {
             <View style={styles.amountRow}>
               <Text style={styles.amountLabel}>{copy("Total")}</Text>
               <View style={styles.amountValueRow}>
-                <Icon name="logo-bitcoin" size={16} color="#32A6D8" />
+                <Icon name="logo-bitcoin" size={16} color={accentColor} />
                 <Text style={styles.amountValue}>{amount.toLocaleString()}{' '}{copy("TreatCoins")}</Text>
               </View>
             </View>
@@ -299,7 +301,7 @@ export default function BookingDetailScreen({ navigation, route }) {
           <View style={styles.actionsCol}>
             {canReview && (
               <TouchableOpacity
-                style={[styles.actionBtn, styles.actionPrimary]}
+                style={[styles.actionBtn, styles.actionPrimary, { backgroundColor: accentColor }]}
                 onPress={handleLeaveReview}
               >
                 <Icon name="star" size={18} color="#FFFFFF" />

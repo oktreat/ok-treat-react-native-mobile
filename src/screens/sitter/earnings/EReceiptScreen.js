@@ -54,7 +54,7 @@ export default function EReceiptScreen({ navigation, route }) {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Payment Receipt</Text>
           <TouchableOpacity onPress={handleShare} style={styles.shareButton}>
-            <Icon name="share-social-outline" size={24} color="#32A6D8" />
+            <Icon name="share-social-outline" size={24} color="#56AA9A" />
           </TouchableOpacity>
         </View>
 
@@ -84,14 +84,14 @@ export default function EReceiptScreen({ navigation, route }) {
             
             <View style={styles.detailRow}>
               <View style={styles.detailIconContainer}>
-                <Icon name="receipt-outline" size={20} color="#32A6D8" />
+                <Icon name="receipt-outline" size={20} color="#56AA9A" />
               </View>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Transaction ID</Text>
                 <View style={styles.transactionIdRow}>
                   <Text style={styles.detailValue}>SK7263727399</Text>
                   <TouchableOpacity style={styles.copyButton}>
-                    <Icon name="copy-outline" size={16} color="#32A6D8" />
+                    <Icon name="copy-outline" size={16} color="#56AA9A" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -101,7 +101,7 @@ export default function EReceiptScreen({ navigation, route }) {
 
             <View style={styles.detailRow}>
               <View style={styles.detailIconContainer}>
-                <Icon name="calendar-outline" size={20} color="#32A6D8" />
+                <Icon name="calendar-outline" size={20} color="#56AA9A" />
               </View>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Date & Time</Text>
@@ -113,7 +113,7 @@ export default function EReceiptScreen({ navigation, route }) {
 
             <View style={styles.detailRow}>
               <View style={styles.detailIconContainer}>
-                <Icon name="card-outline" size={20} color="#32A6D8" />
+                <Icon name="card-outline" size={20} color="#56AA9A" />
               </View>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Payment Method</Text>
@@ -128,7 +128,7 @@ export default function EReceiptScreen({ navigation, route }) {
             
             <View style={styles.detailRow}>
               <View style={styles.detailIconContainer}>
-                <Icon name="paw-outline" size={20} color="#32A6D8" />
+                <Icon name="paw-outline" size={20} color="#56AA9A" />
               </View>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Service Type</Text>
@@ -140,7 +140,7 @@ export default function EReceiptScreen({ navigation, route }) {
 
             <View style={styles.detailRow}>
               <View style={styles.detailIconContainer}>
-                <Icon name="person-outline" size={20} color="#32A6D8" />
+                <Icon name="person-outline" size={20} color="#56AA9A" />
               </View>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Sitter Name</Text>
@@ -152,7 +152,7 @@ export default function EReceiptScreen({ navigation, route }) {
 
             <View style={styles.detailRow}>
               <View style={styles.detailIconContainer}>
-                <Icon name="time-outline" size={20} color="#32A6D8" />
+                <Icon name="time-outline" size={20} color="#56AA9A" />
               </View>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Service Duration</Text>
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   detailIconContainer: {
     width: 40,
     height: 40,
-    backgroundColor: 'rgba(50, 166, 216, 0.1)',
+    backgroundColor: 'rgba(86, 170, 154, 0.1)',
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -345,12 +345,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     marginHorizontal: 20,
     marginBottom: 16,
     paddingVertical: 16,
     borderRadius: 12,
-    shadowColor: '#32A6D8',
+    shadowColor: '#56AA9A',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

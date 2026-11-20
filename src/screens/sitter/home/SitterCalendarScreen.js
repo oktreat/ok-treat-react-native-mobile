@@ -21,7 +21,7 @@ const STATUS_COLORS = {
   pending: { bg: '#FFEED3', text: '#E5A33D' },
   confirmed: { bg: '#DCF5E5', text: '#2E9E5B' },
   accepted: { bg: '#DCF5E5', text: '#2E9E5B' },
-  completed: { bg: '#E3F0FB', text: '#3A8DCC' },
+  completed: { bg: '#DDF4EF', text: '#56AA9A' },
   declined: { bg: '#FBE3E3', text: '#D06060' },
 };
 
@@ -270,7 +270,7 @@ export default function SitterCalendarScreen({ navigation }) {
                 onPress={goToNextMonth}
                 disabled={!canGoNext()}
               >
-                <Icon name="chevron-forward" size={18} color={canGoNext() ? "#5CADF4" : "#BDBDBD"} />
+                <Icon name="chevron-forward" size={18} color={canGoNext() ? "#56AA9A" : "#BDBDBD"} />
               </TouchableOpacity>
             </View>
           </View>
@@ -278,7 +278,7 @@ export default function SitterCalendarScreen({ navigation }) {
           {/* Loading indicator for calendar */}
           {loading && (
             <View style={styles.calendarLoadingOverlay}>
-              <ActivityIndicator size="small" color="#32A6D8" />
+              <ActivityIndicator size="small" color="#56AA9A" />
             </View>
           )}
 
@@ -388,13 +388,13 @@ export default function SitterCalendarScreen({ navigation }) {
                       <View style={styles.bookingContact}>
                         {!!booking.address && (
                           <View style={styles.bookingContactItem}>
-                            <Icon name="location-outline" size={14} color="#32A6D8" />
+                            <Icon name="location-outline" size={14} color="#56AA9A" />
                             <Text style={styles.bookingContactText} numberOfLines={2}>{booking.address}</Text>
                           </View>
                         )}
                         {!!booking.petName && (
                           <View style={styles.bookingContactItem}>
-                            <Icon name="paw-outline" size={14} color="#32A6D8" />
+                            <Icon name="paw-outline" size={14} color="#56AA9A" />
                             <Text style={styles.bookingContactText}>{booking.petName}</Text>
                           </View>
                         )}
@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   calendarCard: {
     marginHorizontal: 18,
     marginTop: 12,
-    backgroundColor: 'rgba(90, 172, 244, 0.15)',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
     borderRadius: 17.84,
     padding: 10.71,
     paddingTop: 14.27,
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 11,
     paddingVertical: 5,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     borderRadius: 20,
     marginRight: 2,
   },
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(90, 172, 244, 0.2)',
+    borderTopColor: 'rgba(86, 170, 154, 0.2)',
   },
   legendItem: {
     flexDirection: 'row',
@@ -559,11 +559,11 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   legendBooking: {
-    backgroundColor: 'rgba(90, 172, 244, 0.2)',
+    backgroundColor: 'rgba(86, 170, 154, 0.2)',
   },
   legendToday: {
     borderWidth: 1.5,
-    borderColor: '#32A6D8',
+    borderColor: '#56AA9A',
     backgroundColor: '#FFFFFF',
   },
   legendText: {
@@ -600,17 +600,17 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   selectedDateCell: {
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#DDF4EF',
   },
   bookingDateCell: {
-    backgroundColor: 'rgba(90, 172, 244, 0.2)',
+    backgroundColor: 'rgba(86, 170, 154, 0.2)',
   },
   todayCell: {
     borderWidth: 1.5,
-    borderColor: '#32A6D8',
+    borderColor: '#56AA9A',
   },
   todayText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontWeight: '700',
   },
   bookingDot: {
@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
   },
   dateText: {
     color: '#424242',
@@ -631,11 +631,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   selectedDateText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontWeight: '700',
   },
   bookingDateText: {
-    color: '#5CADF4',
+    color: '#56AA9A',
     fontWeight: '600',
   },
   errorContainer: {
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
   retryButton: {
     paddingHorizontal: 24,
     paddingVertical: 10,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     borderRadius: 30,
   },
   retryButtonText: {
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
     lineHeight: 18.94,
   },
   seeAllText: {
-    color: '#5CADF4',
+    color: '#56AA9A',
     fontSize: 12.28,
     fontFamily: 'Poppins',
     fontWeight: '500',
@@ -786,13 +786,13 @@ const styles = StyleSheet.create({
     height: 14.3,
     borderRadius: 9999,
     borderWidth: 1.2,
-    borderColor: '#32A6D8',
+    borderColor: '#56AA9A',
     position: 'absolute',
   },
   bookingChatButton: {
     width: 48,
     height: 48,
-    backgroundColor: 'rgba(90, 172, 244, 0.15)',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',

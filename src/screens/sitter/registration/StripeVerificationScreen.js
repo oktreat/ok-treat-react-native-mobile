@@ -64,7 +64,7 @@ export default function StripeVerificationScreen({ navigation }) {
           <View style={styles.featuresList}>
             <View style={styles.featureItem}>
               <View style={styles.iconWrapper}>
-                <CameraIconSvg width={20} height={20} fill="#32A6D8" />
+                <CameraIconSvg width={20} height={20} fill="#56AA9A" />
               </View>
               <Text style={styles.featureText}>
                 You can perform an accurate image identification.
@@ -73,7 +73,7 @@ export default function StripeVerificationScreen({ navigation }) {
 
             <View style={styles.featureItem}>
               <View style={styles.iconWrapper}>
-                <ShieldLockIcon width={20} height={20} fill="#32A6D8" />
+                <ShieldLockIcon width={20} height={20} fill="#56AA9A" />
               </View>
               <Text style={styles.featureText}>
                 This information you provide to Stripe will help us verify your identity.
@@ -82,7 +82,7 @@ export default function StripeVerificationScreen({ navigation }) {
 
             <View style={styles.featureItem}>
               <View style={styles.iconWrapper}>
-                <LockIcon width={20} height={20} fill="#32A6D8" />
+                <LockIcon width={20} height={20} fill="#56AA9A" />
               </View>
               <Text style={styles.featureText}>
                 OkTreat will only authentication data will be accessed.
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   logoCircle: {
     width: 168,
     height: 168,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#DDF4EF',
     borderRadius: 84,
     justifyContent: 'center',
     alignItems: 'center',
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   declineText: {
-    color: '#F38FB4',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Avenir LT Std',
     fontWeight: '750',
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   footerLink: {
-    color: '#32A6D8',
+    color: '#56AA9A',
   },
   pendingContainer: {
     gap: 16,

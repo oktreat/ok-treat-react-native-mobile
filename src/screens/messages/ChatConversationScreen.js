@@ -26,7 +26,7 @@ const BubbleAvatar = ({ uri }) => (
   )
 );
 
-const MessageBubble = ({ message, otherAvatar, myAvatar }) => {
+const MessageBubble = ({ message, otherAvatar, myAvatar, accentColor }) => {
   const isMe = message.sender === 'me';
 
   return (
@@ -38,7 +38,7 @@ const MessageBubble = ({ message, otherAvatar, myAvatar }) => {
         </View>
       )}
 
-      <View style={[styles.messageBubble, isMe ? styles.myMessage : styles.otherMessage]}>
+      <View style={[styles.messageBubble, isMe ? [styles.myMessage, { backgroundColor: accentColor }] : styles.otherMessage]}>
         <Text style={[styles.messageText, isMe && styles.myMessageText]}>
           {message.text}
         </Text>
@@ -58,6 +58,7 @@ const MessageBubble = ({ message, otherAvatar, myAvatar }) => {
 
 export default function ChatConversationScreen({ route, navigation }) {
   const { chatName = 'Chat', otherUserId, chatId, avatar } = route?.params || {};
+  const accentColor = route?.params?.mode === 'sitter' ? '#56AA9A' : '#32A6D8';
   const alert = useAppAlert();
   const insets = useSafeAreaInsets();
   const [message, setMessage] = useState('');
@@ -331,7 +332,8 @@ export default function ChatConversationScreen({ route, navigation }) {
               }}
             >
               {messages.map((msg) => (
-                <MessageBubble key={msg.id} message={msg} otherAvatar={otherAvatar} myAvatar={myAvatar} />
+                <MessageBubble key={msg.id} message={msg} otherAvatar={otherAvatar} myAvatar={myAvatar}
+                  accentColor={accentColor} />
               ))}
             </ScrollView>
           )}
@@ -410,7 +412,7 @@ export default function ChatConversationScreen({ route, navigation }) {
                 <Icon
                   name={reportReason === r ? 'radio-button-on' : 'radio-button-off'}
                   size={20}
-                  color={reportReason === r ? '#32A6D8' : '#B5B8CB'}
+                  color={reportReason === r ? accentColor : '#B5B8CB'}
                 />
                 <Text style={styles.reasonText}>{r}</Text>
               </TouchableOpacity>

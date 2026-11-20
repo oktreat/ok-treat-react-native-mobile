@@ -14,7 +14,7 @@ const { width } = Dimensions.get('window');
 
 const getRelativeTime = relativeTime;
 
-const NotificationItem = ({ notification, onPress }) => {
+const NotificationItem = ({ notification, onPress, accentColor }) => {
   const IconComp = notification.iconType === 'payment' ? MoneySendIcon : Calendar2Icon;
   const localized = localizeNotification(notification, i18n.resolvedLanguage || i18n.language);
 
@@ -25,7 +25,7 @@ const NotificationItem = ({ notification, onPress }) => {
       activeOpacity={0.7}
     >
       <View style={styles.notificationContent}>
-        <View style={styles.iconContainer}>
+        <View style={[styles.iconContainer, { backgroundColor: accentColor === '#56AA9A' ? '#DDF4EF' : '#FFC2EB' }]}>
           <IconComp width={24} height={24} color="#676869" />
         </View>
         <Text style={styles.notificationText}>{localized.message}</Text>
@@ -137,7 +137,7 @@ export default function NotificationsScreen({ navigation, route }) {
       case 'BOOKING_CONFIRMED':
       case 'BOOKING_DECLINED':
         if (data.bookingId) {
-          navigation.navigate('BookingDetail', { bookingId: data.bookingId });
+          navigation.navigate('BookingDetail', { bookingId: data.bookingId, mode: route?.params?.mode });
         } else {
           navigation.navigate('Bookings', { initialTab: 'Upcoming' });
         }
@@ -158,6 +158,7 @@ export default function NotificationsScreen({ navigation, route }) {
         if (data.senderId) {
           navigation.navigate('ChatConversation', {
             otherUserId: data.senderId,
+            mode: route?.params?.mode,
             chatName: data.senderName || 'Chat',
           });
         } else {
@@ -309,7 +310,7 @@ export default function NotificationsScreen({ navigation, route }) {
                     <View style={styles.divider} />
                     {newestNotifications.map((notification, index) => (
                       <View key={notification.id}>
-                        <NotificationItem notification={notification} onPress={handleNotificationPress} />
+                        <NotificationItem notification={notification} onPress={handleNotificationPress} accentColor={accentColor} />
                         {index < newestNotifications.length - 1 && <View style={styles.divider} />}
                       </View>
                     ))}

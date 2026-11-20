@@ -170,7 +170,7 @@ export default function SitterEarningsScreen({ navigation }) {
           {/* List */}
           {loading ? (
             <View style={styles.loadingWrap}>
-              <ActivityIndicator color="#32A6D8" />
+              <ActivityIndicator color="#56AA9A" />
             </View>
           ) : error ? (
             <Text style={styles.errorText}>{error}</Text>
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   placeholder: { width: 40 },
   scrollContent: { padding: 24, paddingBottom: 60 },
   summaryCard: {
-    backgroundColor: '#F8FDFF',
+    backgroundColor: '#DDF4EF',
     borderRadius: 24,
     padding: 20,
     borderWidth: 1,

@@ -23,7 +23,7 @@ const getStatusStyle = (status) => {
       return { color: '#DCF5E5', textColor: '#2E9E5B', label: 'Confirmed', category: 'Upcoming' };
     case 'IN_PROGRESS':
     case 'ONGOING':
-      return { color: '#E3F0FB', textColor: '#3A8DCC', label: 'Ongoing', category: 'Upcoming' };
+      return { color: '#DDF4EF', textColor: '#56AA9A', label: 'Ongoing', category: 'Upcoming' };
     case 'COMPLETED':
       return { color: '#ECF5EA', textColor: '#219A27', label: 'Completed', category: 'Completed' };
     case 'CANCELLED':
@@ -206,25 +206,25 @@ export default function SitterBookingsScreen({ navigation }) {
             <View style={styles.metaColumn}>
               {!!booking.dateTime && (
                 <View style={styles.metaRow}>
-                  <Icon name="time-outline" size={15} color="#32A6D8" />
+                  <Icon name="time-outline" size={15} color="#56AA9A" />
                   <Text style={styles.metaText} numberOfLines={1}>{booking.dateTime}</Text>
                 </View>
               )}
               {!!booking.address && (
                 <View style={styles.metaRow}>
-                  <Icon name="location-outline" size={15} color="#32A6D8" />
+                  <Icon name="location-outline" size={15} color="#56AA9A" />
                   <Text style={styles.metaText} numberOfLines={2}>{booking.address}</Text>
                 </View>
               )}
               {!!booking.petName && (
                 <View style={styles.metaRow}>
-                  <Icon name="paw-outline" size={15} color="#32A6D8" />
+                  <Icon name="paw-outline" size={15} color="#56AA9A" />
                   <Text style={styles.metaText} numberOfLines={1}>{booking.petName}</Text>
                 </View>
               )}
               {!!booking.phone && (
                 <View style={styles.metaRow}>
-                  <Icon name="call-outline" size={14} color="#32A6D8" />
+                  <Icon name="call-outline" size={14} color="#56AA9A" />
                   <Text style={styles.metaText} numberOfLines={1}>{booking.phone}</Text>
                 </View>
               )}
@@ -249,6 +249,7 @@ export default function SitterBookingsScreen({ navigation }) {
                   otherUserId: booking.clientUserId,
                   chatName: booking.clientName,
                   avatar: booking.clientImage,
+                  mode: 'sitter',
                 })}
                 disabled={!booking.clientUserId}
               >
@@ -337,7 +338,7 @@ export default function SitterBookingsScreen({ navigation }) {
         {/* Bookings List */}
         {loading ? (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#32A6D8" />
+            <ActivityIndicator size="large" color="#56AA9A" />
             <Text style={styles.loadingText}>Loading bookings...</Text>
           </View>
         ) : error ? (
@@ -459,7 +460,7 @@ const styles = StyleSheet.create({
   retryButton: {
     paddingHorizontal: 24,
     paddingVertical: 10,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     borderRadius: 30,
   },
   retryButtonText: {
@@ -561,7 +562,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   coinsText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 12,
     fontFamily: 'Poppins',
     fontWeight: '600',
@@ -570,7 +571,7 @@ const styles = StyleSheet.create({
   chatButton: {
     width: 44,
     height: 44,
-    backgroundColor: 'rgba(90, 172, 244, 0.15)',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',

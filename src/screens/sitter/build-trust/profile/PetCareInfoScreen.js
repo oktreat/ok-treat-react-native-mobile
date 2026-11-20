@@ -367,8 +367,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
   },
   chipSelected: {
-    backgroundColor: 'rgba(255, 194, 235, 0.15)',
-    borderColor: '#FFC2EB',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
+    borderColor: '#DDF4EF',
   },
   chipText: {
     color: '#666D80',
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     lineHeight: 18.6,
   },
   chipTextSelected: {
-    color: '#32A6D8',
+    color: '#56AA9A',
   },
   textAreaContainer: {
     minHeight: 100,

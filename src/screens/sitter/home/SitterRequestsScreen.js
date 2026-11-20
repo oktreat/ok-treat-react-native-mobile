@@ -199,7 +199,7 @@ export default function SitterRequestsScreen({ navigation }) {
           <View style={styles.messageRow}>
             <Text style={styles.cardMessage} numberOfLines={1}>{item.message}</Text>
             {isProcessing ? (
-              <ActivityIndicator size="small" color="#32A6D8" />
+              <ActivityIndicator size="small" color="#56AA9A" />
             ) : (
               <View style={styles.actionRow}>
                 <TouchableOpacity
@@ -291,7 +291,7 @@ export default function SitterRequestsScreen({ navigation }) {
         {/* Content */}
         {loading ? (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#32A6D8" />
+            <ActivityIndicator size="large" color="#56AA9A" />
             <Text style={styles.loadingText}>Loading...</Text>
           </View>
         ) : error ? (
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     lineHeight: 18.2,
   },
   activeTabText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontWeight: '500',
   },
   centerContainer: {
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   retryButton: {
     paddingHorizontal: 24,
     paddingVertical: 10,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     borderRadius: 30,
   },
   retryButtonText: {
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
     height: 24,
     paddingHorizontal: 8,
     borderRadius: 5,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -23,8 +23,8 @@ export default function SitterHomeScreen({ navigation }) {
   const { user } = useSelector(state => state.auth);
   const { dark } = useAppearance();
   const palette = dark
-    ? { background: '#0D1724', surface: '#142235', text: '#EEF4FA', muted: '#B3C0CE', border: '#2B3B4F', accent: '#2AAE9B' }
-    : { background: '#FFFFFF', surface: '#FFFFFF', text: '#142D38', muted: '#757575', border: '#E9ECF2', accent: '#2AAE9B' };
+    ? { background: '#0D1724', surface: '#142235', text: '#EEF4FA', muted: '#B3C0CE', border: '#2B3B4F', accent: '#56AA9A' }
+    : { background: '#FFFFFF', surface: '#FFFFFF', text: '#142D38', muted: '#757575', border: '#E9ECF2', accent: '#56AA9A' };
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
@@ -215,7 +215,7 @@ export default function SitterHomeScreen({ navigation }) {
                 <Svg width={chartWidth} height={chartHeight}>
                   <Defs>
                     <LinearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                      <Stop offset="0" stopColor="rgba(34, 128, 255, 0.5)" stopOpacity="1" />
+                      <Stop offset="0" stopColor="rgba(86, 170, 154, 0.5)" stopOpacity="1" />
                       <Stop offset="1" stopColor="rgba(255, 255, 255, 0)" stopOpacity="0" />
                     </LinearGradient>
                   </Defs>
@@ -362,6 +362,7 @@ export default function SitterHomeScreen({ navigation }) {
                         otherUserId: booking.clientUserId,
                         chatName: booking.clientName,
                         avatar: booking.clientImage,
+                  mode: 'sitter',
                       })}
                       disabled={!booking.clientUserId}
                     >
@@ -441,13 +442,13 @@ const styles = StyleSheet.create({
   overviewIconContainer: {
     width: 36.83,
     height: 36.83,
-    backgroundColor: '#FFC2EB',
+    backgroundColor: '#DDF4EF',
     borderRadius: 21.05,
     justifyContent: 'center',
     alignItems: 'center',
   },
   overviewTitle: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 20,
     fontFamily: 'Poppins',
     fontWeight: '600',
@@ -480,12 +481,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 14.03,
     paddingVertical: 7.02,
-    backgroundColor: 'rgba(90, 172, 244, 0.15)',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
     borderRadius: 7.02,
     gap: 7.02,
   },
   downloadButtonText: {
-    color: '#5CADF4',
+    color: '#56AA9A',
     fontSize: 12.28,
     fontFamily: 'Poppins',
     fontWeight: '400',
@@ -586,7 +587,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F38FB4',
+    backgroundColor: '#56AA9A',
     marginHorizontal: 21.92,
     marginTop: 16,
     paddingHorizontal: 16,
@@ -608,7 +609,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pendingBadgeText: {
-    color: '#F38FB4',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Poppins',
     fontWeight: '700',
@@ -639,7 +640,7 @@ const styles = StyleSheet.create({
     lineHeight: 18.94,
   },
   seeAllText: {
-    color: '#5CADF4',
+    color: '#56AA9A',
     fontSize: 12.28,
     fontFamily: 'Poppins',
     fontWeight: '500',
@@ -764,13 +765,13 @@ const styles = StyleSheet.create({
     height: 14.3,
     borderRadius: 9999,
     borderWidth: 1.2,
-    borderColor: '#32A6D8',
+    borderColor: '#56AA9A',
     position: 'absolute',
   },
   bookingChatButton: {
     width: 44,
     height: 44,
-    backgroundColor: 'rgba(90, 172, 244, 0.15)',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',

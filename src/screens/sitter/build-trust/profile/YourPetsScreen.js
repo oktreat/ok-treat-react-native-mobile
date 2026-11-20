@@ -134,7 +134,7 @@ export default function YourPetsScreen({ navigation }) {
 
           {isLoading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#32A6D8" />
+              <ActivityIndicator size="large" color="#56AA9A" />
               <Text style={styles.loadingText}>Loading your pets...</Text>
             </View>
           ) : userPets.length === 0 ? (
@@ -174,28 +174,28 @@ export default function YourPetsScreen({ navigation }) {
                 <View style={styles.petAttributes}>
                   {pet.friendlyWithDogs && (
                     <View style={styles.attributeItem}>
-                      <CheckCircleIcon width={20} height={20} fill="#32A6D8" />
+                      <CheckCircleIcon width={20} height={20} fill="#56AA9A" />
                       <Text style={styles.attributeText}>{pet.friendlyWithDogs}</Text>
                     </View>
                   )}
 
                   {pet.friendlyWithCats && (
                     <View style={styles.attributeItem}>
-                      <CheckCircleIcon width={20} height={20} fill="#32A6D8" />
+                      <CheckCircleIcon width={20} height={20} fill="#56AA9A" />
                       <Text style={styles.attributeText}>{pet.friendlyWithCats}</Text>
                     </View>
                   )}
 
                   {pet.friendlyWithChildren && (
                     <View style={styles.attributeItem}>
-                      <CheckCircleIcon width={20} height={20} fill="#32A6D8" />
+                      <CheckCircleIcon width={20} height={20} fill="#56AA9A" />
                       <Text style={styles.attributeText}>{pet.friendlyWithChildren}</Text>
                     </View>
                   )}
 
                   {pet.isSpayedNeutered && (
                     <View style={styles.attributeItem}>
-                      <BadgeCheckIcon width={20} height={20} fill="#32A6D8" />
+                      <BadgeCheckIcon width={20} height={20} fill="#56AA9A" />
                       <Text style={styles.attributeText}>Is spayed/neutered</Text>
                     </View>
                   )}
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   addPetLinkText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
@@ -378,14 +378,14 @@ const styles = StyleSheet.create({
     borderRadius: 38,
   },
   petImagePlaceholder: {
-    backgroundColor: 'rgba(255, 194, 235, 0.15)',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
     borderWidth: 1,
-    borderColor: '#FFC2EB',
+    borderColor: '#DDF4EF',
     justifyContent: 'center',
     alignItems: 'center',
   },
   petImagePlaceholderText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Poppins',
     fontWeight: '600',
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewProfileText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 12,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',

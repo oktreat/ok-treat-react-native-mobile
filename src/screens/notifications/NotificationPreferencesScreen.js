@@ -156,7 +156,7 @@ export default function NotificationPreferencesScreen({ navigation, route }) {
             </Text>
 
             {CATEGORIES.map((cat) => {
-              const categoryColor = isSitterMode && cat.key === 'bookings' ? '#56AA9A' : cat.color;
+              const categoryColor = isSitterMode ? accentColor : cat.color;
               return (
               <View key={cat.key} style={styles.row}>
                 <View style={[styles.iconCircle, { backgroundColor: categoryColor + '22' }]}>

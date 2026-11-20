@@ -62,10 +62,10 @@ export default function ClearTabBar({ state, descriptors, navigation }) {
   }, [highlightWidth, highlightX, state.index, tabLayouts]);
 
   const sitterTabs = state.routes.some(route => route.name.startsWith('Sitter'));
-  const accent = sitterTabs ? '#2AAE9B' : '#1689C3';
+  const accent = sitterTabs ? '#56AA9A' : '#1689C3';
   const surface = dark ? '#111C2B' : '#FFFFFF';
   const muted = dark ? '#A9B7C7' : '#263744';
-  const highlight = dark ? (sitterTabs ? '#153D3C' : '#173850') : (sitterTabs ? '#E3F5F1' : '#E2F3FB');
+  const highlight = dark ? (sitterTabs ? '#153D3C' : '#173850') : (sitterTabs ? '#DDF4EF' : '#E2F3FB');
 
   return (
     <View style={[styles.base, { paddingBottom: insets.bottom + 8, backgroundColor: surface }]}>

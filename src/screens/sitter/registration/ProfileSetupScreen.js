@@ -299,7 +299,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                 onPress={() => handleServicePress('Boarding')}
               >
                 <View style={styles.serviceIconContainer}>
-                  <BuildingsIcon width={24.37} height={24.37} fill="#32A6D8" />
+                  <BuildingsIcon width={24.37} height={24.37} fill="#56AA9A" />
                 </View>
                 <View style={styles.serviceContent}>
                   <View style={styles.serviceInfo}>
@@ -307,7 +307,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     <Text style={styles.serviceSubtitle}>Choose your service preferences</Text>
                   </View>
                   {completedServices.boarding ? (
-                    <ProgressTickIcon width={20} height={20} fill="#32A6D8" />
+                    <ProgressTickIcon width={20} height={20} fill="#56AA9A" />
                   ) : (
                     <Text style={styles.timeText}>3 mins</Text>
                   )}
@@ -319,7 +319,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                 onPress={() => handleServicePress('House Sitting')}
               >
                 <View style={styles.serviceIconContainer}>
-                  <BuildingsIcon width={24.37} height={24.38} fill="#32A6D8" />
+                  <BuildingsIcon width={24.37} height={24.38} fill="#56AA9A" />
                 </View>
                 <View style={styles.serviceContent}>
                   <View style={styles.serviceInfo}>
@@ -327,7 +327,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     <Text style={styles.serviceSubtitle}>Choose your service preferences</Text>
                   </View>
                   {completedServices.houseSitting ? (
-                    <ProgressTickIcon width={20} height={20} fill="#32A6D8" />
+                    <ProgressTickIcon width={20} height={20} fill="#56AA9A" />
                   ) : (
                     <Text style={styles.timeText}>3 mins</Text>
                   )}
@@ -339,7 +339,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                 onPress={() => handleServicePress('Drop-In Visit')}
               >
                 <View style={styles.serviceIconContainer}>
-                  <CalendarIconBlue width={24.37} height={24.37} color="#32A6D8" />
+                  <CalendarIconBlue width={24.37} height={24.37} color="#56AA9A" />
                 </View>
                 <View style={styles.serviceContent}>
                   <View style={styles.serviceInfo}>
@@ -347,7 +347,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     <Text style={styles.serviceSubtitle}>Choose your service preferences</Text>
                   </View>
                   {completedServices.dropInVisit ? (
-                    <ProgressTickIcon width={20} height={20} fill="#32A6D8" />
+                    <ProgressTickIcon width={20} height={20} fill="#56AA9A" />
                   ) : (
                     <Text style={styles.timeText}>3 mins</Text>
                   )}
@@ -359,7 +359,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                 onPress={() => handleServicePress('Day Care')}
               >
                 <View style={styles.serviceIconContainer}>
-                  <SunIcon width={24.37} height={24.37} fill="#32A6D8" />
+                  <SunIcon width={24.37} height={24.37} fill="#56AA9A" />
                 </View>
                 <View style={styles.serviceContent}>
                   <View style={styles.serviceInfo}>
@@ -367,7 +367,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     <Text style={styles.serviceSubtitle}>Choose your service preferences</Text>
                   </View>
                   {completedServices.dayCare ? (
-                    <ProgressTickIcon width={20} height={20} fill="#32A6D8" />
+                    <ProgressTickIcon width={20} height={20} fill="#56AA9A" />
                   ) : (
                     <Text style={styles.timeText}>3 mins</Text>
                   )}
@@ -387,7 +387,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     <Text style={styles.serviceSubtitle}>Choose your service preferences</Text>
                   </View>
                   {completedServices.petWalking ? (
-                    <ProgressTickIcon width={20} height={20} fill="#32A6D8" />
+                    <ProgressTickIcon width={20} height={20} fill="#56AA9A" />
                   ) : (
                     <Text style={styles.timeText}>3 mins</Text>
                   )}
@@ -408,7 +408,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                   onPress={() => toggleSection('createProfile')}
                 >
                   <View style={styles.serviceIconContainer}>
-                    <BriefcaseIcon width={24.37} height={24.37} fill="#32A6D8" />
+                    <BriefcaseIcon width={24.37} height={24.37} fill="#56AA9A" />
                   </View>
                   <View style={styles.serviceContent}>
                     <View style={styles.serviceInfo}>
@@ -416,7 +416,7 @@ export default function ProfileSetupScreen({ navigation, route }) {
                       <Text style={styles.serviceSubtitle}>Start with a great impression</Text>
                     </View>
                     {buildTrustStatus.profile ? (
-                      <ProgressTickIcon width={20} height={20} fill="#32A6D8" />
+                      <ProgressTickIcon width={20} height={20} fill="#56AA9A" />
                     ) : (
                       <Text style={styles.timeText}>12 mins</Text>
                     )}
@@ -431,10 +431,10 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     >
                       <Text style={styles.subItemText}>Basic Info</Text>
                       {profileSubsections.basicInfo ? (
-                        <ProgressTickIcon width={16} height={16} fill="#32A6D8" />
+                        <ProgressTickIcon width={16} height={16} fill="#56AA9A" />
                       ) : (
                         <View style={styles.arrowIcon}>
-                          <AngleDownIcon width={5} height={8.33} fill="#32A6D8" />
+                          <AngleDownIcon width={5} height={8.33} fill="#56AA9A" />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -445,10 +445,10 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     >
                       <Text style={styles.subItemText}>Phone Numbers</Text>
                       {profileSubsections.phoneNumbers ? (
-                        <ProgressTickIcon width={16} height={16} fill="#32A6D8" />
+                        <ProgressTickIcon width={16} height={16} fill="#56AA9A" />
                       ) : (
                         <View style={styles.arrowIcon}>
-                          <AngleDownIcon width={5} height={8.33} fill="#32A6D8" />
+                          <AngleDownIcon width={5} height={8.33} fill="#56AA9A" />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -459,10 +459,10 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     >
                       <Text style={styles.subItemText}>Details</Text>
                       {profileSubsections.details ? (
-                        <ProgressTickIcon width={16} height={16} fill="#32A6D8" />
+                        <ProgressTickIcon width={16} height={16} fill="#56AA9A" />
                       ) : (
                         <View style={styles.arrowIcon}>
-                          <AngleDownIcon width={5} height={8.33} fill="#32A6D8" />
+                          <AngleDownIcon width={5} height={8.33} fill="#56AA9A" />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -473,10 +473,10 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     >
                       <Text style={styles.subItemText}>Photos</Text>
                       {profileSubsections.photos ? (
-                        <ProgressTickIcon width={16} height={16} fill="#32A6D8" />
+                        <ProgressTickIcon width={16} height={16} fill="#56AA9A" />
                       ) : (
                         <View style={styles.arrowIcon}>
-                          <AngleDownIcon width={5} height={8.33} fill="#32A6D8" />
+                          <AngleDownIcon width={5} height={8.33} fill="#56AA9A" />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -487,10 +487,10 @@ export default function ProfileSetupScreen({ navigation, route }) {
                     >
                       <Text style={styles.subItemText}>Pet Care Info</Text>
                       {profileSubsections.petCareInfo ? (
-                        <ProgressTickIcon width={16} height={16} fill="#32A6D8" />
+                        <ProgressTickIcon width={16} height={16} fill="#56AA9A" />
                       ) : (
                         <View style={styles.arrowIcon}>
-                          <AngleDownIcon width={5} height={8.33} fill="#32A6D8" />
+                          <AngleDownIcon width={5} height={8.33} fill="#56AA9A" />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     width: 50,
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 12,
     fontFamily: 'Poppins',
     fontWeight: '500',

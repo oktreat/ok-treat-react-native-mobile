@@ -79,7 +79,7 @@ export default function VerifyIdentityScreen({ navigation }) {
         dismissButtonStyle: 'close', // iOS
         // Brand colors (iOS controls + Android toolbar)
         toolbarColor: '#FFFFFF',
-        controlsColor: '#32A6D8',
+        controlsColor: '#56AA9A',
         // Android Custom Tab polish
         showTitle: false,
         enableBarCollapsing: true,
@@ -134,7 +134,7 @@ export default function VerifyIdentityScreen({ navigation }) {
               ].map((item, i) => (
                 <View key={i} style={styles.badgeRow}>
                   <View style={styles.badgeIcon}>
-                    <Icon name={item.icon} size={16} color="#32A6D8" />
+                    <Icon name={item.icon} size={16} color="#56AA9A" />
                   </View>
                   <Text style={styles.badgeText}>{item.text}</Text>
                 </View>
@@ -160,7 +160,7 @@ export default function VerifyIdentityScreen({ navigation }) {
         {/* Full-screen spinner while we open the session / poll */}
         {isVerifying && (
           <View style={styles.loadingOverlay} pointerEvents="auto">
-            <ActivityIndicator size="large" color="#32A6D8" />
+            <ActivityIndicator size="large" color="#56AA9A" />
             <Text style={styles.loadingText}>Preparing secure verification…</Text>
           </View>
         )}
@@ -221,17 +221,17 @@ const styles = StyleSheet.create({
 
   content: { flexGrow: 1, paddingHorizontal: HORIZONTAL_PADDING, justifyContent: 'space-between', paddingBottom: 36 },
   top: { alignItems: 'center', gap: 16, paddingTop: 8 },
-  iconCircle: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#FFC2EB', justifyContent: 'center', alignItems: 'center' },
+  iconCircle: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#DDF4EF', justifyContent: 'center', alignItems: 'center' },
   title: { color: '#0D0D12', fontSize: 22, fontFamily: 'Poppins', fontWeight: '600', textAlign: 'center' },
   desc: { color: '#818898', fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '400', lineHeight: 22, textAlign: 'center', maxWidth: 320 },
   badges: { gap: 10, width: '100%', marginTop: 8 },
-  badgeRow: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#F6FBFF', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: '#E8F4FD' },
-  badgeIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#E8F4FD', justifyContent: 'center', alignItems: 'center' },
+  badgeRow: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#DDF4EF', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: '#DDF4EF' },
+  badgeIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#DDF4EF', justifyContent: 'center', alignItems: 'center' },
   badgeText: { color: '#0D0D12', fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '600' },
   bottom: { gap: 12, alignItems: 'center' },
   requiredNote: { color: '#818898', fontSize: 12.5, fontFamily: 'Avenir LT Std', fontWeight: '500', textAlign: 'center' },
   skipBtn: { paddingVertical: 10 },
-  skipText: { color: '#F38FB4', fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '750' },
+  skipText: { color: '#56AA9A', fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '750' },
 
   loadingOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.85)', justifyContent: 'center', alignItems: 'center', gap: 12 },
   loadingText: { color: '#818898', fontSize: 14, fontFamily: 'Avenir LT Std' },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 },
   modalBox: { backgroundColor: '#FFF', borderRadius: 24, padding: 28, width: '100%', maxWidth: 380, alignItems: 'center', gap: 14 },
   successCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: '#4CAF50', justifyContent: 'center', alignItems: 'center' },
-  processingCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: '#32A6D8', justifyContent: 'center', alignItems: 'center' },
+  processingCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: '#56AA9A', justifyContent: 'center', alignItems: 'center' },
   errorCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: '#FF3B30', justifyContent: 'center', alignItems: 'center' },
   modalTitle: { color: '#0D0D12', fontSize: 20, fontFamily: 'Poppins', fontWeight: '600', textAlign: 'center' },
   modalMsg: { color: '#818898', fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '400', lineHeight: 22, textAlign: 'center' },

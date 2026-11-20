@@ -319,7 +319,7 @@ export default function BasicInfoScreen({ navigation, route }) {
           {/* Info Banner */}
           <View style={styles.infoBanner}>
             <View style={styles.infoBannerIcon}>
-              <InfoCircleIconBlue width={16.67} height={16.67} fill="#32A6D8" />
+              <InfoCircleIconBlue width={16.67} height={16.67} fill="#56AA9A" />
             </View>
             <Text style={styles.infoBannerText}>
               We've recommended default settings that work well for new sitters and walkers. You can update them now or change them anytime later
@@ -338,7 +338,7 @@ export default function BasicInfoScreen({ navigation, route }) {
               <View style={styles.uploadContainer}>
                 {uploading ? (
                   <View style={styles.uploadingContainer}>
-                    <ActivityIndicator size="large" color="#32A6D8" />
+                    <ActivityIndicator size="large" color="#56AA9A" />
                     <Text style={styles.uploadingText}>Uploading...</Text>
                   </View>
                 ) : profilePhoto ? (
@@ -388,7 +388,7 @@ export default function BasicInfoScreen({ navigation, route }) {
                     placeholder="e.g., 123 Main Street"
                     value={addressLine1}
                     onChangeText={setAddressLine1}
-                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#FFC2EB" />}
+                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#DDF4EF" />}
                     containerStyle={styles.inputContainer}
                   />
                 </View>
@@ -400,7 +400,7 @@ export default function BasicInfoScreen({ navigation, route }) {
                     placeholder="e.g., Apt 4B (optional)"
                     value={addressLine2}
                     onChangeText={setAddressLine2}
-                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#FFC2EB" />}
+                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#DDF4EF" />}
                     containerStyle={styles.inputContainer}
                   />
                 </View>
@@ -412,7 +412,7 @@ export default function BasicInfoScreen({ navigation, route }) {
                     placeholder="e.g., Vancouver"
                     value={city}
                     onChangeText={setCity}
-                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#FFC2EB" />}
+                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#DDF4EF" />}
                     containerStyle={styles.inputContainer}
                   />
                 </View>
@@ -424,7 +424,7 @@ export default function BasicInfoScreen({ navigation, route }) {
                     placeholder="e.g., BC"
                     value={state}
                     onChangeText={setState}
-                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#FFC2EB" />}
+                    leftIcon={<LocationPinIcon width={14.17} height={15.83} fill="#DDF4EF" />}
                     containerStyle={styles.inputContainer}
                   />
                 </View>
@@ -456,9 +456,9 @@ export default function BasicInfoScreen({ navigation, route }) {
             <Text style={styles.sectionTitle}>Email Address</Text>
 
             <View style={styles.emailDisplayContainer}>
-              <LocationPinIcon width={14.17} height={15.83} fill="#FFC2EB" />
+              <LocationPinIcon width={14.17} height={15.83} fill="#DDF4EF" />
               <Text style={styles.emailDisplayText}>Your Email Address</Text>
-              <CheckCircleIcon width={16.63} height={16.64} fill="#32A6D8" />
+              <CheckCircleIcon width={16.63} height={16.64} fill="#56AA9A" />
             </View>
           </View> */}
 
@@ -509,7 +509,7 @@ export default function BasicInfoScreen({ navigation, route }) {
                 <Text style={styles.modalFieldLabel}>Date of Birth</Text>
                 <View style={styles.modalInputContainer}>
                   <View style={styles.modalInputContent}>
-                    <CalendarIcon width={15} height={15.63} fill="#FFC2EB" />
+                    <CalendarIcon width={15} height={15.63} fill="#DDF4EF" />
                     <View style={styles.dateDisplayContainer}>
                       <TextInput
                         style={styles.dateInputSection}
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 10,
     padding: 15,
-    backgroundColor: '#DAEFF8',
+    backgroundColor: '#DDF4EF',
     borderRadius: 10,
     marginBottom: 24,
   },
@@ -706,7 +706,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   uploadingText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   linkText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 12,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
@@ -948,7 +948,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   cancelButtonText: {
-    color: '#F38FB4',
+    color: '#56AA9A',
     fontSize: 14,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
@@ -960,7 +960,7 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#32A6D8',
+    backgroundColor: '#56AA9A',
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',

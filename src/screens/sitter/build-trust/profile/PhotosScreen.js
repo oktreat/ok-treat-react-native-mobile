@@ -183,7 +183,7 @@ export default function PhotosScreen({ navigation }) {
               <View style={styles.uploadButton}>
                 {uploadingPet ? (
                   <>
-                    <ActivityIndicator size="small" color="#32A6D8" />
+                    <ActivityIndicator size="small" color="#56AA9A" />
                     <Text style={styles.uploadButtonText}>Uploading...</Text>
                   </>
                 ) : (
@@ -219,7 +219,7 @@ export default function PhotosScreen({ navigation }) {
               <View style={styles.uploadButton}>
                 {uploadingCover ? (
                   <>
-                    <ActivityIndicator size="small" color="#32A6D8" />
+                    <ActivityIndicator size="small" color="#56AA9A" />
                     <Text style={styles.uploadButtonText}>Uploading...</Text>
                   </>
                 ) : (
@@ -316,17 +316,17 @@ const styles = StyleSheet.create({
   uploadButton: {
     height: 129,
     padding: 20,
-    backgroundColor: 'rgba(255, 194, 235, 0.15)',
+    backgroundColor: 'rgba(86, 170, 154, 0.15)',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#FFC2EB',
+    borderColor: '#DDF4EF',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 4,
   },
   uploadButtonText: {
-    color: '#32A6D8',
+    color: '#56AA9A',
     fontSize: 12,
     fontFamily: 'Avenir LT Std',
     fontWeight: '600',
