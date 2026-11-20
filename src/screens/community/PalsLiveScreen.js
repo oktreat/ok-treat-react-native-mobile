@@ -31,15 +31,15 @@ function BubbleInterestPicker({value,onChange,disabled}) {
  };
  const bubbles=BUBBLE_OPTIONS.map(item=>{
   const active=selected.includes(item.label);
-  const size=stageWidth*(item.size+(active ? 0.06 : 0));
+  const size=stageWidth*item.size*(active ? 1 : 0.74);
   return { ...item,active,size,x:item.x*stageWidth,y:item.y*stageHeight };
  });
- for(let pass=0;pass<24;pass++){
+ for(let pass=0;pass<48;pass++){
   for(let i=0;i<bubbles.length;i++) for(let j=i+1;j<bubbles.length;j++){
    const a=bubbles[i],b=bubbles[j],dx=b.x-a.x,dy=b.y-a.y,distance=Math.sqrt(dx*dx+dy*dy)||.01;
-   const required=(a.size+b.size)/2-1;
+   const required=(a.size+b.size)/2+2;
    if(distance<required){
-    const push=(required-distance)*.52,ux=dx/distance,uy=dy/distance;
+    const push=(required-distance)*.5,ux=dx/distance,uy=dy/distance;
     a.x-=ux*push;a.y-=uy*push;b.x+=ux*push;b.y+=uy*push;
    }
   }
@@ -51,7 +51,7 @@ function BubbleInterestPicker({value,onChange,disabled}) {
  }
  return <LinearGradient colors={['#AEB9AA','#DCC0A7','#B5A7BD']} start={{x:0,y:.25}} end={{x:1,y:.9}} style={[s.bubbleStage,{height:Math.max(220,stageHeight)}]} onLayout={event=>{const next=event.nativeEvent.layout.width;if(Math.abs(next-stageWidth)>1)setStageWidth(next);}}>
   {stageWidth>0&&bubbles.map(item=><TouchableOpacity key={item.label} accessibilityRole="button" accessibilityState={{selected:item.active,disabled:!!disabled}} disabled={disabled} onPress={()=>toggle(item.label)} style={[s.interestBubble,{width:item.size,height:item.size,borderRadius:item.size/2,left:item.x-item.size/2,top:item.y-item.size/2,zIndex:item.active?3:1},item.active&&s.interestBubbleSelected,disabled&&s.disabled]}>
-   <View style={s.interestBubbleLabel}>{item.active&&<Text style={s.interestBubbleCheck}>✓</Text>}<Text numberOfLines={2} style={[s.interestBubbleText,{fontSize:item.active?Math.max(20,Math.min(28,Math.round(item.size*.145))):Math.max(13,Math.min(20,Math.round(item.size*.14)))},item.active&&s.interestBubbleTextSelected]}>{copy(item.label)}</Text></View>
+   <View style={s.interestBubbleLabel}>{item.active&&<Text style={s.interestBubbleCheck}>✓</Text>}<Text numberOfLines={2} style={[s.interestBubbleText,{fontSize:item.active?Math.max(17,Math.min(26,Math.round(item.size*.23))):Math.max(12,Math.min(18,Math.round(item.size*.2)))},item.active&&s.interestBubbleTextSelected]}>{copy(item.label)}</Text></View>
   </TouchableOpacity>)}
  </LinearGradient>;
 }
