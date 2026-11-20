@@ -1,5 +1,5 @@
 import React, {useEffect,useRef,useState} from 'react';
-import {ActivityIndicator,Alert,Image,KeyboardAvoidingView,LayoutAnimation,Modal,Platform,ScrollView,StyleSheet,Switch,Text,TextInput,TouchableOpacity,View} from 'react-native';
+import {ActivityIndicator,Alert,Image,KeyboardAvoidingView,LayoutAnimation,Modal,Platform,ScrollView,StyleSheet,Switch,Text,TextInput,TouchableOpacity,UIManager,View} from 'react-native';
 import {useSelector} from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -14,23 +14,45 @@ const date=v=>String(v||'').slice(0,10);
 const split=v=>String(v||'').split(',').map(s=>s.trim()).filter(Boolean);
 const id=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
 const BUBBLE_OPTIONS=[
- {label:'Photos',size:76},{label:'Museums',size:94},{label:'Art',size:72},
- {label:'Coffee',size:98},{label:'Food',size:88},{label:'Hiking',size:96},
- {label:'Markets',size:98},{label:'Parks',size:76},{label:'Beach',size:84},
- {label:'Music',size:82},{label:'Trains',size:100},
+ {label:'Photos',size:.192,x:.34,y:.18},{label:'Museums',size:.22,x:.552,y:.18},{label:'Art',size:.145,x:.747,y:.23},
+ {label:'Coffee',size:.275,x:.16,y:.406},{label:'Food',size:.247,x:.43,y:.50},{label:'Hiking',size:.214,x:.651,y:.468},
+ {label:'Markets',size:.20,x:.875,y:.42},{label:'Parks',size:.157,x:.258,y:.70},{label:'Beach',size:.17,x:.574,y:.73},
+ {label:'Music',size:.162,x:.41,y:.81},{label:'Trains',size:.247,x:.791,y:.77},
 ];
+if(Platform.OS==='android') UIManager.setLayoutAnimationEnabledExperimental?.(true);
 function BubbleInterestPicker({value,onChange,disabled}) {
  const selected=split(value);
+ const [stageWidth,setStageWidth]=useState(0);
+ const stageHeight=stageWidth*.74;
  const toggle=(label)=>{
   LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
   onChange((selected.includes(label)?selected.filter(item=>item!==label):[...selected,label]).join(', '));
  };
- return <View style={s.bubblePicker}>{BUBBLE_OPTIONS.map(item=>{
-  const active=selected.includes(item.label), size=item.size+(active?18:0);
-  return <TouchableOpacity key={item.label} accessibilityRole="button" accessibilityState={{selected:active,disabled:!!disabled}} disabled={disabled} onPress={()=>toggle(item.label)} style={[s.bubble,{width:size,height:size,borderRadius:size/2},active&&s.bubbleSelected,disabled&&s.disabled]}>
-   <Text style={[s.bubbleText,active&&s.bubbleTextSelected]}>{active?'✓  ':''}{copy(item.label)}</Text>
-  </TouchableOpacity>;
- })}</View>;
+ const bubbles=BUBBLE_OPTIONS.map(item=>{
+  const active=selected.includes(item.label);
+  const size=stageWidth*(item.size+(active?.045:0));
+  return { ...item,active,size,x:item.x*stageWidth,y:item.y*stageHeight };
+ });
+ for(let pass=0;pass<24;pass++){
+  for(let i=0;i<bubbles.length;i++) for(let j=i+1;j<bubbles.length;j++){
+   const a=bubbles[i],b=bubbles[j],dx=b.x-a.x,dy=b.y-a.y,distance=Math.sqrt(dx*dx+dy*dy)||.01;
+   const required=(a.size+b.size)/2-1;
+   if(distance<required){
+    const push=(required-distance)*.52,ux=dx/distance,uy=dy/distance;
+    a.x-=ux*push;a.y-=uy*push;b.x+=ux*push;b.y+=uy*push;
+   }
+  }
+  bubbles.forEach(item=>{
+   const radius=item.size/2;
+   item.x=Math.max(radius,Math.min(stageWidth-radius,item.x));
+   item.y=Math.max(radius,Math.min(stageHeight-radius,item.y));
+  });
+ }
+ return <View style={[s.bubbleStage,{height:Math.max(220,stageHeight)}]} onLayout={event=>{const next=event.nativeEvent.layout.width;if(Math.abs(next-stageWidth)>1)setStageWidth(next);}}>
+  {stageWidth>0&&bubbles.map(item=><TouchableOpacity key={item.label} accessibilityRole="button" accessibilityState={{selected:item.active,disabled:!!disabled}} disabled={disabled} onPress={()=>toggle(item.label)} style={[s.interestBubble,{width:item.size,height:item.size,borderRadius:item.size/2,left:item.x-item.size/2,top:item.y-item.size/2,zIndex:item.active?3:1},item.active&&s.interestBubbleSelected,disabled&&s.disabled]}>
+   <Text numberOfLines={2} style={[s.interestBubbleText,{fontSize:item.size<58?10:12},item.active&&s.interestBubbleTextSelected]}>{item.active?'✓  ':''}{copy(item.label)}</Text>
+  </TouchableOpacity>)}
+ </View>;
 }
 export default function PalsLiveScreen({navigation}) {
  useCopyUpdates();
@@ -111,12 +133,12 @@ export default function PalsLiveScreen({navigation}) {
  </>}
  </ScrollView>
  <Modal visible={!!detail} animationType="slide" onRequestClose={()=>setDetail(null)}><ScrollView contentContainerStyle={s.content}>{button('Close',()=>setDetail(null),false,true)}{detail&&<><Text style={s.title}>{detail.displayName}</Text><Text style={s.body}>{detail.bio}</Text><View style={s.row}>{detail.photos.map(p=><View key={p.id}><Image source={{uri:p.image}} style={s.photo}/>{p.photoVerified&&<Text style={{color:'#08704A',fontWeight:'700'}}>{copy('Photo matched')}</Text>}</View>)}</View><Text>{detail.interests.join(' · ')}</Text><Text>{detail.languages.join(' · ')}</Text>{safety(detail)}</>}</ScrollView></Modal>
- <Modal visible={!!chat} animationType="slide" onRequestClose={()=>setChat(null)}><KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS==='ios'?'padding':undefined}><View style={[s.content,{paddingTop:48}]}>{button('Close chat',()=>setChat(null),false,true)}<Text style={s.heading}>{chat?.other.displayName}</Text></View><ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">{older&&button('Load older messages',()=>run(async()=>{const current=revision.current;const data=await palsRequest('invitations/'+chat.id+'/messages?before='+encodeURIComponent(messages[0].id));if(current===revision.current){setMessages(p=>[...data.messages,...p]);setOlder(data.hasMore)}}),false,true)}{messages.map(m=><View key={m.id} style={[s.bubble,m.senderId===userId&&s.mine]}><Text style={s.body}>{m.content}</Text><Text style={{fontSize:11}}>{new Date(m.createdAt).toLocaleString()}</Text></View>)}</ScrollView><View style={s.content}>{error?<Text style={s.error}>{error}</Text>:null}{field('Message',draft,setDraft,true)}{button('Send message',()=>run(async()=>{const current=revision.current;if(!pendingMessage.current||pendingMessage.current.content!==draft.trim())pendingMessage.current={requestId:id(),content:draft.trim()};await palsRequest('invitations/'+chat.id+'/messages',pendingMessage.current);if(current!==revision.current)return;pendingMessage.current=null;setDraft('');const d=await palsRequest('invitations/'+chat.id+'/messages');if(current===revision.current){setMessages(d.messages);setOlder(d.hasMore)}}),!draft.trim())}</View></KeyboardAvoidingView></Modal>
+ <Modal visible={!!chat} animationType="slide" onRequestClose={()=>setChat(null)}><KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS==='ios'?'padding':undefined}><View style={[s.content,{paddingTop:48}]}>{button('Close chat',()=>setChat(null),false,true)}<Text style={s.heading}>{chat?.other.displayName}</Text></View><ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">{older&&button('Load older messages',()=>run(async()=>{const current=revision.current;const data=await palsRequest('invitations/'+chat.id+'/messages?before='+encodeURIComponent(messages[0].id));if(current===revision.current){setMessages(p=>[...data.messages,...p]);setOlder(data.hasMore)}}),false,true)}{messages.map(m=><View key={m.id} style={[s.messageBubble,m.senderId===userId&&s.mine]}><Text style={s.body}>{m.content}</Text><Text style={{fontSize:11}}>{new Date(m.createdAt).toLocaleString()}</Text></View>)}</ScrollView><View style={s.content}>{error?<Text style={s.error}>{error}</Text>:null}{field('Message',draft,setDraft,true)}{button('Send message',()=>run(async()=>{const current=revision.current;if(!pendingMessage.current||pendingMessage.current.content!==draft.trim())pendingMessage.current={requestId:id(),content:draft.trim()};await palsRequest('invitations/'+chat.id+'/messages',pendingMessage.current);if(current!==revision.current)return;pendingMessage.current=null;setDraft('');const d=await palsRequest('invitations/'+chat.id+'/messages');if(current===revision.current){setMessages(d.messages);setOlder(d.hasMore)}}),!draft.trim())}</View></KeyboardAvoidingView></Modal>
  </KeyboardAvoidingView></ScreenWrapper>;
 }
 const s=StyleSheet.create({
- bubblePicker:{flexDirection:'row',flexWrap:'wrap',alignItems:'center',justifyContent:'center',gap:10,marginTop:8,marginBottom:8},
- bubble:{alignItems:'center',justifyContent:'center',padding:8,backgroundColor:'rgba(255,255,255,0.16)',borderWidth:1,borderColor:'#FFFFFF',overflow:'hidden'},
- bubbleSelected:{backgroundColor:'#A966CC',borderColor:'#A966CC'},
- bubbleText:{color:'#FFFFFF',fontSize:12,fontWeight:'700',textAlign:'center'},
- bubbleTextSelected:{fontSize:13},header:{padding:18,flexDirection:'row',alignItems:'center',gap:14,backgroundColor:'#EDF8FB'},back:{fontSize:40,color:'#087EA4'},title:{fontSize:28,fontWeight:'800',color:'#103441'},subtitle:{fontSize:13,color:'#365563',marginTop:4},tabs:{flexDirection:'row',gap:5,padding:10},tab:{flex:1,paddingVertical:13,alignItems:'center',borderRadius:10,backgroundColor:'#EDF4F7'},activeTab:{backgroundColor:'#087EA4'},content:{padding:18,gap:16,paddingBottom:40},heading:{fontSize:19,fontWeight:'800',color:'#103441'},body:{fontSize:15,color:'#365563',lineHeight:23},field:{gap:7},label:{fontSize:15,fontWeight:'700',color:'#103441'},input:{borderWidth:1,borderColor:'#B9D3DE',borderRadius:12,padding:13,minHeight:48,fontSize:16,color:'#103441',backgroundColor:'white'},button:{padding:13,minHeight:46,borderRadius:11,backgroundColor:'#087EA4',alignItems:'center',justifyContent:'center'},secondary:{backgroundColor:'#EAF5FA'},disabled:{opacity:.45},buttonText:{color:'white',fontWeight:'700',fontSize:14},row:{flexDirection:'row',flexWrap:'wrap',gap:10,alignItems:'center'},toggle:{flexDirection:'row',alignItems:'center',gap:14},card:{padding:17,borderRadius:16,borderWidth:1,borderColor:'#D3E4EC',gap:12,backgroundColor:'white'},photo:{width:100,height:100,borderRadius:12},avatar:{width:64,height:64,borderRadius:32},notice:{padding:14,backgroundColor:'#FFF3CF',color:'#5B481D',lineHeight:22,borderRadius:12},error:{padding:14,backgroundColor:'#FCE8E5',color:'#9F2D1D',borderRadius:12},bubble:{padding:12,borderRadius:12,backgroundColor:'#EFF5F8',maxWidth:'88%'},mine:{alignSelf:'flex-end',backgroundColor:'#D5F1FB'}});
+ bubbleStage:{position:'relative',width:'100%',alignSelf:'center',marginTop:8,marginBottom:8,overflow:'visible'},
+ interestBubble:{alignItems:'center',justifyContent:'center',position:'absolute',padding:6,backgroundColor:'rgba(255,255,255,0.12)',borderWidth:1.5,borderColor:'rgba(255,255,255,0.9)',overflow:'hidden'},
+ interestBubbleSelected:{backgroundColor:'#A966CC',borderColor:'#A966CC'},
+ interestBubbleText:{color:'#FFFFFF',fontWeight:'700',textAlign:'center'},
+ interestBubbleTextSelected:{fontSize:13},header:{padding:18,flexDirection:'row',alignItems:'center',gap:14,backgroundColor:'#EDF8FB'},back:{fontSize:40,color:'#087EA4'},title:{fontSize:28,fontWeight:'800',color:'#103441'},subtitle:{fontSize:13,color:'#365563',marginTop:4},tabs:{flexDirection:'row',gap:5,padding:10},tab:{flex:1,paddingVertical:13,alignItems:'center',borderRadius:10,backgroundColor:'#EDF4F7'},activeTab:{backgroundColor:'#087EA4'},content:{padding:18,gap:16,paddingBottom:40},heading:{fontSize:19,fontWeight:'800',color:'#103441'},body:{fontSize:15,color:'#365563',lineHeight:23},field:{gap:7},label:{fontSize:15,fontWeight:'700',color:'#103441'},input:{borderWidth:1,borderColor:'#B9D3DE',borderRadius:12,padding:13,minHeight:48,fontSize:16,color:'#103441',backgroundColor:'white'},button:{padding:13,minHeight:46,borderRadius:11,backgroundColor:'#087EA4',alignItems:'center',justifyContent:'center'},secondary:{backgroundColor:'#EAF5FA'},disabled:{opacity:.45},buttonText:{color:'white',fontWeight:'700',fontSize:14},row:{flexDirection:'row',flexWrap:'wrap',gap:10,alignItems:'center'},toggle:{flexDirection:'row',alignItems:'center',gap:14},card:{padding:17,borderRadius:16,borderWidth:1,borderColor:'#D3E4EC',gap:12,backgroundColor:'white'},photo:{width:100,height:100,borderRadius:12},avatar:{width:64,height:64,borderRadius:32},notice:{padding:14,backgroundColor:'#FFF3CF',color:'#5B481D',lineHeight:22,borderRadius:12},error:{padding:14,backgroundColor:'#FCE8E5',color:'#9F2D1D',borderRadius:12},messageBubble:{padding:12,borderRadius:12,backgroundColor:'#EFF5F8',maxWidth:'88%'},mine:{alignSelf:'flex-end',backgroundColor:'#D5F1FB'}});

@@ -138,7 +138,7 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <ScreenWrapper noBottomTabs>
-      <View ref={containerRef} style={[styles.container, { backgroundColor: palette.background }]}>
+      <View ref={containerRef} collapsable={false} style={[styles.container, { backgroundColor: palette.background }]}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
@@ -162,15 +162,17 @@ export default function SettingsScreen({ navigation }) {
                 <Text style={[styles.appearanceTitle, { color: palette.text }]}>{copy('Dark mode')}</Text>
                 <Text style={[styles.appearanceHint, { color: palette.muted }]}>{copy('Use a darker OkTreat home and sitter dashboard')}</Text>
               </View>
-              <Switch
-                accessibilityRole="switch"
-                accessibilityLabel={copy('Dark mode')}
-                ref={switchRef}
-                value={dark}
-                onValueChange={toggleDarkMode}
-                trackColor={{ false: '#CBD1D5', true: '#4655B5' }}
-                thumbColor="#FFFFFF"
-              />
+              <View ref={switchRef} collapsable={false} style={styles.darkModeSwitch}>
+                <Switch
+                  accessibilityRole="switch"
+                  accessibilityLabel={copy('Dark mode')}
+                  value={dark}
+                  onValueChange={toggleDarkMode}
+                  disabled={Boolean(circleTransition)}
+                  trackColor={{ false: '#CBD1D5', true: '#4655B5' }}
+                  thumbColor="#FFFFFF"
+                />
+              </View>
             </View>
             <View style={styles.menuContainer}>
               {generalSettings.map((item, index) => (
@@ -199,7 +201,7 @@ export default function SettingsScreen({ navigation }) {
           <Animated.View pointerEvents="none" style={{
             position: 'absolute', zIndex: 20, width: circleTransition.diameter,
             height: circleTransition.diameter, left: circleTransition.left, top: circleTransition.top,
-            borderRadius: circleTransition.diameter / 2, backgroundColor: circleTransition.color,
+            borderRadius: circleTransition.diameter / 2, backgroundColor: circleTransition.color, elevation: 100,
             transform: [{ scale: circleProgress }],
           }} />
         )}
@@ -211,6 +213,7 @@ export default function SettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    overflow: 'visible',
     backgroundColor: '#FFFFFF',
   },
   header: {
@@ -275,6 +278,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
   },
+  darkModeSwitch: { alignSelf: 'center', justifyContent: 'center' },
   appearanceRow: { minHeight: 64, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   appearanceTitle: { fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '700' },
   appearanceHint: { fontSize: 11, marginTop: 3 },
