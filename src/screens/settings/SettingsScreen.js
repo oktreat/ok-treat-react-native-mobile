@@ -48,8 +48,8 @@ export default function SettingsScreen({ navigation }) {
     if (!next) setDark(false);
     const animation = Animated.timing(circleProgress, {
       toValue: next ? 1 : 0,
-      duration: 520,
-      easing: Easing.out(Easing.cubic),
+      duration: 900,
+      easing: Easing.inOut(Easing.cubic),
       useNativeDriver: true,
     });
     animation.start(({ finished }) => {
