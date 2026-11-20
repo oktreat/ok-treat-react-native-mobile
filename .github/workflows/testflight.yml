@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   archive:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 60
     env:
       EXPO_PUBLIC_PUSH_DIAGNOSTICS: 'false'
