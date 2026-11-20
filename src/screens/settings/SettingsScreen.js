@@ -1,6 +1,6 @@
 import { copy, useCopyUpdates } from '../../i18n/copy';
 import React from 'react';
-import { Animated, Easing, View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Switch } from 'react-native';
+import { Animated, Easing, View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Switch, Dimensions, Modal } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -17,42 +17,49 @@ export default function SettingsScreen({ navigation }) {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const { dark, setDark } = useAppearance();
-  const containerRef = React.useRef(null);
   const switchRef = React.useRef(null);
   const circleProgress = React.useRef(new Animated.Value(0)).current;
   const [circleTransition, setCircleTransition] = React.useState(null);
 
   const toggleDarkMode = (next) => {
-    const container = containerRef.current;
     const toggle = switchRef.current;
-    if (!container?.measureInWindow || !toggle?.measureInWindow) {
+    if (!toggle?.measureInWindow) {
       setDark(next);
       return;
     }
-    container.measureInWindow((containerX, containerY, width, height) => {
-      toggle.measureInWindow((switchX, switchY, switchWidth, switchHeight) => {
-        const diameter = Math.sqrt(width * width + height * height) * 2;
-        const radius = diameter / 2;
-        setCircleTransition({
-          left: switchX + switchWidth / 2 - containerX - radius,
-          top: switchY + switchHeight / 2 - containerY - radius,
-          diameter,
-          color: '#111016',
-        });
-        circleProgress.setValue(next ? 0 : 1);
-        if (!next) setDark(false);
-        Animated.timing(circleProgress, {
-          toValue: next ? 1 : 0,
-          duration: 520,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }).start(({ finished }) => {
-          if (finished && next) setDark(true);
-          setCircleTransition(null);
-        });
+    toggle.measureInWindow((switchX, switchY, switchWidth, switchHeight) => {
+      const { width, height } = Dimensions.get('screen');
+      const diameter = Math.hypot(width, height) * 2;
+      const radius = diameter / 2;
+      circleProgress.setValue(next ? 0 : 1);
+      setCircleTransition({
+        left: switchX + switchWidth / 2 - radius,
+        top: switchY + switchHeight / 2 - radius,
+        diameter,
+        color: '#111016',
+        next,
       });
     });
   };
+
+  React.useEffect(() => {
+    if (!circleTransition) return undefined;
+    const next = circleTransition.next;
+    if (!next) setDark(false);
+    const animation = Animated.timing(circleProgress, {
+      toValue: next ? 1 : 0,
+      duration: 520,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    });
+    animation.start(({ finished }) => {
+      if (!finished) return;
+      if (next) setDark(true);
+      setCircleTransition(null);
+    });
+    return () => animation.stop();
+  }, [circleTransition, circleProgress, setDark]);
+
   const palette = dark
     ? { background: '#111016', surface: '#1D1A22', text: '#F8F6FB', muted: '#ADA7B4', border: '#3B3541', accent: '#9275F5' }
     : { background: '#FFFFFF', surface: '#FFFFFF', text: '#0D0D12', muted: '#898D8F', border: '#DFE7EB', accent: '#32A6D8' };
@@ -138,7 +145,7 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <ScreenWrapper noBottomTabs>
-      <View ref={containerRef} collapsable={false} style={[styles.container, { backgroundColor: palette.background }]}>
+      <View style={[styles.container, { backgroundColor: palette.background }]}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
@@ -199,14 +206,29 @@ export default function SettingsScreen({ navigation }) {
             </View>
           </View>
         </ScrollView>
-        {circleTransition && (
-          <Animated.View pointerEvents="none" style={{
-            position: 'absolute', zIndex: 20, width: circleTransition.diameter,
-            height: circleTransition.diameter, left: circleTransition.left, top: circleTransition.top,
-            borderRadius: circleTransition.diameter / 2, backgroundColor: circleTransition.color, elevation: 100,
-            transform: [{ scale: circleProgress }],
-          }} />
-        )}
+        <Modal
+          visible={Boolean(circleTransition)}
+          transparent
+          animationType="none"
+          statusBarTranslucent
+          presentationStyle="overFullScreen"
+          onRequestClose={() => {}}
+        >
+          {circleTransition && (
+            <View
+              pointerEvents="box-only"
+              onStartShouldSetResponder={() => true}
+              style={StyleSheet.absoluteFill}
+            >
+              <Animated.View style={{
+                position: 'absolute', width: circleTransition.diameter,
+                height: circleTransition.diameter, left: circleTransition.left, top: circleTransition.top,
+                borderRadius: circleTransition.diameter / 2, backgroundColor: circleTransition.color,
+                transform: [{ scale: circleProgress }],
+              }} />
+            </View>
+          )}
+        </Modal>
       </View>
     </ScreenWrapper>
   );

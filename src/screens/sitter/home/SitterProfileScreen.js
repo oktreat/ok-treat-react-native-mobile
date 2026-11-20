@@ -182,7 +182,7 @@ export default function SitterProfileScreen({ navigation }) {
             <Switch
               value={true}
               onValueChange={() => navigation.navigate('MainTabs', { screen: 'Home' })}
-              trackColor={{ false: '#E5E5E5', true: '#126F82' }}
+              trackColor={{ false: '#E5E5E5', true: '#56AA9A' }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#E5E5E5"
             />

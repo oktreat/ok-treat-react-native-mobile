@@ -14,7 +14,7 @@ const { width } = Dimensions.get('window');
 
 const getRelativeTime = relativeTime;
 
-const NotificationItem = ({ notification, onPress, accentColor }) => {
+const NotificationItem = ({ notification, onPress, accentColor = '#32A6D8' }) => {
   const IconComp = notification.iconType === 'payment' ? MoneySendIcon : Calendar2Icon;
   const localized = localizeNotification(notification, i18n.resolvedLanguage || i18n.language);
 
@@ -25,7 +25,7 @@ const NotificationItem = ({ notification, onPress, accentColor }) => {
       activeOpacity={0.7}
     >
       <View style={styles.notificationContent}>
-        <View style={[styles.iconContainer, { backgroundColor: accentColor === '#56AA9A' ? '#DDF4EF' : '#FFC2EB' }]}>
+        <View style={[styles.iconContainer, { backgroundColor: accentColor === '#56AA9A' ? '#DDF4EF' : '#E2F3FB' }]}>
           <IconComp width={24} height={24} color="#676869" />
         </View>
         <Text style={styles.notificationText}>{localized.message}</Text>
@@ -325,7 +325,7 @@ export default function NotificationsScreen({ navigation, route }) {
                   <View style={styles.section}>
                     {oldestNotifications.map((notification, index) => (
                       <View key={notification.id}>
-                        <NotificationItem notification={notification} onPress={handleNotificationPress} />
+                        <NotificationItem notification={notification} onPress={handleNotificationPress} accentColor={accentColor} />
                         {index < oldestNotifications.length - 1 && <View style={styles.divider} />}
                       </View>
                     ))}

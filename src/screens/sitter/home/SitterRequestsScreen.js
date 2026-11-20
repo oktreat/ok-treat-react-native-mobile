@@ -490,13 +490,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   cardName: {
-    color: '#1E2661',
+    color: '#264D46',
     fontSize: 17,
     fontFamily: 'Poppins',
     fontWeight: '600',
   },
   cardTime: {
-    color: '#B5B8CB',
+    color: '#7A8C87',
     fontSize: 12,
     fontFamily: 'Urbanist',
     fontWeight: '500',
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cardMessage: {
-    color: '#B5B8CB',
+    color: '#7A8C87',
     fontSize: 13,
     fontFamily: 'Poppins',
     fontWeight: '400',

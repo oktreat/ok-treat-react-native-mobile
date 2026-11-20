@@ -75,7 +75,7 @@ const ScreenWrapper = ({ children, style, scrollable = true, noBottomTabs = fals
         height: '100vh',
         width: '100%',
         overflow: scrollable ? 'auto' : 'hidden',
-        backgroundColor: style?.backgroundColor || (dark ? '#0D1724' : '#FFFFFF'),
+        backgroundColor: style?.backgroundColor || (dark ? '#111016' : '#FFFFFF'),
         ...style
       }}>
         {children}
@@ -141,7 +141,7 @@ const ScreenWrapper = ({ children, style, scrollable = true, noBottomTabs = fals
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: dark ? '#0D1724' : '#FFFFFF' }, style]} edges={edges}>
+    <SafeAreaView style={[styles.container, { backgroundColor: dark ? '#111016' : '#FFFFFF' }, style]} edges={edges}>
       <View
         style={styles.flex}
         onStartShouldSetResponder={onStartShouldSetResponder}
