@@ -7,6 +7,7 @@ import {copy,useCopyUpdates} from '../../i18n/copy';
 import {palsRequest} from '../../services/palsService';
 import PalsIdentityVerification from '../../components/PalsIdentityVerification';
 import PalsPhotoVerification from '../../components/PalsPhotoVerification';
+import { LinearGradient } from 'expo-linear-gradient';
 import ScreenWrapper from '../../components/ScreenWrapper';
 const ACTIVITIES=['Dog walk','Coffee','Meal','Sightseeing','Day trip'];
 const emptyProfile={displayName:'',bio:'',dogId:'',interests:'',languages:'',visible:false,adult:false,single:false,rules:false};
@@ -30,7 +31,7 @@ function BubbleInterestPicker({value,onChange,disabled}) {
  };
  const bubbles=BUBBLE_OPTIONS.map(item=>{
   const active=selected.includes(item.label);
-  const size=stageWidth*(item.size+(active?.045:0));
+  const size=stageWidth*(item.size+(active ? 0.06 : 0));
   return { ...item,active,size,x:item.x*stageWidth,y:item.y*stageHeight };
  });
  for(let pass=0;pass<24;pass++){
@@ -48,11 +49,11 @@ function BubbleInterestPicker({value,onChange,disabled}) {
    item.y=Math.max(radius,Math.min(stageHeight-radius,item.y));
   });
  }
- return <View style={[s.bubbleStage,{height:Math.max(220,stageHeight)}]} onLayout={event=>{const next=event.nativeEvent.layout.width;if(Math.abs(next-stageWidth)>1)setStageWidth(next);}}>
+ return <LinearGradient colors={['#AEB9AA','#DCC0A7','#B5A7BD']} start={{x:0,y:.25}} end={{x:1,y:.9}} style={[s.bubbleStage,{height:Math.max(220,stageHeight)}]} onLayout={event=>{const next=event.nativeEvent.layout.width;if(Math.abs(next-stageWidth)>1)setStageWidth(next);}}>
   {stageWidth>0&&bubbles.map(item=><TouchableOpacity key={item.label} accessibilityRole="button" accessibilityState={{selected:item.active,disabled:!!disabled}} disabled={disabled} onPress={()=>toggle(item.label)} style={[s.interestBubble,{width:item.size,height:item.size,borderRadius:item.size/2,left:item.x-item.size/2,top:item.y-item.size/2,zIndex:item.active?3:1},item.active&&s.interestBubbleSelected,disabled&&s.disabled]}>
-   <Text numberOfLines={2} style={[s.interestBubbleText,{fontSize:item.size<58?10:12},item.active&&s.interestBubbleTextSelected]}>{item.active?'✓  ':''}{copy(item.label)}</Text>
+   <View style={s.interestBubbleLabel}>{item.active&&<Text style={s.interestBubbleCheck}>✓</Text>}<Text numberOfLines={2} style={[s.interestBubbleText,{fontSize:item.active?15:(item.size<58?10:12)},item.active&&s.interestBubbleTextSelected]}>{copy(item.label)}</Text></View>
   </TouchableOpacity>)}
- </View>;
+ </LinearGradient>;
 }
 export default function PalsLiveScreen({navigation}) {
  useCopyUpdates();
@@ -137,8 +138,10 @@ export default function PalsLiveScreen({navigation}) {
  </KeyboardAvoidingView></ScreenWrapper>;
 }
 const s=StyleSheet.create({
- bubbleStage:{position:'relative',width:'100%',alignSelf:'center',marginTop:8,marginBottom:8,overflow:'visible'},
- interestBubble:{alignItems:'center',justifyContent:'center',position:'absolute',padding:6,backgroundColor:'rgba(255,255,255,0.12)',borderWidth:1.5,borderColor:'rgba(255,255,255,0.9)',overflow:'hidden'},
+ bubbleStage:{position:'relative',width:'100%',alignSelf:'center',marginTop:8,marginBottom:8,overflow:'hidden',borderRadius:24,borderWidth:1.5,borderColor:'rgba(255,255,255,0.9)'},
+ interestBubble:{alignItems:'center',justifyContent:'center',position:'absolute',padding:6,backgroundColor:'rgba(255,255,255,0.08)',borderWidth:1.3,borderColor:'rgba(255,255,255,0.95)',overflow:'hidden'},
  interestBubbleSelected:{backgroundColor:'#A966CC',borderColor:'#A966CC'},
  interestBubbleText:{color:'#FFFFFF',fontWeight:'700',textAlign:'center'},
+ interestBubbleLabel:{alignItems:'center',justifyContent:'center',gap:2},
+ interestBubbleCheck:{color:'#FFFFFF',fontSize:15,fontWeight:'800',lineHeight:18},
  interestBubbleTextSelected:{fontSize:13},header:{padding:18,flexDirection:'row',alignItems:'center',gap:14,backgroundColor:'#EDF8FB'},back:{fontSize:40,color:'#087EA4'},title:{fontSize:28,fontWeight:'800',color:'#103441'},subtitle:{fontSize:13,color:'#365563',marginTop:4},tabs:{flexDirection:'row',gap:5,padding:10},tab:{flex:1,paddingVertical:13,alignItems:'center',borderRadius:10,backgroundColor:'#EDF4F7'},activeTab:{backgroundColor:'#087EA4'},content:{padding:18,gap:16,paddingBottom:40},heading:{fontSize:19,fontWeight:'800',color:'#103441'},body:{fontSize:15,color:'#365563',lineHeight:23},field:{gap:7},label:{fontSize:15,fontWeight:'700',color:'#103441'},input:{borderWidth:1,borderColor:'#B9D3DE',borderRadius:12,padding:13,minHeight:48,fontSize:16,color:'#103441',backgroundColor:'white'},button:{padding:13,minHeight:46,borderRadius:11,backgroundColor:'#087EA4',alignItems:'center',justifyContent:'center'},secondary:{backgroundColor:'#EAF5FA'},disabled:{opacity:.45},buttonText:{color:'white',fontWeight:'700',fontSize:14},row:{flexDirection:'row',flexWrap:'wrap',gap:10,alignItems:'center'},toggle:{flexDirection:'row',alignItems:'center',gap:14},card:{padding:17,borderRadius:16,borderWidth:1,borderColor:'#D3E4EC',gap:12,backgroundColor:'white'},photo:{width:100,height:100,borderRadius:12},avatar:{width:64,height:64,borderRadius:32},notice:{padding:14,backgroundColor:'#FFF3CF',color:'#5B481D',lineHeight:22,borderRadius:12},error:{padding:14,backgroundColor:'#FCE8E5',color:'#9F2D1D',borderRadius:12},messageBubble:{padding:12,borderRadius:12,backgroundColor:'#EFF5F8',maxWidth:'88%'},mine:{alignSelf:'flex-end',backgroundColor:'#D5F1FB'}});

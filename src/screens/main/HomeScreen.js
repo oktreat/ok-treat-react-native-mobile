@@ -158,10 +158,10 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ScreenWrapper>
-      <View style={[styles.container, dark && { backgroundColor: '#0D1724' }]}>
+      <View style={[styles.container, dark && { backgroundColor: '#111016' }]}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Your profile" onPress={() => navigation.navigate('ProfileView')} style={[styles.avatarContainer, dark && { backgroundColor: '#1B3449' }]}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Your profile" onPress={() => navigation.navigate('ProfileView')} style={[styles.avatarContainer, dark && { backgroundColor: '#231E29' }]}>
             {user?.avatarUrl ? (
               // key={url} forces remount when the avatar changes — RN <Image>
               // caches by URI and would otherwise keep showing the old photo.
@@ -175,8 +175,8 @@ export default function HomeScreen({ navigation }) {
             )}
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
-            <Text style={[styles.welcomeText, dark && { color: '#B3C0CE' }]} numberOfLines={1}>{t('home.welcome')}</Text>
-            <Text style={[styles.emailText, dark && { color: '#EEF4FA' }]} numberOfLines={1} ellipsizeMode="tail">
+            <Text style={[styles.welcomeText, dark && { color: '#ADA7B4' }]} numberOfLines={1}>{t('home.welcome')}</Text>
+            <Text style={[styles.emailText, dark && { color: '#F8F6FB' }]} numberOfLines={1} ellipsizeMode="tail">
               {(user?.fullName || user?.name || 'Friend').split(' ')[0]}
             </Text>
           </View>
@@ -187,7 +187,7 @@ export default function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate('Notifications')}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Icon name="notifications-outline" size={26} color={dark ? '#55B5E8' : '#32A6D8'} />
+            <Icon name="notifications-outline" size={26} color={dark ? '#9275F5' : '#32A6D8'} />
             {unreadCount > 0 && (
               <View style={styles.bellBadge}>
                 <Text style={styles.bellBadgeText}>
@@ -211,24 +211,24 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.careActions}>
               <FloatingActionBubble
                 accessibilityLabel={`${t('home.findCare')}, ${copy('AI-assisted matching')}`}
-                style={[styles.primaryBubble, dark && { backgroundColor: '#14283A', borderColor: '#28516A' }, { width: primaryBubbleSize, height: primaryBubbleSize }]}
+                style={[styles.primaryBubble, dark && { backgroundColor: '#1C1921', borderColor: '#403846' }, { width: primaryBubbleSize, height: primaryBubbleSize }]}
                 delay={0}
                 onPress={() => navigation.navigate('MainTabs', { screen: 'Services' })}
               >
-                <Icon name="search-outline" size={29} color={dark ? '#55B5E8' : '#087EA4'} />
+                <Icon name="search-outline" size={29} color={dark ? '#9275F5' : '#087EA4'} />
                 <Text style={[styles.primaryBubbleTitle, dark && { color: '#F3F7FB' }]}>{t('home.findCare')}</Text>
-                <Text style={[styles.primaryBubbleDetail, dark && { color: '#B7C8D6' }]}>{copy('AI-assisted matching')}</Text>
+                <Text style={[styles.primaryBubbleDetail, dark && { color: '#B2AAB9' }]}>{copy('AI-assisted matching')}</Text>
               </FloatingActionBubble>
               <FloatingActionBubble
                 accessibilityLabel={`${t('home.offerCare')}, ${copy('Earn TreatCoins')}`}
-                style={[styles.primaryBubble, dark && { backgroundColor: '#182B3B', borderColor: '#31536A' }, { width: primaryBubbleSize, height: primaryBubbleSize }]}
+                style={[styles.primaryBubble, dark && { backgroundColor: '#201B25', borderColor: '#47404D' }, { width: primaryBubbleSize, height: primaryBubbleSize }]}
                 delay={420}
                 disabled={checkingStatus}
                 onPress={handleBecomeASitter}
               >
-                <Icon name="heart-outline" size={29} color={dark ? '#55B5E8' : '#087EA4'} />
+                <Icon name="heart-outline" size={29} color={dark ? '#9275F5' : '#087EA4'} />
                 <Text style={[styles.primaryBubbleTitle, dark && { color: '#F3F7FB' }]}>{checkingStatus ? t('home.checking') : t('home.offerCare')}</Text>
-                <Text style={[styles.primaryBubbleDetail, dark && { color: '#B7C8D6' }]}>{copy('Earn TreatCoins')}</Text>
+                <Text style={[styles.primaryBubbleDetail, dark && { color: '#B2AAB9' }]}>{copy('Earn TreatCoins')}</Text>
               </FloatingActionBubble>
             </View>
           </View>
@@ -237,13 +237,13 @@ export default function HomeScreen({ navigation }) {
               <FloatingActionBubble
                 key={copy(item.title)}
                 accessibilityLabel={`${copy(item.title)}. ${copy(item.detail)}`}
-                style={[styles.shortcutBubble, dark && { backgroundColor: '#14283A', borderColor: '#2A4C61' }, { width: shortcutBubbleSize, height: shortcutBubbleSize, backgroundColor: dark ? '#14283A' : item.bg }]}
+                style={[styles.shortcutBubble, dark && { backgroundColor: '#1C1921', borderColor: '#423A47' }, { width: shortcutBubbleSize, height: shortcutBubbleSize, backgroundColor: dark ? '#1C1921' : item.bg }]}
                 delay={index * 180}
                 onPress={item.press}
               >
-                <Icon name={item.icon} size={24} color={dark ? '#55B5E8' : item.color} />
+                <Icon name={item.icon} size={24} color={dark ? '#9275F5' : item.color} />
                 <Text style={[styles.shortcutTitle, dark && { color: '#F3F7FB' }]} numberOfLines={2}>{copy(item.title)}</Text>
-                <Text style={[styles.shortcutDetail, dark && { color: '#B7C8D6' }]} numberOfLines={2}>{copy(item.detail)}</Text>
+                <Text style={[styles.shortcutDetail, dark && { color: '#B2AAB9' }]} numberOfLines={2}>{copy(item.detail)}</Text>
               </FloatingActionBubble>
             ))}
           </View>

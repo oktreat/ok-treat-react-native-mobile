@@ -37,7 +37,7 @@ export default function SettingsScreen({ navigation }) {
           left: switchX + switchWidth / 2 - containerX - radius,
           top: switchY + switchHeight / 2 - containerY - radius,
           diameter,
-          color: '#0D1724',
+          color: '#111016',
         });
         circleProgress.setValue(next ? 0 : 1);
         if (!next) setDark(false);
@@ -54,7 +54,7 @@ export default function SettingsScreen({ navigation }) {
     });
   };
   const palette = dark
-    ? { background: '#0D1724', surface: '#142235', text: '#EEF4FA', muted: '#B3C0CE', border: '#2B3B4F', accent: '#55B5E8' }
+    ? { background: '#111016', surface: '#1D1A22', text: '#F8F6FB', muted: '#ADA7B4', border: '#3B3541', accent: '#9275F5' }
     : { background: '#FFFFFF', surface: '#FFFFFF', text: '#0D0D12', muted: '#898D8F', border: '#DFE7EB', accent: '#32A6D8' };
   const informationTitle = (page) => getInformation(i18n.resolvedLanguage || i18n.language, page).title;
 
@@ -156,11 +156,12 @@ export default function SettingsScreen({ navigation }) {
         >
           {/* General Section */}
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: palette.muted }]}>{t('settings.general')}</Text>
+            <View style={[styles.appearancePanel, dark && styles.appearancePanelDark]}>
+              <Text style={[styles.sectionTitle, { color: palette.muted }]}>{copy('APPEARANCE')}</Text>
             <View style={[styles.appearanceRow, { backgroundColor: palette.surface, borderColor: palette.border }]}>
-              <View>
+              <View style={styles.appearanceLabel}>
+                <Icon name="moon-outline" size={23} color={palette.accent} />
                 <Text style={[styles.appearanceTitle, { color: palette.text }]}>{copy('Dark mode')}</Text>
-                <Text style={[styles.appearanceHint, { color: palette.muted }]}>{copy('Use a darker OkTreat home and sitter dashboard')}</Text>
               </View>
               <View ref={switchRef} collapsable={false} style={styles.darkModeSwitch}>
                 <Switch
@@ -169,10 +170,11 @@ export default function SettingsScreen({ navigation }) {
                   value={dark}
                   onValueChange={toggleDarkMode}
                   disabled={Boolean(circleTransition)}
-                  trackColor={{ false: '#CBD1D5', true: '#4655B5' }}
+                  trackColor={{ false: '#CBD1D5', true: '#9275F5' }}
                   thumbColor="#FFFFFF"
                 />
               </View>
+            </View>
             </View>
             <View style={styles.menuContainer}>
               {generalSettings.map((item, index) => (
@@ -279,7 +281,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   darkModeSwitch: { alignSelf: 'center', justifyContent: 'center' },
-  appearanceRow: { minHeight: 64, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  appearancePanel: { marginBottom: 16 },
+  appearancePanelDark: { padding: 20, borderRadius: 30, backgroundColor: '#17141B', borderWidth: 1, borderColor: '#39343F' },
+  appearanceRow: { minHeight: 76, borderWidth: 1, borderRadius: 22, paddingHorizontal: 20, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  appearanceLabel: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   appearanceTitle: { fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '700' },
   appearanceHint: { fontSize: 11, marginTop: 3 },
   menuText: {

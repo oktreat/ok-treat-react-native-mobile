@@ -23,7 +23,7 @@ export default function SitterHomeScreen({ navigation }) {
   const { user } = useSelector(state => state.auth);
   const { dark } = useAppearance();
   const palette = dark
-    ? { background: '#0D1724', surface: '#142235', text: '#EEF4FA', muted: '#B3C0CE', border: '#2B3B4F', accent: '#56AA9A' }
+    ? { background: '#111016', surface: '#1D1A22', text: '#F8F6FB', muted: '#ADA7B4', border: '#3B3541', accent: '#56AA9A' }
     : { background: '#FFFFFF', surface: '#FFFFFF', text: '#142D38', muted: '#757575', border: '#E9ECF2', accent: '#56AA9A' };
 
   const hour = new Date().getHours();
@@ -244,7 +244,7 @@ export default function SitterHomeScreen({ navigation }) {
                     cy={lastPoint.y}
                     r="5.16"
                     fill={palette.accent}
-                    stroke={dark ? '#142235' : '#FFFFFF'}
+                    stroke={dark ? '#1D1A22' : '#FFFFFF'}
                     strokeWidth="3.51"
                   />
                 </Svg>
