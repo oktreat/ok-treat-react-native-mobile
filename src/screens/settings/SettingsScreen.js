@@ -282,10 +282,10 @@ const styles = StyleSheet.create({
   },
   darkModeSwitch: { alignSelf: 'center', justifyContent: 'center' },
   appearancePanel: { marginBottom: 16 },
-  appearancePanelDark: { padding: 20, borderRadius: 30, backgroundColor: '#17141B', borderWidth: 1, borderColor: '#39343F' },
-  appearanceRow: { minHeight: 76, borderWidth: 1, borderRadius: 22, paddingHorizontal: 20, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  appearancePanelDark: { padding: 20, borderRadius: 30, backgroundColor: '#151319', borderWidth: 1, borderColor: '#39343F' },
+  appearanceRow: { minHeight: 82, borderWidth: 1, borderRadius: 22, paddingHorizontal: 20, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   appearanceLabel: { flexDirection: 'row', alignItems: 'center', gap: 14 },
-  appearanceTitle: { fontSize: 14, fontFamily: 'Avenir LT Std', fontWeight: '700' },
+  appearanceTitle: { fontSize: 18, fontFamily: 'Avenir LT Std', fontWeight: '700' },
   appearanceHint: { fontSize: 11, marginTop: 3 },
   menuText: {
     color: '#898D8F',
