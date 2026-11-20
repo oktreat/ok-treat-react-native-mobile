@@ -157,7 +157,7 @@ export default function SettingsScreen({ navigation }) {
           {/* General Section */}
           <View style={styles.section}>
             <View style={[styles.appearancePanel, dark && styles.appearancePanelDark]}>
-              <Text style={[styles.sectionTitle, { color: palette.muted }]}>{copy('APPEARANCE')}</Text>
+              <Text style={[styles.sectionTitle, { color: palette.muted }]}>{t('settings.appearance').toUpperCase()}</Text>
             <View style={[styles.appearanceRow, { backgroundColor: palette.surface, borderColor: palette.border }]}>
               <View style={styles.appearanceLabel}>
                 <Icon name="moon-outline" size={23} color={palette.accent} />

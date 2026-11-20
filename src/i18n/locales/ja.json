@@ -55,7 +55,8 @@
     "logout": "ログアウト",
     "privacyPolicy": "プライバシーポリシー",
     "logoutConfirmTitle": "ログアウト",
-    "logoutConfirmBody": "ログアウトしますか？"
+    "logoutConfirmBody": "ログアウトしますか？",
+    "appearance": "外観"
   },
   "preferences": {
     "phoneLanguage": "端末の言語を使用",

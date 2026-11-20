@@ -55,7 +55,8 @@
     "logout": "Déconnexion",
     "privacyPolicy": "Politique de confidentialité",
     "logoutConfirmTitle": "Déconnexion",
-    "logoutConfirmBody": "Voulez-vous vous déconnecter ?"
+    "logoutConfirmBody": "Voulez-vous vous déconnecter ?",
+    "appearance": "Apparence"
   },
   "preferences": {
     "phoneLanguage": "Langue du téléphone",

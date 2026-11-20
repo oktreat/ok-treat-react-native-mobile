@@ -55,7 +55,8 @@
     "logout": "Logout",
     "privacyPolicy": "Privacy Policy",
     "logoutConfirmTitle": "Logout",
-    "logoutConfirmBody": "Are you sure you want to logout?"
+    "logoutConfirmBody": "Are you sure you want to logout?",
+    "appearance": "Appearance"
   },
   "preferences": {
     "phoneLanguage": "Use phone language",

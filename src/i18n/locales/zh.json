@@ -55,7 +55,8 @@
     "logout": "退出登录",
     "privacyPolicy": "隐私政策",
     "logoutConfirmTitle": "退出登录",
-    "logoutConfirmBody": "确定要退出登录吗？"
+    "logoutConfirmBody": "确定要退出登录吗？",
+    "appearance": "外观"
   },
   "preferences": {
     "phoneLanguage": "跟随手机语言",
