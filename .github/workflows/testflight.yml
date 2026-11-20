@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   archive:
-    runs-on: macos-latest
+    runs-on: macos-26
     timeout-minutes: 60
     env:
       EXPO_PUBLIC_PUSH_DIAGNOSTICS: 'false'
@@ -16,6 +16,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Select Xcode 27.2 and verify iOS SDK
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_27.2.app/Contents/Developer
+          xcodebuild -version
+          sdk_version="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "Selected iOS SDK: $sdk_version"
+          test "$sdk_version" = "27.2"
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -51,7 +58,7 @@ jobs:
           security set-keychain-settings -lut 7200 "$kc"
           security unlock-keychain -p "$pass" "$kc"
           security import signing.p12 -k "$kc" -P "$PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple: -s -k "$pass" "$kc"
+          security set-keychain-partition-list -S apple-tool:,apple: -s -k "$pass" "$kc"
           security list-keychains -d user -s "$kc" "$HOME/Library/Keychains/login.keychain-db"
           rm signing.p12
       - name: Archive and verify OkTreat
