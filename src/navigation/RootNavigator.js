@@ -20,13 +20,17 @@ const Stack = createStackNavigator();
 export default function RootNavigator() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector(state => state.auth);
-  const { onboardingCompleted } = useSelector(state => state.app);
+  const { onboardingCompleted, remoteConfig } = useSelector(state => state.app);
   const [isReady, setIsReady] = React.useState(false);
   const [showSplash, setShowSplash] = React.useState(true);
   const [serverReady, setServerReady] = React.useState(false);
 
   useEffect(() => {
-    // Load both user data and app settings
+    // Fresh remote config is refreshed in the background. loadRemoteConfig
+    // first applies the cached config so settings and the maintenance gate
+    // are available without holding up app startup.
+    dispatch(loadRemoteConfig()).unwrap().catch(() => {});
+
     Promise.all([
       dispatch(loadUser()).unwrap().catch(() => {
         // loadUser rejection means no valid user session;
@@ -35,10 +39,6 @@ export default function RootNavigator() {
       dispatch(loadAppSettings()).unwrap().catch((err) => {
         console.warn('Failed to load app settings:', err);
       }),
-      // Remote config (store links, Amazon link, support contact). Fail-open —
-      // fetchAppConfig resolves to cache/defaults on error, so this never
-      // blocks the splash from advancing.
-      dispatch(loadRemoteConfig()).unwrap().catch(() => {}),
     ]).finally(() => {
       setIsReady(true);
     });
@@ -95,7 +95,8 @@ export default function RootNavigator() {
     setServerReady(true);
   };
 
-  if (!isReady || showSplash) {
+  // Keep the maintenance gate active if a fresh config arrives after startup.
+  if (!isReady || showSplash || remoteConfig?.maintenance?.enabled) {
     return <SplashScreen onServerReady={handleServerReady} />;
   }
 
