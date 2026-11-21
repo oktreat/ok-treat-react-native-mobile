@@ -14,17 +14,21 @@ export const stripeIdentityUrl = value => {
     return false;
   }
 };
-export default function PalsIdentityVerification({liveRequired=false, mode=null}) {
+export default function PalsIdentityVerification({liveRequired=false, mode=null, onVerified}) {
   useCopyUpdates();
   const [status, setStatus] = useState('checking');
   const [busy, setBusy] = useState(false);
   const mounted = useRef(false);
   const inFlight = useRef(false);
+  const onVerifiedRef = useRef(onVerified);
+  onVerifiedRef.current = onVerified;
   const check = async () => {
     const response = await getIdentityStatus();
     if (!response?.success) throw new Error('Could not confirm identity status');
-    if (mounted.current) setStatus(identityConfirmed(response) ? 'verified' : response.data?.status === 'processing' ? 'processing' : 'unverified');
-    return identityConfirmed(response);
+    const confirmed = identityConfirmed(response);
+    if (mounted.current) setStatus(confirmed ? 'verified' : response.data?.status === 'processing' ? 'processing' : 'unverified');
+    if (confirmed) Promise.resolve(onVerifiedRef.current?.()).catch(() => {});
+    return confirmed;
   };
   useEffect(() => {
     mounted.current = true;
@@ -108,13 +112,13 @@ export default function PalsIdentityVerification({liveRequired=false, mode=null}
         color: '#FFF',
         fontWeight: '700'
       }}>{busy ? copy('Please wait…') : status === 'processing' ? copy('Check status') : copy('Verify your profile')}</Text></TouchableOpacity>}
-    <TouchableOpacity accessibilityRole="button" disabled={busy} onPress={refresh} style={{
+    {!confirmed && status !== 'processing' && <TouchableOpacity accessibilityRole="button" disabled={busy} onPress={refresh} style={{
       minHeight: 44,
       justifyContent: 'center'
     }}><Text style={{
         color: '#087EA4',
         fontWeight: '700'
-      }}>{copy("Check status")}</Text></TouchableOpacity>
+      }}>{copy("Check status")}</Text></TouchableOpacity>}
     <Text style={{
       color: '#486371',
       fontSize: 13,
