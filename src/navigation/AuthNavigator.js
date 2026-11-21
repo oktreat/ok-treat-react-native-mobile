@@ -11,6 +11,7 @@ import OTPEntryScreen from '../screens/auth/OTPEntryScreen';
 import RegistrationSuccessScreen from '../screens/auth/RegistrationSuccessScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import PasswordChangeSuccessScreen from '../screens/auth/PasswordChangeSuccessScreen';
+import PalsLiveScreen from '../screens/community/PalsLiveScreen';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ export default function AuthNavigator() {
       <Stack.Screen name="RegistrationSuccess" component={RegistrationSuccessScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="PasswordChangeSuccess" component={PasswordChangeSuccessScreen} />
+      <Stack.Screen name="GuestPals" component={PalsLiveScreen} />
     </Stack.Navigator>
   );
 }
