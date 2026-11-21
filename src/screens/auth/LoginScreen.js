@@ -229,6 +229,9 @@ export default function LoginScreen({ navigation, route }) {
               <Text style={styles.signupLink}>Sign Up</Text>
             </TouchableOpacity>
           </View>
+          <TouchableOpacity onPress={() => navigation.navigate('GuestPals')} style={styles.explorePalsButton}>
+            <Text style={styles.explorePalsText}>Explore PALS on the map</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
 
@@ -354,6 +357,21 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     paddingTop: 10,
 
+  },
+  explorePalsButton: {
+    alignSelf: 'center',
+    marginTop: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#087EA4',
+  },
+  explorePalsText: {
+    color: '#087EA4',
+    fontSize: 14,
+    fontFamily: 'Avenir LT Std',
+    fontWeight: '600',
   },
   signupLink: {
     color: '#32A6D8',
