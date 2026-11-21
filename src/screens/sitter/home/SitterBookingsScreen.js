@@ -1,9 +1,14 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, Modal, TextInput } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
+import api from '../../../config/api';
+import { CLOUDINARY_FOLDERS } from '../../../config/cloudinary';
+import { uploadToCloudinary } from '../../../services/cloudinaryService';
 import { useState, useEffect, useCallback } from 'react';
 import ScreenWrapper from '../../../components/ScreenWrapper';
 import { BackArrowIcon, StarIcon, CoinIcon, DogImage, ChatIcon } from '../../../assets';
 import Icon from '@expo/vector-icons/Ionicons';
-import { getSitterBookings, markBookingCompleted } from '../../../services/bookingService';
+import { getSitterBookings, markBookingCompleted, startSitting } from '../../../services/bookingService';
 
 // Enum → human label for the service type.
 const SERVICE_LABELS = {
@@ -14,6 +19,14 @@ const SERVICE_LABELS = {
   PET_WALKING: 'Pet Walking',
 };
 const humanizeService = (t) => SERVICE_LABELS[t] || t || '';
+
+const careText = (value) => {
+  if (value == null || value === '') return 'Not provided';
+  if (Array.isArray(value)) return value.map(item => String(item)).filter(Boolean).join(', ') || 'Not provided';
+  if (typeof value === 'object') return Object.values(value).map(item => String(item)).filter(Boolean).join(', ') || 'Not provided';
+  return String(value);
+};
+
 
 // Helper to derive status style
 const getStatusStyle = (status) => {
@@ -45,6 +58,12 @@ export default function SitterBookingsScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [markingId, setMarkingId] = useState(null);
+  const [careModalBooking, setCareModalBooking] = useState(null);
+  const [finishModalBooking, setFinishModalBooking] = useState(null);
+  const [finishKind, setFinishKind] = useState(null);
+  const [finishNote, setFinishNote] = useState('');
+  const [photoUris, setPhotoUris] = useState([]);
+  const [actionBusy, setActionBusy] = useState(false);
 
   const fetchBookings = useCallback(async () => {
     try {
@@ -105,6 +124,15 @@ export default function SitterBookingsScreen({ navigation }) {
           rawStatus: (booking.status || '').toUpperCase(),
           startAtMs: startDate ? startDate.getTime() : null,
           completionRequestedAt: booking.completionRequestedAt || null,
+          sittingStartedAt: booking.sittingStartedAt || null,
+          petCare: {
+            feedingSchedule: booking.pet?.feedingSchedule,
+            pottyBreak: booking.pet?.pottyBreak,
+            foodAllergies: booking.pet?.foodAllergies,
+            medicationAllergies: booking.pet?.medicationAllergies,
+            medications: booking.pet?.medications,
+            additionalInstructions: booking.pet?.additionalInstructions,
+          },
         };
       }));
     } catch (err) {
@@ -125,17 +153,21 @@ export default function SitterBookingsScreen({ navigation }) {
     navigation.goBack();
   };
 
-  const doMarkComplete = async (booking) => {
+  const doMarkComplete = async (booking, quiet = false) => {
     try {
       setMarkingId(booking.id);
       await markBookingCompleted(booking.id);
       await fetchBookings();
-      Alert.alert(
-        'Marked complete',
-        'We’ve asked the owner to confirm. Once they do (or after 3 days), your TreatCoins are released.'
-      );
+      if (!quiet) {
+        Alert.alert(
+          'Marked complete',
+          'We’ve asked the owner to confirm. Once they do (or after 3 days), your TreatCoins are released.'
+        );
+      }
+      return true;
     } catch (err) {
-      Alert.alert('Could not mark complete', err?.message || 'Please try again in a moment.');
+      if (!quiet) Alert.alert('Could not mark complete', err?.message || 'Please try again in a moment.');
+      return false;
     } finally {
       setMarkingId(null);
     }
@@ -150,6 +182,99 @@ export default function SitterBookingsScreen({ navigation }) {
         { text: 'Mark completed', onPress: () => doMarkComplete(booking) },
       ]
     );
+  };
+
+  const confirmStartSitting = async () => {
+    if (!careModalBooking || actionBusy) return;
+    setActionBusy(true);
+    try {
+      await startSitting(careModalBooking.id);
+      const petName = careModalBooking.petName;
+      setCareModalBooking(null);
+      await fetchBookings();
+      Alert.alert('Sitting started', `You’re ready to care for ${petName || 'this pet'}.`);
+    } catch (err) {
+      Alert.alert('Could not start sitting', err?.message || 'Please try again in a moment.');
+    } finally {
+      setActionBusy(false);
+    }
+  };
+
+  const openFinishPrompt = (booking) => {
+    setFinishKind(null);
+    setFinishNote('');
+    setPhotoUris([]);
+    setFinishModalBooking(booking);
+  };
+
+  const finishWithoutUpdate = async () => {
+    if (!finishModalBooking || actionBusy) return;
+    const done = await doMarkComplete(finishModalBooking);
+    if (done) setFinishModalBooking(null);
+  };
+
+  const chooseVisitPhotos = async () => {
+    if (photoUris.length >= 3 || actionBusy) return;
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsMultipleSelection: true,
+        selectionLimit: 3 - photoUris.length,
+        quality: 0.8,
+      });
+      if (!result.canceled) {
+        const selected = (result.assets || []).map(asset => asset.uri).filter(Boolean);
+        setPhotoUris(current => [...current, ...selected].slice(0, 3));
+      }
+    } catch (err) {
+      Alert.alert('Could not choose photos', err?.message || 'Please try again.');
+    }
+  };
+
+  const sendVisitUpdate = async () => {
+    const booking = finishModalBooking;
+    if (!booking || actionBusy) return;
+    if (!finishKind && !finishNote.trim() && photoUris.length === 0) {
+      Alert.alert('Add an update', 'Choose Walk, Meal, or Potty, add a note, or attach a photo.');
+      return;
+    }
+    if (!booking.petId) {
+      Alert.alert('Pet details unavailable', 'This booking is missing its pet information.');
+      return;
+    }
+    setActionBusy(true);
+    try {
+      const photoUrls = [];
+      for (const uri of photoUris) {
+        const image = await ImageManipulator.manipulateAsync(
+          uri,
+          [{ resize: { width: 1280 } }],
+          { compress: 0.62, format: ImageManipulator.SaveFormat.JPEG }
+        );
+        const uploaded = await uploadToCloudinary(image.uri, CLOUDINARY_FOLDERS.PETS, {
+          tags: ['care-update'],
+          context: `pet_id=${booking.petId}|booking_id=${booking.id}`,
+        });
+        photoUrls.push(uploaded.url);
+      }
+      await api.post(`/pets/${booking.petId}/care-entries`, {
+        kind: finishKind || 'CARE_UPDATE',
+        note: finishNote.trim(),
+        photoUrls,
+        bookingId: booking.id,
+      });
+      const completed = await doMarkComplete(booking, true);
+      setFinishModalBooking(null);
+      if (completed) {
+        Alert.alert('Update sent', `${booking.petName || 'Your pet'}’s visit update is ready for the owner.`);
+      } else {
+        Alert.alert('Update sent', 'The owner received the care update. Please reopen the booking to finish it.');
+      }
+    } catch (err) {
+      Alert.alert('Could not send update', err?.message || 'Please try again in a moment.');
+    } finally {
+      setActionBusy(false);
+    }
   };
 
   // Filter bookings based on selected tab
@@ -168,13 +293,13 @@ export default function SitterBookingsScreen({ navigation }) {
     const hasMeta = booking.dateTime || booking.address || booking.petName || booking.phone ||
       (isCompleted && (booking.coins || booking.rating));
 
-    // Sitter can mark done once a confirmed/ongoing booking has started and
-    // hasn't already been reported complete.
-    const canMarkComplete =
+    const isActiveBooking =
       ['CONFIRMED', 'ONGOING'].includes(booking.rawStatus) &&
       booking.startAtMs != null &&
       booking.startAtMs <= Date.now() &&
       !booking.completionRequestedAt;
+    const canStartSitting = isActiveBooking && !booking.sittingStartedAt;
+    const canFinishSitting = isActiveBooking && !!booking.sittingStartedAt;
     const awaitingConfirm =
       !!booking.completionRequestedAt &&
       ['CONFIRMED', 'ONGOING'].includes(booking.rawStatus);
@@ -259,21 +384,25 @@ export default function SitterBookingsScreen({ navigation }) {
           </View>
         )}
 
-        {/* Completion action / awaiting-confirmation state */}
-        {canMarkComplete && (
+        {/* Start prompt, end-of-sitting update prompt, and owner confirmation state */}
+        {canStartSitting && (
           <TouchableOpacity
             style={[styles.markButton, isMarking && styles.markButtonDisabled]}
-            onPress={() => handleMarkComplete(booking)}
+            onPress={() => setCareModalBooking(booking)}
             disabled={isMarking}
           >
-            {isMarking ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <>
-                <Icon name="checkmark-circle-outline" size={16} color="#FFFFFF" />
-                <Text style={styles.markButtonText}>Mark as completed</Text>
-              </>
-            )}
+            <Icon name="paw-outline" size={16} color="#FFFFFF" />
+            <Text style={styles.markButtonText}>Start sitting</Text>
+          </TouchableOpacity>
+        )}
+        {canFinishSitting && (
+          <TouchableOpacity
+            style={[styles.markButton, isMarking && styles.markButtonDisabled]}
+            onPress={() => openFinishPrompt(booking)}
+            disabled={isMarking}
+          >
+            <Icon name="checkmark-circle-outline" size={16} color="#FFFFFF" />
+            <Text style={styles.markButtonText}>Finish sitting</Text>
           </TouchableOpacity>
         )}
         {awaitingConfirm && (
@@ -281,15 +410,6 @@ export default function SitterBookingsScreen({ navigation }) {
             <Icon name="hourglass-outline" size={14} color="#E5A33D" />
             <Text style={styles.awaitingText}>Waiting for owner to confirm</Text>
           </View>
-        )}
-        {booking.petId && (['ONGOING', 'COMPLETED'].includes(booking.rawStatus) || (booking.rawStatus === 'CONFIRMED' && booking.startAtMs != null && booking.startAtMs <= Date.now())) && (
-          <TouchableOpacity
-            style={styles.markButton}
-            onPress={() => navigation.navigate('PetCareDiary', { petId: booking.petId, petName: booking.petName, bookingId: booking.id, sitterMode: true })}
-          >
-            <Icon name="camera-outline" size={16} color="#FFFFFF" />
-            <Text style={styles.markButtonText}>Share care update</Text>
-          </TouchableOpacity>
         )}
       </View>
     );
@@ -362,6 +482,71 @@ export default function SitterBookingsScreen({ navigation }) {
           </ScrollView>
         )}
       </View>
+
+      <Modal visible={!!careModalBooking} transparent animationType="slide" onRequestClose={() => setCareModalBooking(null)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Before you start</Text>
+            <Text style={styles.modalSubtitle}>{careModalBooking?.petName || 'Pet'} — review the care instructions, then start sitting.</Text>
+            <ScrollView style={styles.modalScroll} keyboardShouldPersistTaps="handled">
+              <View style={styles.careInfoItem}><Text style={styles.careInfoLabel}>Feeding routine</Text><Text style={styles.careInfoValue}>{careText(careModalBooking?.petCare?.feedingSchedule)}</Text></View>
+              <View style={styles.careInfoItem}><Text style={styles.careInfoLabel}>Potty breaks</Text><Text style={styles.careInfoValue}>{careText(careModalBooking?.petCare?.pottyBreak)}</Text></View>
+              <View style={styles.careInfoItem}><Text style={styles.careInfoLabel}>Food allergies</Text><Text style={styles.careInfoValue}>{careText(careModalBooking?.petCare?.foodAllergies)}</Text></View>
+              <View style={styles.careInfoItem}><Text style={styles.careInfoLabel}>Medication allergies</Text><Text style={styles.careInfoValue}>{careText(careModalBooking?.petCare?.medicationAllergies)}</Text></View>
+              <View style={styles.careInfoItem}><Text style={styles.careInfoLabel}>Medications</Text><Text style={styles.careInfoValue}>{careText(careModalBooking?.petCare?.medications)}</Text></View>
+              <View style={styles.careInfoItem}><Text style={styles.careInfoLabel}>Special instructions</Text><Text style={styles.careInfoValue}>{careText(careModalBooking?.petCare?.additionalInstructions)}</Text></View>
+            </ScrollView>
+            <TouchableOpacity style={[styles.modalPrimary, actionBusy && styles.markButtonDisabled]} onPress={confirmStartSitting} disabled={actionBusy}>
+              {actionBusy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.modalPrimaryText}>Start sitting</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalSecondary} onPress={() => setCareModalBooking(null)} disabled={actionBusy}>
+              <Text style={styles.modalSecondaryText}>Not now</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={!!finishModalBooking} transparent animationType="slide" onRequestClose={() => !actionBusy && setFinishModalBooking(null)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Visit update</Text>
+            <Text style={styles.modalSubtitle}>Share how {finishModalBooking?.petName || 'your pet'} is doing.</Text>
+            <ScrollView style={styles.modalScroll} keyboardShouldPersistTaps="handled">
+              <Text style={styles.careInfoLabel}>What did you do?</Text>
+              <View style={styles.updateChoices}>
+                {[
+                  ['WALK', 'Walk'],
+                  ['MEAL', 'Meal'],
+                  ['POTTY', 'Potty'],
+                ].map(([kind, label]) => (
+                  <TouchableOpacity key={kind} style={[styles.updateChoice, finishKind === kind && styles.updateChoiceSelected]} onPress={() => setFinishKind(current => current === kind ? null : kind)}>
+                    <Text style={[styles.updateChoiceText, finishKind === kind && styles.updateChoiceTextSelected]}>{label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TextInput value={finishNote} onChangeText={setFinishNote} placeholder="Add a note (optional)" placeholderTextColor="#818898" multiline maxLength={1000} style={styles.updateNote} />
+              <Text style={styles.photoHint}>Add up to 3 photos. The booking owner can view this update in the pet’s care history.</Text>
+              <View style={styles.photoPreviewRow}>
+                {photoUris.map((uri, index) => (
+                  <View key={uri} style={styles.photoPreviewWrap}>
+                    <Image source={{ uri }} style={styles.photoPreview} />
+                    <TouchableOpacity style={styles.photoRemove} onPress={() => setPhotoUris(current => current.filter((_, i) => i !== index))} disabled={actionBusy}>
+                      <Text style={styles.photoRemoveText}>×</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                {photoUris.length < 3 && <TouchableOpacity style={styles.addPhotoButton} onPress={chooseVisitPhotos} disabled={actionBusy}><Icon name="camera-outline" size={20} color="#1686A8" /><Text style={styles.addPhotoText}>Add photos</Text></TouchableOpacity>}
+              </View>
+            </ScrollView>
+            <TouchableOpacity style={[styles.modalPrimary, actionBusy && styles.markButtonDisabled]} onPress={sendVisitUpdate} disabled={actionBusy}>
+              {actionBusy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.modalPrimaryText}>Send update</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalSecondary} onPress={finishWithoutUpdate} disabled={actionBusy}>
+              <Text style={styles.modalSecondaryText}>Finish without an update</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScreenWrapper>
   );
 }
@@ -592,6 +777,32 @@ const styles = StyleSheet.create({
   markButtonDisabled: {
     opacity: 0.6,
   },
+  modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', padding: 18 },
+  modalCard: { width: '100%', maxHeight: '90%', backgroundColor: '#FFFFFF', borderRadius: 20, padding: 18 },
+  modalTitle: { color: '#173342', fontSize: 21, fontWeight: '800', marginBottom: 5 },
+  modalSubtitle: { color: '#58707C', fontSize: 14, lineHeight: 20, marginBottom: 14 },
+  modalScroll: { flexGrow: 0, marginBottom: 12 },
+  careInfoItem: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#E6EEF1' },
+  careInfoLabel: { color: '#173342', fontSize: 14, fontWeight: '700', marginBottom: 4 },
+  careInfoValue: { color: '#4D6570', fontSize: 14, lineHeight: 20 },
+  modalPrimary: { minHeight: 48, backgroundColor: '#1686A8', borderRadius: 14, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16, marginTop: 8 },
+  modalPrimaryText: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  modalSecondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
+  modalSecondaryText: { color: '#1686A8', fontSize: 14, fontWeight: '700' },
+  updateChoices: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 9 },
+  updateChoice: { borderWidth: 1, borderColor: '#C8DCE5', borderRadius: 18, paddingVertical: 9, paddingHorizontal: 15, backgroundColor: '#F8FBFC' },
+  updateChoiceSelected: { backgroundColor: '#1686A8', borderColor: '#1686A8' },
+  updateChoiceText: { color: '#34515F', fontSize: 13, fontWeight: '700' },
+  updateChoiceTextSelected: { color: '#FFFFFF' },
+  updateNote: { minHeight: 84, borderRadius: 12, borderWidth: 1, borderColor: '#D7E4EA', padding: 12, textAlignVertical: 'top', marginTop: 12, color: '#173342' },
+  photoHint: { color: '#627783', fontSize: 12, lineHeight: 17, marginTop: 12 },
+  photoPreviewRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 10, alignItems: 'center' },
+  photoPreviewWrap: { position: 'relative' },
+  photoPreview: { width: 76, height: 76, borderRadius: 11 },
+  photoRemove: { position: 'absolute', right: -6, top: -6, width: 22, height: 22, borderRadius: 11, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#D8E2E7' },
+  photoRemoveText: { color: '#A52F2A', fontSize: 18, fontWeight: '700', lineHeight: 21 },
+  addPhotoButton: { minHeight: 76, borderRadius: 11, borderWidth: 1, borderColor: '#C8DCE5', borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12, minWidth: 90 },
+  addPhotoText: { color: '#1686A8', fontSize: 12, fontWeight: '700', marginTop: 2 },
   markButtonText: {
     color: '#FFFFFF',
     fontSize: 13,
