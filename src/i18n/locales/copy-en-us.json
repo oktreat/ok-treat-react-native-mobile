@@ -483,5 +483,14 @@
   "Dark mode": "Dark mode",
   "Use a darker OkTreat home and sitter dashboard": "Use a darker OkTreat home and sitter dashboard",
   "Explore map without a trip": "Explore map without a trip",
-  "3+ PALS in this city. Add a trip to find matching profiles.": "3+ PALS in this city. Add a trip to find matching profiles."
+  "3+ PALS in this city. Add a trip to find matching profiles.": "3+ PALS in this city. Add a trip to find matching profiles.",
+  "Step {{current}} of 4": "Step {{current}} of 4",
+  "Complete your profile, verify your ID, add a photo, and publish it to continue.": "Complete your profile, verify your ID, add a photo, and publish it to continue.",
+  "Add a trip to match by destination and dates, or skip to explore the map.": "Add a trip to match by destination and dates, or skip to explore the map.",
+  "Find PALS, send invitations, or organize an activity. You can continue if nobody matches.": "Find PALS, send invitations, or organize an activity. You can continue if nobody matches.",
+  "Search a city map to preview the community. Add a trip to see profiles or organize an activity.": "Search a city map to preview the community. Add a trip to see profiles or organize an activity.",
+  "Invitations is your inbox for direct PALS invitations and chats after acceptance.": "Invitations is your inbox for direct PALS invitations and chats after acceptance.",
+  "Continue to Find PALS": "Continue to Find PALS",
+  "Continue to Invitations": "Continue to Invitations",
+  "Profile ready — continue to My trips.": "Profile ready — continue to My trips."
 }

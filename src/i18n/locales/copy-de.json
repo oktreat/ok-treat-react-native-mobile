@@ -772,5 +772,14 @@
   "Dark mode": "Dunkelmodus",
   "Use a darker OkTreat home and sitter dashboard": "Dunkle Darstellung für OkTreat-Startseite und Sitter-Dashboard verwenden",
   "Explore map without a trip": "Karte ohne Reise erkunden",
-  "3+ PALS in this city. Add a trip to find matching profiles.": "3+ PALS in dieser Stadt. Füge eine Reise hinzu, um passende Profile zu finden."
+  "3+ PALS in this city. Add a trip to find matching profiles.": "3+ PALS in dieser Stadt. Füge eine Reise hinzu, um passende Profile zu finden.",
+  "Step {{current}} of 4": "Schritt {{current}} von 4",
+  "Complete your profile, verify your ID, add a photo, and publish it to continue.": "Vervollständige dein Profil, bestätige deine Identität, füge ein Foto hinzu und veröffentliche es, um fortzufahren.",
+  "Add a trip to match by destination and dates, or skip to explore the map.": "Füge eine Reise hinzu, damit Ziel und Zeitraum abgeglichen werden, oder überspringe diesen Schritt und erkunde die Karte.",
+  "Find PALS, send invitations, or organize an activity. You can continue if nobody matches.": "Finde PALS, sende Einladungen oder organisiere eine Aktivität. Du kannst auch fortfahren, wenn niemand passt.",
+  "Search a city map to preview the community. Add a trip to see profiles or organize an activity.": "Suche eine Stadt auf der Karte, um die Community zu entdecken. Füge eine Reise hinzu, um Profile zu sehen oder eine Aktivität zu organisieren.",
+  "Invitations is your inbox for direct PALS invitations and chats after acceptance.": "Unter Einladungen findest du direkte PALS-Einladungen und Chats nach der Annahme.",
+  "Continue to Find PALS": "Weiter zu PALS finden",
+  "Continue to Invitations": "Weiter zu Einladungen",
+  "Profile ready — continue to My trips.": "Profil fertig – weiter zu Meine Reisen."
 }
