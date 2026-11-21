@@ -61,7 +61,7 @@ function BubbleInterestPicker({value,onChange,disabled}) {
   </TouchableOpacity>)}
  </LinearGradient>;
 }
-function PalsCityMap({destination,region,markerLabel,statusText,onMarkerPress}) {
+function PalsCityMap({destination,region,markerLabel,markerDescription,statusText,onMarkerPress}) {
  const mapRegion=region||DEFAULT_MAP_REGION;
  const mapKey=(destination||'world')+'-'+(region?.latitude??'world');
  return <View style={s.mapCard}>
@@ -69,7 +69,7 @@ function PalsCityMap({destination,region,markerLabel,statusText,onMarkerPress}) 
   <Text style={s.mapHint}>{copy('Map markers show approximate destination areas only. Member locations are never shown.')}</Text>
   <View style={s.mapFrame}>
    <MapView key={mapKey} style={s.map} initialRegion={mapRegion} loadingEnabled accessibilityLabel={copy('Map of PALS destinations')} showsUserLocation={false} showsMyLocationButton={false}>
-    {region&&markerLabel&&<Marker coordinate={{latitude:region.latitude,longitude:region.longitude}} title={markerLabel} description={copy('Approximate city area. Sign in to view PALS profiles.')} onPress={onMarkerPress}/>}
+    {region&&markerLabel&&<Marker coordinate={{latitude:region.latitude,longitude:region.longitude}} title={markerLabel} description={markerDescription} onPress={onMarkerPress}/>}
    </MapView>
    <View pointerEvents="none" style={s.mapOverlay}><Text style={s.mapOverlayText}>{statusText}</Text></View>
   </View>
@@ -122,9 +122,9 @@ export default function PalsLiveScreen({navigation}) {
  {!ready?<ActivityIndicator/>:!userId?<>
  <Text style={s.heading}>{copy('Find PALS by destination')}</Text>
  <Text style={s.body}>{copy('Explore the community map before you join. Search a city to see whether PALS are travelling there. Sign in to view member profiles.')}</Text>
- {field('Destination city and country',guestDestination,setGuestDestination,false,'Kyoto, Japan')}
+ {field('Destination city and country',guestDestination,v=>{setGuestDestination(v);setPublicMapResult(null);setMapRegion(null);setMapError('')},false,'Kyoto, Japan')}
  {button('Show PALS on map',searchPublicMap,!guestDestination.trim())}
- <PalsCityMap destination={publicMapResult?.destination||guestDestination.trim()} region={mapRegion} markerLabel={publicMapResult?.communityVisible?copy('3+ PALS'):null} statusText={mapError||(publicMapResult?.communityVisible?copy('3+ PALS in this city · tap the marker to sign in'):publicMapResult?copy('The PALS community is growing here. Sign in to be part of it.'):copy('Search a city to see PALS activity.'))} onMarkerPress={()=>navigation.navigate('Login')}/>
+ <PalsCityMap destination={publicMapResult?.destination||guestDestination.trim()} region={mapRegion} markerLabel={publicMapResult?.communityVisible?copy('3+ PALS'):null} markerDescription={copy('Sign in to view PALS profiles.')} statusText={mapError||(publicMapResult?.communityVisible?copy('3+ PALS in this city · tap the marker to sign in'):publicMapResult?copy('The PALS community is growing here. Sign in to be part of it.'):copy('Search a city to see PALS activity.'))} onMarkerPress={()=>navigation.navigate('Login')}/>
  {publicMapResult?.communityVisible&&button('Sign in to view PALS profiles',()=>navigation.navigate('Login'))}
  {button('Create an account to join PALS',()=>navigation.navigate('Register'),false,true)}
 </>:!me?<View><Text style={s.body}>{copy('PALS could not load. Please check your connection and sign in again if needed.')}</Text>{button('Retry',()=>run(refresh))}</View>:<>
@@ -154,9 +154,9 @@ export default function PalsLiveScreen({navigation}) {
  {me.trips.map(t=><View key={t.id} style={s.card}><Text style={s.heading}>{t.destination}</Text><Text>{date(t.startsOn)} — {date(t.endsOn)}</Text><Text>{t.activities.map(a=>copy(a)).join(' · ')}</Text>{button('Cancel travel plan',()=>confirm('Cancel this travel plan?','Related invitations and PALS chats will close. Create a new plan if your destination or dates change.',async()=>{await palsRequest('trips/'+t.id+'/cancel',{});await refresh();await inbox()}),false,true)}</View>)}
  </>}
  {tab==='Find PALS'&&<><Text style={s.heading}>{copy('Meet travellers at your destination')}</Text><Text style={s.body}>{copy('Select one of your travel plans. PALS shows published profiles visiting the same city during overlapping dates.')}</Text>
- {me.trips.map(t=>button(t.destination+' · '+date(t.startsOn),()=>{setSelectedTrip(t.id);setMembers([]);setPage(0);setDiscoverySearched(false)},false,t.id!==selectedTrip))}
- <PalsCityMap destination={selected?.destination} region={mapRegion} markerLabel={authMapLabel} statusText={authMapStatus} onMarkerPress={()=>setMapProfilesOpen(true)}/>
- {field('Filter by interest (optional)',interest,v=>{setInterest(v);setDiscoverySearched(false)})}{field('Filter by language (optional)',language,v=>{setLanguage(v);setDiscoverySearched(false)})}
+ {me.trips.map(t=>button(t.destination+' · '+date(t.startsOn),()=>{setSelectedTrip(t.id);setMembers([]);setMore(false);setPage(0);setDiscoverySearched(false)},false,t.id!==selectedTrip))}
+ <PalsCityMap destination={selected?.destination} region={mapRegion} markerLabel={authMapLabel} statusText={authMapStatus} markerDescription={copy('Browse matching PALS in this destination.')} onMarkerPress={()=>setMapProfilesOpen(true)}/>
+ {field('Filter by interest (optional)',interest,v=>{setInterest(v);setMembers([]);setMore(false);setDiscoverySearched(false)})}{field('Filter by language (optional)',language,v=>{setLanguage(v);setMembers([]);setMore(false);setDiscoverySearched(false)})}
  {button('Find PALS',()=>discover(0),!selectedTrip||!me.profile?.visible)}<Text style={s.label}>{copy('Invite for')}</Text><View style={s.row}>{ACTIVITIES.map(a=>button(a,()=>setInviteActivity(a),false,inviteActivity!==a))}</View>{field('Invitation message (optional)',inviteNote,setInviteNote,true)}
  {!me.profile?.visible&&<Text style={s.notice}>{copy('Publish your PALS profile first to use discovery.')}</Text>}
  {members.map(m=><View style={s.card} key={m.userId}><View style={s.row}>{m.thumbnail&&<Image source={{uri:m.thumbnail}} style={s.avatar}/>}<View style={{flex:1}}><Text style={s.heading}>{m.displayName}</Text>{m.identityVerified===true?<View style={s.verifiedBadge}><Text style={s.verifiedBadgeIcon}>✓</Text><Text style={s.verifiedBadgeText}>{copy('ID verified')}</Text></View>:<Text style={s.body}>{copy('Identity not confirmed')}</Text>}<Text>{m.dog?.name} · {m.dog?.breed}</Text></View></View><Text style={s.body}>{m.bio}</Text><Text>{m.interests.join(' · ')} · {m.languages.join(' · ')}</Text>{button('View profile',()=>showProfile(m),false,true)}
