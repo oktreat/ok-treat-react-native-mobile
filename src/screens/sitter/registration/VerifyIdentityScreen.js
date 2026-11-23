@@ -10,6 +10,7 @@ import Button from '../../../components/Button';
 import Icon from '@expo/vector-icons/Ionicons';
 import { BackArrowIcon, ShieldCheckIcon } from '../../../assets';
 import { createIdentitySession, getIdentityStatus } from '../../../services/stripeService';
+import { identityConfirmed } from '../../../components/PalsIdentityVerification';
 
 const HORIZONTAL_PADDING = 24;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -40,7 +41,7 @@ export default function VerifyIdentityScreen({ navigation }) {
       try {
         const res = await getIdentityStatus();
         last = res?.data;
-        if (last?.verified) { await markVerified(); return; }
+        if (identityConfirmed(res)) { await markVerified(); return; }
         if (last?.status === 'canceled') {
           setErrorMessage('Verification was cancelled. You can try again any time.');
           setShowErrorModal(true);
@@ -64,6 +65,18 @@ export default function VerifyIdentityScreen({ navigation }) {
   const startVerification = async () => {
     setIsVerifying(true);
     try {
+      // PALS and sitter onboarding share the same server-confirmed Stripe Identity check.
+      // Never create a second session if this user has already passed or is under review.
+      const existing = await getIdentityStatus();
+      if (!existing?.success) throw new Error('Could not confirm your existing identity status. Please try again.');
+      if (identityConfirmed(existing)) {
+        await markVerified();
+        return;
+      }
+      if (existing?.data?.status === 'processing') {
+        setShowProcessingModal(true);
+        return;
+      }
       const res = await createIdentitySession();
       if (!res?.success || !res?.data?.url) {
         throw new Error(res?.message || 'Could not start verification');
@@ -120,7 +133,7 @@ export default function VerifyIdentityScreen({ navigation }) {
 
             <Text style={styles.title}>Verify your Identity</Text>
             <Text style={styles.desc}>
-              {copy("During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.")}
+              {copy("Stripe Identity checks a government-issued photo ID and matching selfie. If you completed this check for OkTreat PALS, we’ll reuse the same result here. Stripe may separately request payout details for sitter payments.")}
             </Text>
             <Text style={styles.desc}>
               {copy("Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.")}
