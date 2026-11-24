@@ -386,5 +386,6 @@
   "Invitations is your inbox for direct PALS invitations and chats after acceptance.": "“邀请”是你的收件箱，可查看 PALS 邀请以及接受后开启的聊天。",
   "Continue to Find PALS": "继续查找 PALS",
   "Continue to Invitations": "继续前往邀请",
-  "Profile ready — continue to My trips.": "个人资料已准备好，继续前往“我的行程”。"
+  "Profile ready — continue to My trips.": "个人资料已准备好，继续前往“我的行程”。",
+  "Your approved Stripe ID and selfie check is shared across PALS and sitter registration. You do not need to repeat it. Stripe may separately request details for payouts.": "您已通过 Stripe 完成的身份证件和自拍验证可同时用于 PALS 和宠物保姆注册，无需重复验证。Stripe 可能会另外要求提供收款所需的信息。"
 }

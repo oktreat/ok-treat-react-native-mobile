@@ -781,5 +781,6 @@
   "Invitations is your inbox for direct PALS invitations and chats after acceptance.": "Les invitations regroupent vos invitations PALS et les conversations après acceptation.",
   "Continue to Find PALS": "Continuer vers Trouver des PALS",
   "Continue to Invitations": "Continuer vers les invitations",
-  "Profile ready — continue to My trips.": "Profil prêt — passez à Mes voyages."
+  "Profile ready — continue to My trips.": "Profil prêt — passez à Mes voyages.",
+  "Your approved Stripe ID and selfie check is shared across PALS and sitter registration. You do not need to repeat it. Stripe may separately request details for payouts.": "Votre vérification Stripe confirmée avec pièce d’identité et selfie est partagée entre PALS et l’inscription comme pet-sitter. Vous n’avez pas besoin de la refaire. Stripe peut demander séparément des informations pour les versements."
 }

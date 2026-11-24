@@ -784,5 +784,6 @@
   "Invitations is your inbox for direct PALS invitations and chats after acceptance.": "招待にはPALSからの招待と、承認後に利用できるチャットが表示されます。",
   "Continue to Find PALS": "PALSを探す",
   "Continue to Invitations": "招待へ進む",
-  "Profile ready — continue to My trips.": "プロフィールの準備ができました。旅行へ進んでください。"
+  "Profile ready — continue to My trips.": "プロフィールの準備ができました。旅行へ進んでください。",
+  "Your approved Stripe ID and selfie check is shared across PALS and sitter registration. You do not need to repeat it. Stripe may separately request details for payouts.": "Stripeで確認済みの身分証明書と自撮り写真による本人確認は、PALSとシッター登録で共通して使用されます。再度確認する必要はありません。Stripeから支払い受取のために別途情報を求められる場合があります。"
 }

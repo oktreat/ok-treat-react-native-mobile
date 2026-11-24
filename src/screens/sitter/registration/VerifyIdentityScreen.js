@@ -127,7 +127,7 @@ export default function VerifyIdentityScreen({ navigation }) {
 
             <Text style={styles.title}>Verify your Identity</Text>
             <Text style={styles.desc}>
-              {copy("Your Stripe Identity check is shared across PALS and sitter registration, so you do not need to repeat an approved ID and selfie check. Stripe may separately request details needed for payouts.")}
+              {copy("Your approved Stripe ID and selfie check is shared across PALS and sitter registration. You do not need to repeat it. Stripe may separately request details for payouts.")}
             </Text>
             <Text style={styles.desc}>
               {copy("Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.")}
