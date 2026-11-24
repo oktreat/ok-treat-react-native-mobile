@@ -2,7 +2,7 @@ name: OkTreat TestFlight
 on:
   push:
     branches: [codex/finish-pals-verification-20261116]
-    paths: ['.github/workflows/testflight.yml', 'app.json', 'App.js', 'src/context/AppearanceContext.js', 'src/components/ScreenWrapper.js', 'src/components/SitterModeSwitch.js', 'src/components/ClearTabBar.js', 'src/components/FloatingActionBubble.js', 'src/components/Input.js', 'src/components/PetAgeInput.js', 'src/screens/main/HomeScreen.js', 'src/screens/main/InviteFriendsScreen.js', 'src/screens/main/BookingDetailScreen.js', 'src/screens/main/MoreScreen.js', 'src/screens/settings/SettingsScreen.js', 'src/screens/pets/AddPetScreen.js', 'src/screens/pets/AiVetScreen.js', 'src/screens/pets/PetCareDiaryScreen.js', 'src/screens/pets/MyPetProfileScreen.js', 'src/screens/pets/PetWizardStep1Screen.js', 'src/screens/sitter/home/SitterHomeScreen.js', 'src/screens/community/PalsLiveScreen.js', 'src/screens/sitter/home/SitterBookingsScreen.js', 'src/navigation/MainNavigator.js', 'src/navigation/RootNavigator.js', 'src/store/slices/appSlice.js', 'src/i18n/locales/copy-*.json', 'tests/clear-tab-bar.cjs', 'tests/pals-live.cjs']
+    paths: ['.github/workflows/testflight.yml', 'app.json', 'App.js', 'src/context/AppearanceContext.js', 'src/components/ScreenWrapper.js', 'src/components/SitterModeSwitch.js', 'src/components/ClearTabBar.js', 'src/components/FloatingActionBubble.js', 'src/components/Input.js', 'src/components/PetAgeInput.js', 'src/screens/main/HomeScreen.js', 'src/screens/main/InviteFriendsScreen.js', 'src/screens/main/BookingDetailScreen.js', 'src/screens/main/MoreScreen.js', 'src/screens/settings/SettingsScreen.js', 'src/screens/pets/AddPetScreen.js', 'src/screens/pets/AiVetScreen.js', 'src/screens/pets/PetCareDiaryScreen.js', 'src/screens/pets/MyPetProfileScreen.js', 'src/screens/pets/PetWizardStep1Screen.js', 'src/screens/sitter/home/SitterHomeScreen.js', 'src/screens/community/PalsLiveScreen.js', 'src/screens/sitter/home/SitterBookingsScreen.js', 'src/screens/sitter/registration/VerifyIdentityScreen.js', 'src/navigation/MainNavigator.js', 'src/navigation/RootNavigator.js', 'src/store/slices/appSlice.js', 'src/i18n/locales/copy-*.json', 'tests/clear-tab-bar.cjs', 'tests/pals-live.cjs']
   workflow_dispatch:
 permissions:
   contents: read
@@ -68,7 +68,7 @@ jobs:
           set -eu
           project=ios/OkTreat.xcodeproj/project.pbxproj
           sed -i '' -e 's/FF5DD8442347060E69CE65056CA9D43289BA32B5/"Apple Distribution"/g' -e 's/AliUsmanProvisioningProfile/"OkTreat App Store 2026-11-06"/g' "$project"
-          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.2.3' ios/OkTreat/Info.plist
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 2.2.4' ios/OkTreat/Info.plist
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}" ios/OkTreat/Info.plist
           xcodebuild archive -workspace ios/OkTreat.xcworkspace -scheme OkTreat -configuration Release -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/OkTreat.xcarchive"
           app="$RUNNER_TEMP/OkTreat.xcarchive/Products/Applications/OkTreat.app"
@@ -78,7 +78,7 @@ jobs:
           codesign -d --entitlements :- "$app" > "$RUNNER_TEMP/entitlements.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$RUNNER_TEMP/entitlements.plist")" = production
       - name: Upload to TestFlight
-        if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Upload OkTreat 2.2.3 to TestFlight')
+        if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Upload OkTreat 2.2.4 to TestFlight')
         env:
           KEY: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}

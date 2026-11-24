@@ -10,6 +10,7 @@ import Button from '../../../components/Button';
 import Icon from '@expo/vector-icons/Ionicons';
 import { BackArrowIcon, ShieldCheckIcon } from '../../../assets';
 import { createIdentitySession, getIdentityStatus } from '../../../services/stripeService';
+import { identityConfirmed } from '../../../components/PalsIdentityVerification';
 
 const HORIZONTAL_PADDING = 24;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -40,7 +41,7 @@ export default function VerifyIdentityScreen({ navigation }) {
       try {
         const res = await getIdentityStatus();
         last = res?.data;
-        if (last?.verified) { await markVerified(); return; }
+        if (identityConfirmed(res)) { await markVerified(); return; }
         if (last?.status === 'canceled') {
           setErrorMessage('Verification was cancelled. You can try again any time.');
           setShowErrorModal(true);
@@ -64,6 +65,12 @@ export default function VerifyIdentityScreen({ navigation }) {
   const startVerification = async () => {
     setIsVerifying(true);
     try {
+      // Reuse the server-confirmed Stripe ID and selfie check completed for PALS.
+      const existing = await getIdentityStatus();
+      if (!existing?.success) throw new Error('Could not confirm identity status');
+      if (identityConfirmed(existing)) { await markVerified(); return; }
+      if (existing.data?.status === 'processing') { setShowProcessingModal(true); return; }
+
       const res = await createIdentitySession();
       if (!res?.success || !res?.data?.url) {
         throw new Error(res?.message || 'Could not start verification');
@@ -120,7 +127,7 @@ export default function VerifyIdentityScreen({ navigation }) {
 
             <Text style={styles.title}>Verify your Identity</Text>
             <Text style={styles.desc}>
-              {copy("During sitter registration, Stripe Identity checks a government-issued photo ID and a matching selfie to help verify identity and support a safer community.")}
+              {copy("Your Stripe Identity check is shared across PALS and sitter registration, so you do not need to repeat an approved ID and selfie check. Stripe may separately request details needed for payouts.")}
             </Text>
             <Text style={styles.desc}>
               {copy("Identity verification is not a criminal background check or a guarantee of conduct or pet-care ability. Review profiles, discuss your pet’s needs and arrange a meet-and-greet before booking.")}
